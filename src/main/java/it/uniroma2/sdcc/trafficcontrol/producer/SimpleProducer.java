@@ -59,7 +59,7 @@ public class SimpleProducer {
         Producer<String, String> producer = new KafkaProducer<String, String>(props);
 
         for(int i = 0; i < 10; i++) {
-            producer.send(new ProducerRecord<String, String>(topicName, Integer.toString(i), Integer.toString(i)));
+            producer.send(new ProducerRecord<String, String>(topicName, Integer.toString(i), "{'id':'1245', 'timestamp':'11:10:11'}"));
             System.out.println(Integer.toString(i));
         }
         System.out.println("Message sent successfully");

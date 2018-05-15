@@ -1,0 +1,96 @@
+{
+  "cities": [
+    {
+      "name": "Roma",
+      "parks": [
+        {
+          "id": 1,
+          "address": "via lombardo",
+          "cellsID": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "address": "via milazzo",
+          "cellsID": [
+            1
+          ]
+        },
+        {
+          "id": 3,
+          "address": "piazza margana",
+          "cellsID": [
+            1
+          ]
+        },
+        {
+          "id": 4,
+          "address": "piazzale clodio",
+          "cellsID": [
+            1
+          ]
+        },
+        {
+          "id": 5,
+          "address": "via dei consoli",
+          "cellsID": [
+            1
+          ]
+        },
+        {
+          "id": 6,
+          "address": "largo argentina",
+          "cellsID": [
+            1
+          ]
+        }
+      ],
+      "bus_stops": [
+        {
+          "id": 1,
+          "address": "via bologna",
+          "cellsID": [
+            0
+          ]
+        },
+        {
+          "id": 2,
+          "address": "via canarina",
+          "cellsID": [
+            0
+          ]
+        },
+        {
+          "id": 3,
+          "address": "vicolo stretto",
+          "cellsID": [
+            0
+          ]
+        },
+        {
+          "id": 4,
+          "address": "piazza magna",
+          "cellsID": [
+            0
+          ]
+        },
+        {
+          "id": 5,
+          "address": "piazza mercede",
+          "cellsID": [
+            0
+          ]
+        },
+        {
+          "id": 6,
+          "address": "viale murato",
+          "cellsID": [
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

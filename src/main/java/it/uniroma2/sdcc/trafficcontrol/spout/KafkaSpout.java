@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_IP_PORT;
-import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SOURCE_TOPIC;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.MONITORING_SOURCE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.TupleFields.RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.TupleFields.TIMESTAMP;
 
@@ -30,13 +30,13 @@ public class KafkaSpout extends BaseRichSpout {
 
         Properties props = new Properties();
         props.put("bootstrap.servers", KAFKA_IP_PORT);
-        props.put("group.id", "test2");
+        props.put("group.id", "monitoring-system");
         props.put("enable.auto.commit", "true");
         props.put("key.deserializer", StringDeserializer.class);
         props.put("value.deserializer", StringDeserializer.class);
 
         consumer = new KafkaConsumer<String, String>(props);
-        consumer.subscribe(Collections.singletonList(SOURCE_TOPIC));
+        consumer.subscribe(Collections.singletonList(MONITORING_SOURCE));
     }
 
     public void nextTuple() {
