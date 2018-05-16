@@ -33,6 +33,7 @@ cmake-build-release/
 
 ### IntelliJ IDEA ###
 out/
+log/
 .idea
 *.iws
 *.iml
