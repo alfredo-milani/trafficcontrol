@@ -6,6 +6,7 @@
 
     <groupId>it.uniroma2.sdcc</groupId>
     <artifactId>traffic-control</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
@@ -19,6 +20,10 @@
             </plugin>
         </plugins>
     </build>
+    <modules>
+        <module>monitoring-system</module>
+        <module>sensors-simulator</module>
+    </modules>
 
     <dependencies>
 
