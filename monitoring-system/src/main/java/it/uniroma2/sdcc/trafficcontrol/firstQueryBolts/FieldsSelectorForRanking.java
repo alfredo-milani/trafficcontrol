@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.firstQueryBolts;
 
+import it.uniroma2.sdcc.trafficcontrol.topology.FirstTopology;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -9,11 +10,12 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
 import java.util.Map;
+import java.util.logging.Level;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
 
-public class FieldsSelector1 extends BaseRichBolt {
+public class FieldsSelectorForRanking extends BaseRichBolt {
 
     private OutputCollector collector;
 
@@ -24,7 +26,9 @@ public class FieldsSelector1 extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        // Filtro informazioni sensore
+        collector.ack(tuple);
+
+        // Filtro informazioni sensore per elaborare la classifica
         Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
         Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
         Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
@@ -39,10 +43,9 @@ public class FieldsSelector1 extends BaseRichBolt {
                 averageVehiclesSpeed
         );
 
-        System.out.println(values);
+        FirstTopology.getLOGGER().log(Level.INFO, values.toString());
 
-        // collector.emit(values);
-        collector.ack(tuple);
+        collector.emit(values);
     }
 
     @Override

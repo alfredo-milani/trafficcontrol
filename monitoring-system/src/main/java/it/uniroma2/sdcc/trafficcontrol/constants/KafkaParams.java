@@ -1,8 +1,5 @@
 package it.uniroma2.sdcc.trafficcontrol.constants;
 
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
-
 public interface KafkaParams {
 
     // Kafka's properties
@@ -16,8 +13,8 @@ public interface KafkaParams {
 
     String TRUE_VALUE = "true";
     String FALSE_VALUE = "false";
-    Class DESERIALIZER_VALUE = StringDeserializer.class;
-    Class SERIALIZER_VALUE = StringSerializer.class;
+    Class DESERIALIZER_VALUE = org.apache.kafka.common.serialization.StringDeserializer.class;
+    Class SERIALIZER_VALUE = org.apache.kafka.common.serialization.StringSerializer.class;
 
     // Kafka's topics
     String MONITORING_SOURCE = "monitoring_source";
@@ -33,6 +30,7 @@ public interface KafkaParams {
     String MONITORING_QUERY3_ROAD_WEEKLY = "monitoring_query3_road_weekly";
     String MONITORING_QUERY3_CITY_WEEKLY = "monitoring_query3_city_weekly";
     String MONITORING_QUERY4 = "monitoring_query4";
+    String SEMAPHORE_STATUS = "semaphore_status";
 
     // Kafka's tuples informations
     String KAFKA_TIMESTAMP = "kafka_timestamp";

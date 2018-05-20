@@ -1,7 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.bolt;
 
 import it.uniroma2.sdcc.trafficcontrol.RESTfulAPI.RESTfulAPI;
-import it.uniroma2.sdcc.trafficcontrol.exceptions.RecordNotFound;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -10,7 +9,6 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
@@ -26,6 +24,8 @@ public class AuthenticationBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
+        collector.ack(tuple);
+
         // TODO IMPLEMENTA CACHE PER SEMAPHORE ID
         // Verifica se il sensore è nel sistema
         Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
@@ -54,13 +54,8 @@ public class AuthenticationBolt extends BaseRichBolt {
                 averageVehiclesSpeed
         );
 
-        try {
-            RESTfulAPI.semaphoreExist(semaphoreId);
+        if (RESTfulAPI.semaphoreExist(semaphoreId)) {
             collector.emit(values);
-        } catch (IOException | RecordNotFound e) {
-            e.printStackTrace();
-        } finally {
-            collector.ack(tuple);
         }
     }
 

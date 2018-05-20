@@ -1,17 +1,21 @@
 package it.uniroma2.sdcc.trafficcontrol.RESTfulAPI;
 
 import it.uniroma2.sdcc.trafficcontrol.constants.RESTfulServices;
-import it.uniroma2.sdcc.trafficcontrol.exceptions.RecordNotFound;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.apache.http.protocol.HTTP.USER_AGENT;
 
 public class RESTfulAPI {
+
+    private final static String CLASS_NAME = RESTfulAPI.class.getName();
+    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public final static int STATUS_CODE_200 = 200;
     public final static int STATUS_CODE_300 = 300;
@@ -22,10 +26,10 @@ public class RESTfulAPI {
 
     }
 
-    public static void semaphoreExist(Long id) throws IOException, RecordNotFound {
+    public static boolean semaphoreExist(Long id) {
         // TODO A SCOPO DI TEST
         if (id >= 0)
-            return;
+            return true;
         // TODO END TEST
 
         HttpGet request = new HttpGet(String.format(
@@ -35,20 +39,29 @@ public class RESTfulAPI {
 
         // Add request header
         request.addHeader("User-Agent", USER_AGENT);
-        HttpResponse response = client.execute(request);
+        HttpResponse response;
+        try {
+            response = client.execute(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
 
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode < STATUS_CODE_200 || statusCode >= STATUS_CODE_300) {
-            throw new RecordNotFound(String.format(
-                    "Semaphore with ID: %d not found.",
-                    id
-            ));
+            LOGGER.log(
+                    Level.WARNING,
+                    String.format(
+                            "Semaphore with ID: %d not found.",
+                            id
+                    )
+            );
+            return false;
         }
 
-        /*
-        System.out.println("Response Code : "
-                + response.getStatusLine().getStatusCode());
+        return true;
 
+        /*
         BufferedReader rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent())
         );
@@ -63,11 +76,10 @@ public class RESTfulAPI {
     }
 
     public static void main(String[] a) {
-        try {
-            RESTfulAPI.semaphoreExist((long) 7);
-        } catch (IOException | RecordNotFound e) {
-            e.printStackTrace();
-        }
+        LOGGER.log(
+                Level.INFO,
+                "Record exist: " + RESTfulAPI.semaphoreExist((long) 7)
+        );
     }
 
 }

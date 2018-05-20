@@ -5,6 +5,9 @@ public interface StormParams {
     String KAFKA_SPOUT = "kafkaSpout";
     String VALIDITY_CHECK_BOLT = "validityCheckBolt";
     String AUTHENTICATION_BOLT = "authentication_bolt";
+
+    String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
+
     String PARSER_BOLT = "parser";
     String SELECTOR_BOLT = "selector";
     String SELECTOR_BOLT_2 = "selector2";

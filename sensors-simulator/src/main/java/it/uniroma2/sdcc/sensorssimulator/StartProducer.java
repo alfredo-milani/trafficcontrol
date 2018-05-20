@@ -1,9 +1,10 @@
-package it.uniroma2.sdcc.lampsystem;
+package it.uniroma2.sdcc.sensorssimulator;
 
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.EXIT_FAILURE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
@@ -11,6 +12,9 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 
 
 public class StartProducer {
+
+    private final static String CLASS_NAME = StartProducer.class.getName();
+    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private static int threads = 2;
 
@@ -22,7 +26,7 @@ public class StartProducer {
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         producerProperties.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 
-        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(producerProperties);
+        KafkaProducer<String, String> producer = new KafkaProducer<>(producerProperties);
 
         for (int i = 0; i < threads; ++i) {
             new Thread(new SemaphoreSensorThread(producer, MONITORING_SOURCE)).start();
@@ -67,4 +71,7 @@ public class StartProducer {
                 threads : Integer.valueOf(cmd.getOptionValue(nThreads));
     }
 
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
 }

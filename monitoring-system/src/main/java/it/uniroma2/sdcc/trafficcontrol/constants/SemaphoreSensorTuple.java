@@ -1,7 +1,10 @@
 package it.uniroma2.sdcc.trafficcontrol.constants;
 
+import java.util.HashMap;
+
 public interface SemaphoreSensorTuple {
 
+    // Chiavi per la tupla inviata dai sensori associati ai semafori
     String INTERSECTION_ID = "intersection_id";
     String SEMAPHORE_ID = "semaphore_id";
     String SEMAPHORE_LATITUDE = "semaphore_latitude";
@@ -13,5 +16,16 @@ public interface SemaphoreSensorTuple {
     String RED_LIGHT_STATUS = "red_light_status";
     String VEHICLES_PER_SECOND = "vehicles_per_second";
     String AVERAGE_VEHICLES_SPEED = "average_vehicles_speed";
+
+    // Codici di stato delle lampade di un semaforo
+    Byte LAMP_CODE_FAULTY = 0;
+    String LAMP_STATUS_FAULTY = "FAULTY";
+    Byte LAMP_CODE_OK = Byte.MAX_VALUE;
+    String LAMP_STATUS_OK = "WORKING";
+
+    HashMap<Byte, String> LAMP_STATUS_CODE = new HashMap<Byte, String>(Byte.MAX_VALUE + 1) {{
+        put(LAMP_CODE_FAULTY, LAMP_STATUS_FAULTY);
+        put(LAMP_CODE_OK, LAMP_STATUS_OK);
+    }};
 
 }

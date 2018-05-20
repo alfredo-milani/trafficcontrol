@@ -62,12 +62,11 @@ public class FilterBolt2 extends BaseRichBolt {
             collector.emit(values);
         }
         collector.ack(tuple);
-
-        System.out.println("FILTER_BOLT_2\tchange_state: " + needUpdate);
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields(ID, CITY, ADDRESS, KM, BULB_MODEL, INSTALLATION_TIMESTAMP,
                 MEAN_EXPIRATION_TIME, SHOULD_BE_IN_RANK));
     }
+
 }

@@ -18,15 +18,15 @@ public class InputParams {
 
     public final static String KAFKA_IP = "h";
     public final static String KAFKA_IP_LONG = "hostname";
-    public static String KAFKA_IP_SELECTED = "locahost";
+    public static String KAFKA_IP_SELECTED = "localhost";
 
     public final static String KAFKA_PORT = "p";
     public final static String KAFKA_PORT_LONG = "port";
-    public static String KAFKA_PORT_SELECTED = "9092";
-    public static String KAFKA_IP_PORT = "localhost:9092";
+    public static int KAFKA_PORT_SELECTED = 9092;
+    public static String KAFKA_IP_PORT = KAFKA_IP_SELECTED + ":" + KAFKA_PORT_SELECTED;
 
     public final static String NUMBER_WORKERS = "w";
     public final static String NUMBER_WORKERS_LONG = "workers";
-    public static int NUMBER_WORKERS_DEFAULT = 5;
+    public static int NUMBER_WORKERS_SELECTED = 2;
 
 }
