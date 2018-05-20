@@ -1,9 +1,7 @@
-package it.uniroma2.sdcc.trafficcontrol.firstquerybolts;
+package it.uniroma2.sdcc.trafficcontrol.firstQueryBolts;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams;
-import it.uniroma2.sdcc.trafficcontrol.constants.StormParams;
 import it.uniroma2.sdcc.trafficcontrol.constants.TupleFields;
 import it.uniroma2.sdcc.trafficcontrol.utils.RankItem;
 import it.uniroma2.sdcc.trafficcontrol.utils.Ranking;
@@ -20,6 +18,11 @@ import org.apache.storm.tuple.Tuple;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.MONITORING_QUERY2;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.UPDATE;
+import static it.uniroma2.sdcc.trafficcontrol.constants.TupleFields.*;
 
 
 public class GlobalRankBolt extends BaseRichBolt {
@@ -48,7 +51,7 @@ public class GlobalRankBolt extends BaseRichBolt {
         this.mapper = new ObjectMapper();
 
         Properties props = new Properties();
-        props.put("bootstrap.servers", KafkaParams.KAFKA_IP_PORT);
+        props.put("bootstrap.servers", KAFKA_IP_PORT);
         props.put("key.serializer", StringSerializer.class);
         props.put("value.serializer", StringSerializer.class);
 
@@ -59,7 +62,7 @@ public class GlobalRankBolt extends BaseRichBolt {
     public void execute(Tuple tuple) {
         boolean updated = false;
 
-        if (tuple.getSourceStreamId().equals(StormParams.UPDATE)) {
+        if (tuple.getSourceStreamId().equals(UPDATE)) {
             Ranking partialRanking = (Ranking) tuple.getValueByField(TupleFields.PARTIAL_RANK);
             /*Publish the ranking only if updates have occurred*/
             for (RankItem item : partialRanking.getRanking()) {
@@ -68,7 +71,7 @@ public class GlobalRankBolt extends BaseRichBolt {
 
         } else {
             /*Delete from the list the streetlamps with broken lamps or lamps that no longer exceed the average life time*/
-            RankItem rankItem = (RankItem) tuple.getValueByField(TupleFields.RANK_ITEM);
+            RankItem rankItem = (RankItem) tuple.getValueByField(RANK_ITEM);
             if (ranking.indexOf(rankItem) < topK)
                 updated = true;
             ranking.remove(rankItem);
@@ -78,6 +81,8 @@ public class GlobalRankBolt extends BaseRichBolt {
         if (updated) printRanking();
 
         collector.ack(tuple);
+
+        System.out.println("GLOBAL RANK\tupdated: " + updated);
     }
 
     private void printRanking() {
@@ -87,14 +92,14 @@ public class GlobalRankBolt extends BaseRichBolt {
         for (RankItem rankItem : globalTopK) {
             ObjectNode objectNode = mapper.createObjectNode();
 
-            objectNode.put(TupleFields.ID, rankItem.getId());
-            objectNode.put(TupleFields.CITY, rankItem.getCity());
-            objectNode.put(TupleFields.ADDRESS, rankItem.getAddress());
-            objectNode.put(TupleFields.KM, rankItem.getKm());
-            objectNode.put(TupleFields.BULB_MODEL, rankItem.getModel());
-            objectNode.put(TupleFields.TIME_DIFF, currentTime - (rankItem.getInstallationTimestamp() + rankItem.getMeanExpirationTime()));
+            objectNode.put(ID, rankItem.getId());
+            objectNode.put(CITY, rankItem.getCity());
+            objectNode.put(ADDRESS, rankItem.getAddress());
+            objectNode.put(KM, rankItem.getKm());
+            objectNode.put(BULB_MODEL, rankItem.getModel());
+            objectNode.put(TIME_DIFF, currentTime - (rankItem.getInstallationTimestamp() + rankItem.getMeanExpirationTime()));
 
-            producer.send(new ProducerRecord<String, String>(KafkaParams.MONITORING_QUERY2, objectNode.toString()));
+            producer.send(new ProducerRecord<String, String>(MONITORING_QUERY2, objectNode.toString()));
         }
     }
 

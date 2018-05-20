@@ -1,6 +1,5 @@
-package it.uniroma2.sdcc.trafficcontrol.firstquerybolts;
+package it.uniroma2.sdcc.trafficcontrol.firstQueryBolts;
 
-import it.uniroma2.sdcc.trafficcontrol.constants.TupleFields;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -11,6 +10,8 @@ import org.apache.storm.tuple.Values;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static it.uniroma2.sdcc.trafficcontrol.constants.TupleFields.*;
 
 
 public class FilterBolt2 extends BaseRichBolt {
@@ -30,14 +31,14 @@ public class FilterBolt2 extends BaseRichBolt {
 
     public void execute(Tuple tuple) {
 
-        Integer id = tuple.getIntegerByField(TupleFields.ID);
-        String city = tuple.getStringByField(TupleFields.CITY);
-        String address = tuple.getStringByField(TupleFields.ADDRESS);
-        Integer km = tuple.getIntegerByField(TupleFields.KM);
-        String model = tuple.getStringByField(TupleFields.BULB_MODEL);
-        Long installationTimestamp = tuple.getLongByField(TupleFields.INSTALLATION_TIMESTAMP);
-        Long meanExpirationTime = tuple.getLongByField(TupleFields.MEAN_EXPIRATION_TIME);
-        Boolean state = tuple.getBooleanByField(TupleFields.STATE); // false if defective bulb
+        Integer id = tuple.getIntegerByField(ID);
+        String city = tuple.getStringByField(CITY);
+        String address = tuple.getStringByField(ADDRESS);
+        Integer km = tuple.getIntegerByField(KM);
+        String model = tuple.getStringByField(BULB_MODEL);
+        Long installationTimestamp = tuple.getLongByField(INSTALLATION_TIMESTAMP);
+        Long meanExpirationTime = tuple.getLongByField(MEAN_EXPIRATION_TIME);
+        Boolean state = tuple.getBooleanByField(STATE); // false if defective bulb
 
         Long currentTime = System.currentTimeMillis();
 
@@ -61,10 +62,12 @@ public class FilterBolt2 extends BaseRichBolt {
             collector.emit(values);
         }
         collector.ack(tuple);
+
+        System.out.println("FILTER_BOLT_2\tchange_state: " + needUpdate);
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields(TupleFields.ID, TupleFields.CITY, TupleFields.ADDRESS, TupleFields.KM, TupleFields.BULB_MODEL, TupleFields.INSTALLATION_TIMESTAMP,
-                TupleFields.MEAN_EXPIRATION_TIME, TupleFields.SHOULD_BE_IN_RANK));
+        declarer.declare(new Fields(ID, CITY, ADDRESS, KM, BULB_MODEL, INSTALLATION_TIMESTAMP,
+                MEAN_EXPIRATION_TIME, SHOULD_BE_IN_RANK));
     }
 }

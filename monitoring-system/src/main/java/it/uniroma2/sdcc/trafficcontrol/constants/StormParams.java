@@ -1,38 +1,42 @@
 package it.uniroma2.sdcc.trafficcontrol.constants;
 
-public class StormParams {
-    public static final String KAFKA_SPOUT = "spout";
-    public static final String PARSER_BOLT = "parser";
-    public static final String SELECTOR_BOLT = "selector";
-    public static final String SELECTOR_BOLT_2 = "selector2";
-    public static final String SELECTOR_BOLT_3_4 = "selector3";
-    public static final String SHEDDER = "shedder";
-    public static final String FILTER_BOLT_QUERY_1 = "filter1";
-    public static final String FILTER_BOLT_QUERY_2 = "filter2";
-    public static final String METRONOME = "metronome";
-    public static final String COMPUTE_MEAN_LAMP = "cml";
-    public static final String COMPUTE_MEAN_LAMP_24H = "cml24";
-    public static final String COMPUTE_MEAN_LAMP_WEEK = "cmlweek";
-    public static final String COMPUTE_MEAN_STREET = "cms";
-    public static final String COMPUTE_MEAN_STREET_24H = "cms24";
-    public static final String COMPUTE_MEAN_STREET_WEEK = "cmsweek";
-    public static final String COMPUTE_MEAN_CITY = "cmc";
-    public static final String COMPUTE_MEAN_CITY_24H = "cmc24";
-    public static final String COMPUTE_MEAN_CITY_WEEK = "cmcweek";
-    public static final String COUNT_LAMP_FOR_ROAD = "clfr";
-    public static final String LAMP_PQUANTILE = "lpq";
-    public static final String GLOBAL_PQUANTILE = "gpq";
-    public static final String COMPARATOR = "comp";
-    public static final String GLOBAL_RANK = "globalRank";
-    public static final String PARTIAL_RANK = "partialRank";
+public interface StormParams {
+
+    String KAFKA_SPOUT = "kafkaSpout";
+    String VALIDITY_CHECK_BOLT = "validityCheckBolt";
+    String AUTHENTICATION_BOLT = "authentication_bolt";
+    String PARSER_BOLT = "parser";
+    String SELECTOR_BOLT = "selector";
+    String SELECTOR_BOLT_2 = "selector2";
+    String SELECTOR_BOLT_3_4 = "selector3";
+    String SHEDDER = "shedder";
+    String FILTER_BOLT_QUERY_1 = "filter1";
+    String FILTER_BOLT_QUERY_2 = "filter2";
+    String METRONOME = "metronome";
+    String COMPUTE_MEAN_LAMP = "cml";
+    String COMPUTE_MEAN_LAMP_24H = "cml24";
+    String COMPUTE_MEAN_LAMP_WEEK = "cmlweek";
+    String COMPUTE_MEAN_STREET = "cms";
+    String COMPUTE_MEAN_STREET_24H = "cms24";
+    String COMPUTE_MEAN_STREET_WEEK = "cmsweek";
+    String COMPUTE_MEAN_CITY = "cmc";
+    String COMPUTE_MEAN_CITY_24H = "cmc24";
+    String COMPUTE_MEAN_CITY_WEEK = "cmcweek";
+    String COUNT_LAMP_FOR_ROAD = "clfr";
+    String LAMP_PQUANTILE = "lpq";
+    String GLOBAL_PQUANTILE = "gpq";
+    String COMPARATOR = "comp";
+    String GLOBAL_RANK = "globalRank";
+    String PARTIAL_RANK = "partialRank";
 
 
-    public static final String S_METRONOME = "sMetronome";
-    public static final String D_METRONOME = "dMetronome";
-    public static final String UPDATE = "update";
-    public static final String REMOVE = "remove";
-    public static final String S_TUPLE = "sTuple";
-    public static final String S_NUM = "nRoad";
-    public static final String MEDIAN = "median";
-    public static final String LAMPS_FOR_ROAD = "lampsForRoad";
+    String S_METRONOME = "sMetronome";
+    String D_METRONOME = "dMetronome";
+    String UPDATE = "update";
+    String REMOVE = "remove";
+    String S_TUPLE = "sTuple";
+    String S_NUM = "nRoad";
+    String MEDIAN = "median";
+    String LAMPS_FOR_ROAD = "lampsForRoad";
+
 }

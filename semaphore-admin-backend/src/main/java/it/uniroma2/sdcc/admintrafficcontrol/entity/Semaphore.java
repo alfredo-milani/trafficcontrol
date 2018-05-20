@@ -15,8 +15,9 @@ import javax.persistence.*;
 public class Semaphore {
 
     @Id
-    @Column(name = Tables.T_ADMIN.C_EMAIL)
+    @Column(name = Tables.T_SEMAPHORE.C_ID)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
 
 }
