@@ -17,7 +17,7 @@ public class Admin {
 
     @Id
     @Column(name = Tables.T_ADMIN.C_ID)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = Tables.T_ADMIN.C_EMAIL, unique = true)

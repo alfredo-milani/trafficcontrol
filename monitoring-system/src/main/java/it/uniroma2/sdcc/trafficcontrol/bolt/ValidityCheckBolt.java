@@ -28,8 +28,6 @@ public class ValidityCheckBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        collector.ack(tuple);
-
         try {
             String rawTuple = tuple.getStringByField(KAFKA_RAW_TUPLE);
             JsonNode jsonNode = mapper.readTree(rawTuple);
@@ -65,7 +63,7 @@ public class ValidityCheckBolt extends BaseRichBolt {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // collector.ack(tuple);
+            collector.ack(tuple);
         }
     }
 

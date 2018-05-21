@@ -1,21 +1,19 @@
 package it.uniroma2.sdcc.trafficcontrol.RESTfulAPI;
 
 import it.uniroma2.sdcc.trafficcontrol.constants.RESTfulServices;
+import it.uniroma2.sdcc.trafficcontrol.topology.FirstTopology;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.apache.http.protocol.HTTP.USER_AGENT;
 
 public class RESTfulAPI {
-
-    private final static String CLASS_NAME = RESTfulAPI.class.getName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public final static int STATUS_CODE_200 = 200;
     public final static int STATUS_CODE_300 = 300;
@@ -27,7 +25,7 @@ public class RESTfulAPI {
     }
 
     public static boolean semaphoreExist(Long id) {
-        // TODO A SCOPO DI TEST
+        // TODO A SCOPO DI TEST / SE IL DB è SPENTO
         if (id >= 0)
             return true;
         // TODO END TEST
@@ -42,44 +40,32 @@ public class RESTfulAPI {
         HttpResponse response;
         try {
             response = client.execute(request);
+            // This is a crucial step to keep things flowing.
+            // We must tell HttpClient that we are done with the connection and that it can now be reused.
+            // Without doing this HttpClient will wait indefinitely for a connection to free up so that it can be reused.
+            request.releaseConnection();
         } catch (IOException e) {
-            e.printStackTrace();
+            FirstTopology.getLOGGER().log(Level.WARNING, e.getMessage());
             return false;
         }
 
         int statusCode = response.getStatusLine().getStatusCode();
-        if (statusCode < STATUS_CODE_200 || statusCode >= STATUS_CODE_300) {
-            LOGGER.log(
-                    Level.WARNING,
-                    String.format(
-                            "Semaphore with ID: %d not found.",
-                            id
-                    )
-            );
-            return false;
-        }
-
-        return true;
-
-        /*
-        BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent())
-        );
-
-        StringBuilder result = new StringBuilder();
-        for (String line = ""; line != null; line = rd.readLine()) {
-            result.append(line);
-        }
-
-        return result.toString();
-        */
+        return statusCode >= STATUS_CODE_200 && statusCode < STATUS_CODE_300;
     }
 
     public static void main(String[] a) {
-        LOGGER.log(
-                Level.INFO,
-                "Record exist: " + RESTfulAPI.semaphoreExist((long) 7)
-        );
+        for (int i = 0; i < 10; ++i) {
+            FirstTopology.getLOGGER().log(
+                    Level.INFO,
+                    "Record exist: " + RESTfulAPI.semaphoreExist(ThreadLocalRandom.current().nextLong(1, 4))
+            );
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

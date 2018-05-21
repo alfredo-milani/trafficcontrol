@@ -4,9 +4,16 @@ public interface StormParams {
 
     String KAFKA_SPOUT = "kafkaSpout";
     String VALIDITY_CHECK_BOLT = "validityCheckBolt";
+
+    String AUTHENTICATION_CACHE_BOLT = "authentication_cache_bolt";
+    String AUTHENTICATION_CACHE_NAME = "auth_hit";
+    String CACHE_HIT_STREAM = "cache_hit_stream";
+    String CACHE_MISS_STREAM = "cache_miss_stream";
     String AUTHENTICATION_BOLT = "authentication_bolt";
 
     String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
+
+    String FIELDS_SELECTION_FOR_RANKING = "fields_selector_for_ranking";
 
     String PARSER_BOLT = "parser";
     String SELECTOR_BOLT = "selector";

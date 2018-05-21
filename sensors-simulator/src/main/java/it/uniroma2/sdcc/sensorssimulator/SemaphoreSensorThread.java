@@ -51,8 +51,8 @@ public class SemaphoreSensorThread implements Runnable {
         ObjectMapper mapper = new ObjectMapper();
 
         while (true) {
-            intersectionId = ThreadLocalRandom.current().nextLong(0, 100000 + 1);
-            semaphoreId = ThreadLocalRandom.current().nextLong(0, 100000 + 1);
+            intersectionId = ThreadLocalRandom.current().nextLong(1, 100000 + 1);
+            semaphoreId = ThreadLocalRandom.current().nextLong(1, 20);
             semaphoreLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
             semaphoreLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
             semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
@@ -72,7 +72,7 @@ public class SemaphoreSensorThread implements Runnable {
             }
 
             try {
-                Thread.sleep(2 * 10);
+                Thread.sleep(1 * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

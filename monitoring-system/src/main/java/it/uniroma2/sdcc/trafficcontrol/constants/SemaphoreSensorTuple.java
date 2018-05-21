@@ -20,11 +20,17 @@ public interface SemaphoreSensorTuple {
     // Codici di stato delle lampade di un semaforo
     Byte LAMP_CODE_FAULTY = 0;
     String LAMP_STATUS_FAULTY = "FAULTY";
+    Byte LAMP_CODE_AVERAGE = 64;
+    String LAMP_STATUS_AVERAGE = "AVERAGE";
     Byte LAMP_CODE_OK = Byte.MAX_VALUE;
     String LAMP_STATUS_OK = "WORKING";
 
+    Byte LAMP_CODE_ONE_THIRD = (byte) (LAMP_CODE_OK / 3);
+    Byte LAMP_CODE_TWO_THIRD = (byte) (LAMP_CODE_OK * 2 / 3);
+
     HashMap<Byte, String> LAMP_STATUS_CODE = new HashMap<Byte, String>(Byte.MAX_VALUE + 1) {{
         put(LAMP_CODE_FAULTY, LAMP_STATUS_FAULTY);
+        put(LAMP_CODE_AVERAGE, LAMP_STATUS_AVERAGE);
         put(LAMP_CODE_OK, LAMP_STATUS_OK);
     }};
 

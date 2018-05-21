@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.topology;
 
 import it.uniroma2.sdcc.trafficcontrol.bolt.AuthenticationBolt;
+import it.uniroma2.sdcc.trafficcontrol.bolt.AuthenticationCacheBolt;
 import it.uniroma2.sdcc.trafficcontrol.bolt.SemaphoreStatusBolt;
 import it.uniroma2.sdcc.trafficcontrol.bolt.ValidityCheckBolt;
 import it.uniroma2.sdcc.trafficcontrol.firstQueryBolts.FieldsSelectorForRanking;
@@ -60,14 +61,18 @@ public class FirstTopology {
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout())
                 .setNumTasks(4);
         builder.setBolt(VALIDITY_CHECK_BOLT, new ValidityCheckBolt())
-                .localOrShuffleGrouping(KAFKA_SPOUT)
+                .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
-        builder.setBolt(AUTHENTICATION_BOLT, new AuthenticationBolt())
-                .localOrShuffleGrouping(VALIDITY_CHECK_BOLT)
+        builder.setBolt(AUTHENTICATION_CACHE_BOLT, new AuthenticationCacheBolt(), 4)
+                .shuffleGrouping(VALIDITY_CHECK_BOLT)
+                .setNumTasks(4);
+        builder.setBolt(AUTHENTICATION_BOLT, new AuthenticationBolt(), 3)
+                .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_MISS_STREAM)
                 .setNumTasks(6);
 
         builder.setBolt(SEMAPHORE_STATUS_BOLT, new SemaphoreStatusBolt())
-                .localOrShuffleGrouping(AUTHENTICATION_BOLT)
+                .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_HIT_STREAM)
+                .shuffleGrouping(AUTHENTICATION_BOLT)
                 .setNumTasks(4);
 
         /*
