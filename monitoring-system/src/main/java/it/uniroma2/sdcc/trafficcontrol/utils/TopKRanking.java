@@ -8,17 +8,17 @@ import java.util.Comparator;
 
 public class TopKRanking {
     private static final int NOT_PRESENT = -1;
-    private Comparator<RankItem> comparator = null;
-    private ArrayList<RankItem> ranking = null;
+    private Comparator<IntersectionItem> comparator = null;
+    private ArrayList<IntersectionItem> ranking = null;
     private int topK;
 
     public TopKRanking(int k) {
         this.comparator = new RankItemComparator();
-        this.ranking = new ArrayList<RankItem>();
+        this.ranking = new ArrayList<IntersectionItem>();
         this.topK = k;
     }
 
-    public boolean update(RankItem item) { //true if update needed or false
+    public boolean update(IntersectionItem item) { //true if update needed or false
 
         int sizePreUpdate = ranking.size();
         int oldPosition = indexOf(item); //TUTTO BENE
@@ -41,7 +41,7 @@ public class TopKRanking {
 
     }
 
-    public int add(RankItem item) {
+    public int add(IntersectionItem item) {
         int pos = Collections.binarySearch(ranking, item, comparator);
         int insertionPoint = pos > -1 ? pos : -pos - 1;
         if (insertionPoint < 0)
@@ -51,11 +51,11 @@ public class TopKRanking {
         return insertionPoint;
     }
 
-    public void remove(RankItem item) {
+    public void remove(IntersectionItem item) {
         ranking.remove(item);
     }
 
-    public int indexOf(RankItem item) {
+    public int indexOf(IntersectionItem item) {
         for (int i = 0; i < ranking.size(); i++) {
             if (item.equals(ranking.get(i)))
                 return i;
@@ -63,13 +63,13 @@ public class TopKRanking {
         return NOT_PRESENT;
     }
 
-    public boolean containsElement(RankItem item) {
+    public boolean containsElement(IntersectionItem item) {
         return ranking.contains(item);
     }
 
     public Ranking getTopK() {
 
-        ArrayList<RankItem> top = new ArrayList<RankItem>();
+        ArrayList<IntersectionItem> top = new ArrayList<IntersectionItem>();
 
         if (ranking.isEmpty()) {
             Ranking topKRanking = new Ranking();

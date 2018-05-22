@@ -7,13 +7,13 @@ import java.util.ArrayList;
 
 public class Ranking implements Serializable {
 
-    private ArrayList<RankItem> ranking;
+    private ArrayList<IntersectionItem> ranking;
 
-    public ArrayList<RankItem> getRanking() {
+    public ArrayList<IntersectionItem> getRanking() {
         return ranking;
     }
 
-    public void setRanking(ArrayList<RankItem> ranking) {
+    public void setRanking(ArrayList<IntersectionItem> ranking) {
         this.ranking = ranking;
     }
 }

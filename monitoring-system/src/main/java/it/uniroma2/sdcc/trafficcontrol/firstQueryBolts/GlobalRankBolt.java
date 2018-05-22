@@ -3,7 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol.firstQueryBolts;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.uniroma2.sdcc.trafficcontrol.constants.TupleFields;
-import it.uniroma2.sdcc.trafficcontrol.utils.RankItem;
+import it.uniroma2.sdcc.trafficcontrol.utils.IntersectionItem;
 import it.uniroma2.sdcc.trafficcontrol.utils.Ranking;
 import it.uniroma2.sdcc.trafficcontrol.utils.TopKRanking;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -65,16 +65,16 @@ public class GlobalRankBolt extends BaseRichBolt {
         if (tuple.getSourceStreamId().equals(UPDATE)) {
             Ranking partialRanking = (Ranking) tuple.getValueByField(TupleFields.PARTIAL_RANK);
             /*Publish the ranking only if updates have occurred*/
-            for (RankItem item : partialRanking.getRanking()) {
+            for (IntersectionItem item : partialRanking.getRanking()) {
                 updated |= ranking.update(item);
             }
 
         } else {
             /*Delete from the list the streetlamps with broken lamps or lamps that no longer exceed the average life time*/
-            RankItem rankItem = (RankItem) tuple.getValueByField(RANK_ITEM);
-            if (ranking.indexOf(rankItem) < topK)
+            IntersectionItem intersectionItem = (IntersectionItem) tuple.getValueByField(RANK_ITEM);
+            if (ranking.indexOf(intersectionItem) < topK)
                 updated = true;
-            ranking.remove(rankItem);
+            ranking.remove(intersectionItem);
         }
 
         /* Emit if the local topK is changed */
@@ -86,18 +86,20 @@ public class GlobalRankBolt extends BaseRichBolt {
     }
 
     private void printRanking() {
-        List<RankItem> globalTopK = ranking.getTopK().getRanking();
+        List<IntersectionItem> globalTopK = ranking.getTopK().getRanking();
         long currentTime = System.currentTimeMillis();
 
-        for (RankItem rankItem : globalTopK) {
+        for (IntersectionItem intersectionItem : globalTopK) {
             ObjectNode objectNode = mapper.createObjectNode();
 
-            objectNode.put(ID, rankItem.getId());
-            objectNode.put(CITY, rankItem.getCity());
-            objectNode.put(ADDRESS, rankItem.getAddress());
-            objectNode.put(KM, rankItem.getKm());
-            objectNode.put(BULB_MODEL, rankItem.getModel());
-            objectNode.put(TIME_DIFF, currentTime - (rankItem.getInstallationTimestamp() + rankItem.getMeanExpirationTime()));
+/*
+            objectNode.put(ID, intersectionItem.getId());
+            objectNode.put(CITY, intersectionItem.getCity());
+            objectNode.put(ADDRESS, intersectionItem.getAddress());
+            objectNode.put(KM, intersectionItem.getKm());
+            objectNode.put(BULB_MODEL, intersectionItem.getModel());
+            objectNode.put(TIME_DIFF, currentTime - (intersectionItem.getInstallationTimestamp() + intersectionItem.getMeanExpirationTime()));
+*/
 
             producer.send(new ProducerRecord<String, String>(MONITORING_QUERY2, objectNode.toString()));
         }

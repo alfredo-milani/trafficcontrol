@@ -3,15 +3,16 @@ package it.uniroma2.sdcc.trafficcontrol.utils;
 
 import java.util.Comparator;
 
-
-public class RankItemComparator implements Comparator<RankItem> {
+public class RankItemComparator implements Comparator<IntersectionItem> {
 
     @Override
-    public int compare(RankItem r1, RankItem r2) {
+    public int compare(IntersectionItem i1, IntersectionItem i2) {
 
-        Long expectedTTL1 = r1.getInstallationTimestamp() + r1.getMeanExpirationTime();
-        Long expectedTTL2 = r2.getInstallationTimestamp() + r2.getMeanExpirationTime();
-
-        return expectedTTL1.compareTo(expectedTTL2);
+        Short averageSpeedI1 = i1.getAverageVehiclesSpeed();
+        Short averageSpeedI2 = i2.getAverageVehiclesSpeed();
+        return averageSpeedI1.compareTo(averageSpeedI2);
     }
+
+
+
 }
