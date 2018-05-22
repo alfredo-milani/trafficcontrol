@@ -54,17 +54,20 @@ public class RESTfulAPI {
     }
 
     public static void main(String[] a) {
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 100; ++i) {
+            Long random = ThreadLocalRandom.current().nextLong(1, 50);
             FirstTopology.getLOGGER().log(
                     Level.INFO,
-                    "Record exist: " + RESTfulAPI.semaphoreExist(ThreadLocalRandom.current().nextLong(1, 4))
+                    String.format("ID: %d\tRecord exist: %s", random, RESTfulAPI.semaphoreExist(random))
             );
 
+            /*
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            */
         }
     }
 

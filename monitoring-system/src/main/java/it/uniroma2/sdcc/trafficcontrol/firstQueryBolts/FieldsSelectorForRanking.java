@@ -1,6 +1,5 @@
 package it.uniroma2.sdcc.trafficcontrol.firstQueryBolts;
 
-import it.uniroma2.sdcc.trafficcontrol.topology.FirstTopology;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -10,7 +9,6 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
 import java.util.Map;
-import java.util.logging.Level;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
@@ -26,13 +24,12 @@ public class FieldsSelectorForRanking extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        collector.ack(tuple);
-
         // Filtro informazioni sensore per elaborare la classifica
         Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
         Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
         Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
         Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
+        Boolean semaphorestatus = tuple.getBooleanByField(SEMAPHORE_STATUS);
         Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
 
         Values values = new Values(
@@ -40,12 +37,15 @@ public class FieldsSelectorForRanking extends BaseRichBolt {
                 semaphoreId,
                 semaphoreLatitude,
                 semaphoreLongitude,
+                semaphorestatus,
                 averageVehiclesSpeed
         );
 
-        FirstTopology.getLOGGER().log(Level.INFO, values.toString());
+        // FirstTopology.getLOGGER().log(Level.INFO, values.toString());
 
         collector.emit(values);
+
+        collector.ack(tuple);
     }
 
     @Override
@@ -55,6 +55,7 @@ public class FieldsSelectorForRanking extends BaseRichBolt {
                 SEMAPHORE_ID,
                 SEMAPHORE_LATITUDE,
                 SEMAPHORE_LONGITUDE,
+                SEMAPHORE_STATUS,
                 AVERAGE_VEHICLES_SPEED
         ));
     }

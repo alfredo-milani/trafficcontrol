@@ -58,10 +58,10 @@ public class AuthenticationCacheBolt extends BaseRichBolt {
 
         // Verifica se il sensore è nella cache
         if (cacheManager.isKeyInCache(semaphoreId)) {
-            System.out.println("bolt: " + i + "\tCACHE HIT: " + semaphoreId);
+            // System.out.println("bolt: " + i + "\tCACHE HIT: " + semaphoreId);
             collector.emit(CACHE_HIT_STREAM, values);
         } else {
-            System.out.println("bolt: " + i + "\tCACHE MISS: " + semaphoreId);
+            // System.out.println("bolt: " + i + "\tCACHE MISS: " + semaphoreId);
             collector.emit(CACHE_MISS_STREAM, values);
         }
 

@@ -12,6 +12,8 @@ public interface StormParams {
     String AUTHENTICATION_BOLT = "authentication_bolt";
 
     String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
+    String REMOVE_STREAM = "remove_stream";
+    String UPDATE_STREAM = "update_stream";
 
     String FIELDS_SELECTION_FOR_RANKING = "fields_selector_for_ranking";
 

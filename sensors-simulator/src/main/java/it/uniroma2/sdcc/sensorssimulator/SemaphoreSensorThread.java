@@ -51,15 +51,18 @@ public class SemaphoreSensorThread implements Runnable {
         ObjectMapper mapper = new ObjectMapper();
 
         while (true) {
-            intersectionId = ThreadLocalRandom.current().nextLong(1, 100000 + 1);
-            semaphoreId = ThreadLocalRandom.current().nextLong(1, 20);
+            intersectionId = ThreadLocalRandom.current().nextLong(1, 20);
+            semaphoreId = ThreadLocalRandom.current().nextLong(1, 48);
             semaphoreLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
             semaphoreLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
             semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
             greenLightDuration = (short) ThreadLocalRandom.current().nextInt(0, 300 + 1);
-            greenLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
-            yellowLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
-            redLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+            // greenLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+            // yellowLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+            // redLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+            greenLightStatus = Byte.MAX_VALUE;
+            yellowLightStatus = Byte.MAX_VALUE;
+            redLightStatus = Byte.MAX_VALUE;
             vehiclesPerSecond = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
             averageVehiclesSpeed = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
 
@@ -72,7 +75,7 @@ public class SemaphoreSensorThread implements Runnable {
             }
 
             try {
-                Thread.sleep(1 * 1000);
+                Thread.sleep(2 * 100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

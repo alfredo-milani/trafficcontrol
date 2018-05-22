@@ -18,6 +18,7 @@ public interface SemaphoreSensorTuple {
     String AVERAGE_VEHICLES_SPEED = "average_vehicles_speed";
 
     // Codici di stato delle lampade di un semaforo
+    String SEMAPHORE_STATUS = "semaphore_status";
     Byte LAMP_CODE_FAULTY = 0;
     String LAMP_STATUS_FAULTY = "FAULTY";
     Byte LAMP_CODE_AVERAGE = 64;

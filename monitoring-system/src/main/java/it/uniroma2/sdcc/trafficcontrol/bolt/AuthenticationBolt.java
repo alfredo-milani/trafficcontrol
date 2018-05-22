@@ -60,7 +60,7 @@ public class AuthenticationBolt extends BaseRichBolt {
             if (!(semaphoreInSystem = cacheManager.isKeyInCache(semaphoreId))) {
                 if (semaphoreInSystem = RESTfulAPI.semaphoreExist(semaphoreId)) {
                     cacheManager.put(semaphoreId, tuple.getSourceStreamId());
-                    System.out.println("CACHE PUT: " + semaphoreId);
+                    // System.out.println(String.format("CACHE PUT: %d\tCACHE DIM: %d", semaphoreId, cacheManager.size()));
                 }
             }
         }

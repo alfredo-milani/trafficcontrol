@@ -18,8 +18,9 @@ public interface KafkaParams {
 
     // Kafka's topics
     String MONITORING_SOURCE = "monitoring_source";
+    String RANKING_DESTINATION = "ranking_destination";
+
     String MONITORING_QUERY1 = "monitoring_query1";
-    String MONITORING_QUERY2 = "monitoring_query2";
     String MONITORING_QUERY3_LAMP_HOURLY = "monitoring_query3_lamp_hourly";
     String MONITORING_QUERY3_ROAD_HOURLY = "monitoring_query3_road_hourly";
     String MONITORING_QUERY3_CITY_HOURLY = "monitoring_query3_city_hourly";
