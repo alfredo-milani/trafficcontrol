@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
 import it.uniroma2.sdcc.trafficcontrol.topology.FirstTopology;
+import it.uniroma2.sdcc.trafficcontrol.topology.SecondTopology;
 import org.apache.commons.cli.*;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
@@ -36,7 +37,7 @@ public class TopologyStarter {
         LocalCluster cluster = new LocalCluster();
 
         FirstTopology firstTopology = new FirstTopology();
-        // SecondTopology secondTopology = new SecondTopology();
+        SecondTopology secondTopology = new SecondTopology();
         // ThirdTopology thirdTopology = new ThirdTopology();
 
         /*
@@ -58,11 +59,18 @@ public class TopologyStarter {
 
         switch (MODE_SELECTED) {
             case MODE_LOCAL:
+
                 cluster.submitTopology(
                         "LocalTopology",
                         conf,
                         firstTopology.setLocalTopology().createTopology()
                 );
+                cluster.submitTopology(
+                        "LocalTopology",
+                        conf,
+                        secondTopology.setLocalTopology().createTopology()
+                );
+
                 break;
 
             case MODE_CLUSTER:

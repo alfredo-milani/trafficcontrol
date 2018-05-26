@@ -10,13 +10,32 @@ public class IntersectionItem implements Serializable {
     private Double semaphoreLatitude;
     private Double semaphoreLongitude;
     private Short averageVehiclesSpeed;
+    private Short numberVehicle;
 
+    //per la prima query
     public IntersectionItem(Long intersectionId, Long semaphoreId, Double semaphoreLatitude, Double semaphoreLongitude, Short averageVehiclesSpeed) {
         this.intersectionId = intersectionId;
         this.semaphoreId = semaphoreId;
         this.semaphoreLatitude = semaphoreLatitude;
         this.semaphoreLongitude = semaphoreLongitude;
         this.averageVehiclesSpeed = averageVehiclesSpeed;
+    }
+
+
+    //per la seconda query
+
+    public IntersectionItem(Long intersectionId, Long semaphoreId, Short numberVehicle) {
+        this.intersectionId = intersectionId;
+        this.semaphoreId = semaphoreId;
+        this.numberVehicle = numberVehicle;
+    }
+
+    public Short getNumberVehicle() {
+        return numberVehicle;
+    }
+
+    public void setNumberVehicle(Short numberVehicle) {
+        this.numberVehicle = numberVehicle;
     }
 
     @Override
@@ -70,4 +89,7 @@ public class IntersectionItem implements Serializable {
     public void setAverageVehiclesSpeed(Short averageVehiclesSpeed) {
         this.averageVehiclesSpeed = averageVehiclesSpeed;
     }
+
+
+
 }

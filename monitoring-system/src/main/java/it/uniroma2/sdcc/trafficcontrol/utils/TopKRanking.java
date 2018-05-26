@@ -93,4 +93,10 @@ public class TopKRanking {
     public String toString() {
         return ranking.toString();
     }
+
+    //aggiunta per seconda query
+    public ArrayList<IntersectionItem> returnArray(){
+        return ranking;
+    }
+
 }

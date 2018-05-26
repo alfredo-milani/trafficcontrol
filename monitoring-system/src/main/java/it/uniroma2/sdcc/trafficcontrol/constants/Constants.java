@@ -23,4 +23,5 @@ public interface Constants {
     int MAX_SIZE = 50;
     int MAX_UPDATE_TIME = 0;
 
+
 }

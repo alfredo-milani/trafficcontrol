@@ -17,6 +17,14 @@ public interface StormParams {
 
     String FIELDS_SELECTION_FOR_RANKING = "fields_selector_for_ranking";
 
+    //per seconda query
+    String INTERSECTION_AND_GLOBAL_MEDIAN = "intersection_and_global_median";
+    String FINAL_COMPARATOR = "final_comparator";
+    String FIELDS_SELECTION_FOR_MEDIAN = "fields_selector_for_median";
+    String REMOVE_GLOBAL_MEDIAN_ITEM = "remove_global_median_item";
+    String UPDATE_GLOBAL_MEDIAN = "update_global_median";
+    String VALUE_GLOBAL_MEDIAN = "value_global_median";
+
     String PARSER_BOLT = "parser";
     String SELECTOR_BOLT = "selector";
     String SELECTOR_BOLT_2 = "selector2";
