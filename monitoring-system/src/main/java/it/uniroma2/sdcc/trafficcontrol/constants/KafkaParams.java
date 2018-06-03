@@ -3,7 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol.constants;
 public interface KafkaParams {
 
     // Kafka's properties
-    String SERVER = "bootstrap.servers";
+    String BOOTSTRAP_SERVERS = "bootstrap.servers";
     String GROUP_ID = "group.id";
     String AUTO_COMMIT = "enable.auto.commit";
     String KEY_DESERIALIZER = "key.deserializer";
@@ -18,6 +18,8 @@ public interface KafkaParams {
 
     // Kafka's topics
     String MONITORING_SOURCE = "monitoring_source";
+    String TO_VALIDATE = "to_validate";
+    String VALIDATED = "validated";
     String RANKING_DESTINATION = "ranking_destination";
 
     String MONITORING_QUERY1 = "monitoring_query1";

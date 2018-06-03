@@ -1,16 +1,18 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
-import it.uniroma2.sdcc.trafficcontrol.topology.FirstTopology;
-import it.uniroma2.sdcc.trafficcontrol.topology.SecondTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.FirstTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.SemaphoreStatusTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.Topology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
 import org.apache.commons.cli.*;
-import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
 import org.apache.storm.generated.AuthorizationException;
 import org.apache.storm.generated.InvalidTopologyException;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +20,23 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.*;
 
 
 public class TopologyStarter {
+
+    /* TODO INFORMAZIONI
+     * Apache Storm processes, called workers, run on predefined ports on the machine that hosts Storm.
+     *
+     * Each worker process can run one or more executors, or threads, where each executor is a thread spawned by the worker process.
+     *
+     * Each executor runs one or more tasks from the same component, where a component is a spouts or boltsValidation from a topologies.
+     *
+     *
+     *
+     * In storm the term parallelism hint is used to specify the initial number of executor (threads) of a component (spouts, boltsValidation) (this can be changed in the run time)
+     *
+     * the setNumTasks(4) indicate to run 4 associated tasks (this will be same throughout the lifetime of a topologies).
+     * So in this case each storm will be running two tasks per executor.
+     * By default, the number of tasks is set to be the same as the number of executors, i.e. Storm will run one task per thread.
+     *
+     */
 
     private final static String CLASS_NAME = TopologyStarter.class.getName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -30,59 +49,37 @@ public class TopologyStarter {
             System.exit(EXIT_FAILURE);
         }
 
-        // TODO METTERE INIZIALIZZAZIONE TOPOLOGIA (PARTE COMUNE IN TUTTE LE TOPOLOGIE... VEDERE SE builder == null è uguale a tutte)
-        // TODO     IN UNA CLASSE A PARTE
-        Config conf = new Config();
-        conf.setNumWorkers(NUMBER_WORKERS_SELECTED);
-        LocalCluster cluster = new LocalCluster();
-
-        FirstTopology firstTopology = new FirstTopology();
-        SecondTopology secondTopology = new SecondTopology();
-        // ThirdTopology thirdTopology = new ThirdTopology();
-
-        /*
-         * Apache Storm processes, called workers, run on predefined ports on the machine that hosts Storm.
-         *
-         * Each worker process can run one or more executors, or threads, where each executor is a thread spawned by the worker process.
-         *
-         * Each executor runs one or more tasks from the same component, where a component is a spout or bolt from a topology.
-         *
-         *
-         *
-         * In storm the term parallelism hint is used to specify the initial number of executor (threads) of a component (spout, bolt) (this can be changed in the run time)
-         *
-         * the setNumTasks(4) indicate to run 4 associated tasks (this will be same throughout the lifetime of a topology).
-         * So in this case each storm will be running two tasks per executor.
-         * By default, the number of tasks is set to be the same as the number of executors, i.e. Storm will run one task per thread.
-         *
-         */
+        ArrayList<Topology> topologies = new ArrayList<>();
+        topologies.add(new ValidationTopology());
+        topologies.add(new SemaphoreStatusTopology());
+        topologies.add(new FirstTopology());
+        // topologies.add(new SecondTopology());
+        // topologies.add(new ThirdTopology());
+        // topologies.add(new TemporizationTopology());
 
         switch (MODE_SELECTED) {
             case MODE_LOCAL:
+                LocalCluster cluster = new LocalCluster();
 
-                cluster.submitTopology(
-                        "LocalTopology",
-                        conf,
-                        firstTopology.setLocalTopology().createTopology()
-                );
-                cluster.submitTopology(
-                        "LocalTopology",
-                        conf,
-                        secondTopology.setLocalTopology().createTopology()
-                );
-
+                topologies.forEach(t -> cluster.submitTopology(
+                        t.getClassName(),
+                        t.getConfig(),
+                        t.createTopology()
+                ));
                 break;
 
             case MODE_CLUSTER:
-                try {
-                    StormSubmitter.submitTopology(
-                            "RemoteTopology",
-                            conf,
-                            firstTopology.setRemoteTopology().createTopology()
-                    );
-                } catch (AlreadyAliveException | InvalidTopologyException | AuthorizationException e) {
-                    e.printStackTrace();
-                }
+                topologies.forEach(t -> {
+                    try {
+                        StormSubmitter.submitTopology(
+                                t.getClassName(),
+                                t.getConfig(),
+                                t.createTopology()
+                        );
+                    } catch (AlreadyAliveException | AuthorizationException | InvalidTopologyException e) {
+                        e.printStackTrace();
+                    }
+                });
                 break;
 
             default:

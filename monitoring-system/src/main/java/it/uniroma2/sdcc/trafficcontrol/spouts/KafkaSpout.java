@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.spout;
+package it.uniroma2.sdcc.trafficcontrol.spouts;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -23,20 +23,25 @@ public class KafkaSpout extends BaseRichSpout {
 
     private SpoutOutputCollector collector;
     private KafkaConsumer<String, String> consumer;
+    private final String sourceTopic;
+
+    public KafkaSpout(String sourceTopic) {
+        this.sourceTopic = sourceTopic;
+    }
 
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         this.collector = collector;
 
         Properties props = new Properties();
-        props.put(SERVER, KAFKA_IP_PORT);
+        props.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
         props.put(GROUP_ID, APP_NAME);
         props.put(AUTO_COMMIT, TRUE_VALUE);
         props.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);
         props.put(VALUE_DESERIALIZER, DESERIALIZER_VALUE);
 
         consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Collections.singletonList(MONITORING_SOURCE));
+        consumer.subscribe(Collections.singletonList(sourceTopic));
     }
 
     @SuppressWarnings("InfiniteLoopStatement")

@@ -1,5 +1,6 @@
-package it.uniroma2.sdcc.trafficcontrol.bolt;
+package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
+import it.uniroma2.sdcc.trafficcontrol.RESTfulAPI.RESTfulAPI;
 import it.uniroma2.sdcc.trafficcontrol.utils.EhCacheManager;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -10,22 +11,19 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.AUTHENTICATION_CACHE_NAME;
 
-public class AuthenticationCacheBolt extends BaseRichBolt {
+public class AuthenticationBolt extends BaseRichBolt {
 
     private OutputCollector collector;
     private EhCacheManager cacheManager;
-    private int i;
 
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
         this.collector = collector;
         this.cacheManager = new EhCacheManager(AUTHENTICATION_CACHE_NAME);
-        i = ThreadLocalRandom.current().nextInt(0, 90);
     }
 
     @Override
@@ -56,13 +54,19 @@ public class AuthenticationCacheBolt extends BaseRichBolt {
                 averageVehiclesSpeed
         );
 
-        // Verifica se il sensore è nella cache
-        if (cacheManager.isKeyInCache(semaphoreId)) {
-            // System.out.println("bolt: " + i + "\tCACHE HIT: " + semaphoreId);
-            collector.emit(CACHE_HIT_STREAM, values);
-        } else {
-            // System.out.println("bolt: " + i + "\tCACHE MISS: " + semaphoreId);
-            collector.emit(CACHE_MISS_STREAM, values);
+        boolean semaphoreInSystem;
+        synchronized (cacheManager.getCacheManager()) {
+            // Double checked lock
+            if (!(semaphoreInSystem = cacheManager.isKeyInCache(semaphoreId))) {
+                if (semaphoreInSystem = RESTfulAPI.semaphoreExist(semaphoreId)) {
+                    cacheManager.put(semaphoreId, tuple.getSourceStreamId());
+                    // System.out.println(String.format("CACHE PUT: %d\tCACHE DIM: %d", semaphoreId, cacheManager.size()));
+                }
+            }
+        }
+
+        if (semaphoreInSystem) {
+            collector.emit(values);
         }
 
         collector.ack(tuple);
@@ -70,7 +74,7 @@ public class AuthenticationCacheBolt extends BaseRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        Fields fields = new Fields(
+        declarer.declare(new Fields(
                 INTERSECTION_ID,
                 SEMAPHORE_ID,
                 SEMAPHORE_LATITUDE,
@@ -82,11 +86,7 @@ public class AuthenticationCacheBolt extends BaseRichBolt {
                 RED_LIGHT_STATUS,
                 VEHICLES_PER_SECOND,
                 AVERAGE_VEHICLES_SPEED
-        );
-
-        declarer.declareStream(CACHE_HIT_STREAM, fields);
-
-        declarer.declareStream(CACHE_MISS_STREAM, fields);
+        ));
     }
 
 }

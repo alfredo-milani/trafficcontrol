@@ -1,7 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.RESTfulAPI;
 
 import it.uniroma2.sdcc.trafficcontrol.constants.RESTfulServices;
-import it.uniroma2.sdcc.trafficcontrol.topology.FirstTopology;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -10,10 +9,14 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.apache.http.protocol.HTTP.USER_AGENT;
 
 public class RESTfulAPI {
+
+    private final static String CLASS_NAME = RESTfulAPI.class.getName();
+    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public final static int STATUS_CODE_200 = 200;
     public final static int STATUS_CODE_300 = 300;
@@ -45,7 +48,7 @@ public class RESTfulAPI {
             // Without doing this HttpClient will wait indefinitely for a connection to free up so that it can be reused.
             request.releaseConnection();
         } catch (IOException e) {
-            FirstTopology.getLOGGER().log(Level.WARNING, e.getMessage());
+            LOGGER.log(Level.WARNING, e.getMessage());
             return false;
         }
 
@@ -56,7 +59,7 @@ public class RESTfulAPI {
     public static void main(String[] a) {
         for (int i = 0; i < 100; ++i) {
             Long random = ThreadLocalRandom.current().nextLong(1, 50);
-            FirstTopology.getLOGGER().log(
+            LOGGER.log(
                     Level.INFO,
                     String.format("ID: %d\tRecord exist: %s", random, RESTfulAPI.semaphoreExist(random))
             );

@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.firstQueryBolts;
+package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;

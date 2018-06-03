@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.firstQueryBolts;
+package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.utils.IntersectionItem;
 import it.uniroma2.sdcc.trafficcontrol.utils.Ranking;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.REMOVE;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.UPDATE;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.UPDATE_PARTIAL;
 import static it.uniroma2.sdcc.trafficcontrol.constants.TupleFields.PARTIAL_RANK;
 import static it.uniroma2.sdcc.trafficcontrol.constants.TupleFields.RANK_ITEM;
 
@@ -34,15 +34,13 @@ public class PartialRankBolt extends BaseRichBolt {
     }
 
     @Override
-    public void prepare(@SuppressWarnings("rawtypes") Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.collector = outputCollector;
         this.ranking = new TopKRanking(topK);
     }
 
     @Override
     public void execute(Tuple tuple) {
-
-
         boolean update = false;
 
         Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
@@ -67,14 +65,14 @@ public class PartialRankBolt extends BaseRichBolt {
         if (update) {
             Ranking topK = ranking.getTopK();
             Values values = new Values(topK);
-            collector.emit(UPDATE, values);
+            collector.emit(UPDATE_PARTIAL, values);
         }
         collector.ack(tuple);
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declareStream(UPDATE, new Fields(PARTIAL_RANK));
+        outputFieldsDeclarer.declareStream(UPDATE_PARTIAL, new Fields(PARTIAL_RANK));
         outputFieldsDeclarer.declareStream(REMOVE, new Fields(RANK_ITEM));
     }
 

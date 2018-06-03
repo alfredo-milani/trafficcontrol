@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.secondQueryBolts;
+package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.utils.IntersectionItem;
 import it.uniroma2.sdcc.trafficcontrol.utils.Ranking;
@@ -12,9 +12,7 @@ import org.apache.storm.tuple.Tuple;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.REMOVE_GLOBAL_MEDIAN_ITEM;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.UPDATE_GLOBAL_MEDIAN;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.VALUE_GLOBAL_MEDIAN;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
 public class FinalComparator extends BaseRichBolt {
 

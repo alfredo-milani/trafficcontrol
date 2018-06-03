@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.secondQueryBolts;
+package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
 import com.tdunning.math.stats.TDigest;
 import it.uniroma2.sdcc.trafficcontrol.utils.IntersectionItem;
@@ -12,10 +12,10 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_STATUS;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
 public class IntersectionAndGlobalMedian extends BaseRichBolt {

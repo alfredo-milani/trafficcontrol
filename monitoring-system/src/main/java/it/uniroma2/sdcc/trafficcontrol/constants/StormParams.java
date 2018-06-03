@@ -2,19 +2,25 @@ package it.uniroma2.sdcc.trafficcontrol.constants;
 
 public interface StormParams {
 
+    // Spout
     String KAFKA_SPOUT = "kafkaSpout";
-    String VALIDITY_CHECK_BOLT = "validityCheckBolt";
 
+    // Validation bolts
+    String VALIDITY_CHECK_BOLT = "validityCheckBolt";
     String AUTHENTICATION_CACHE_BOLT = "authentication_cache_bolt";
     String AUTHENTICATION_CACHE_NAME = "auth_hit";
     String CACHE_HIT_STREAM = "cache_hit_stream";
     String CACHE_MISS_STREAM = "cache_miss_stream";
     String AUTHENTICATION_BOLT = "authentication_bolt";
+    String VALIDATION_PUBLISHER_BOLT = "validation_publisher_bolt";
 
+    // Semaphore status bolts
     String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
+    String SEMAPHORE_STATUS_PUBLISHER = "semaphore_status_publisher";
     String REMOVE_STREAM = "remove_stream";
     String UPDATE_STREAM = "update_stream";
 
+    // Ranking Bolts
     String FIELDS_SELECTION_FOR_RANKING = "fields_selector_for_ranking";
 
     //per seconda query
@@ -52,7 +58,7 @@ public interface StormParams {
 
     String S_METRONOME = "sMetronome";
     String D_METRONOME = "dMetronome";
-    String UPDATE = "update";
+    String UPDATE_PARTIAL = "update";
     String REMOVE = "remove";
     String S_TUPLE = "sTuple";
     String S_NUM = "nRoad";

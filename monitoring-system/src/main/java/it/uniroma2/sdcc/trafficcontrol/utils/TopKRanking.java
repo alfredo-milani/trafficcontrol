@@ -51,8 +51,8 @@ public class TopKRanking {
         return insertionPoint;
     }
 
-    public void remove(IntersectionItem item) {
-        ranking.remove(item);
+    public boolean remove(IntersectionItem item) {
+        return ranking.remove(item);
     }
 
     public int indexOf(IntersectionItem item) {

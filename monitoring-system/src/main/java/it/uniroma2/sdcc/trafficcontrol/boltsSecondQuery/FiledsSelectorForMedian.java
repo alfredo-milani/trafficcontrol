@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.secondQueryBolts;
+package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -11,8 +11,6 @@ import org.apache.storm.tuple.Values;
 import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.AVERAGE_VEHICLES_SPEED;
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_STATUS;
 
 public class FiledsSelectorForMedian extends BaseRichBolt {
 

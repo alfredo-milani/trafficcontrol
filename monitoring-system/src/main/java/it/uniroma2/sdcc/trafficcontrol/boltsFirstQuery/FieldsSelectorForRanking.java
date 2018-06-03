@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.bolt;
+package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,13 +15,14 @@ import java.util.Map;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class ValidityCheckBolt extends BaseRichBolt {
+
+public class FieldsSelectorForRanking extends BaseRichBolt {
 
     private OutputCollector collector;
     private ObjectMapper mapper;
 
     @Override
-    public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
+    public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
         this.collector = collector;
         this.mapper = new ObjectMapper();
     }
@@ -32,17 +33,11 @@ public class ValidityCheckBolt extends BaseRichBolt {
             String rawTuple = tuple.getStringByField(KAFKA_RAW_TUPLE);
             JsonNode jsonNode = mapper.readTree(rawTuple);
 
-            // Verifica correttezza valori tupla
             Long intersectionId = jsonNode.get(INTERSECTION_ID).asLong();
             Long semaphoreId = jsonNode.get(SEMAPHORE_ID).asLong();
             Double semaphoreLatitude = jsonNode.get(SEMAPHORE_LATITUDE).asDouble();
             Double semaphoreLongitude = jsonNode.get(SEMAPHORE_LONGITUDE).asDouble();
             Long semaphoreTimestampUTC = jsonNode.get(SEMAPHORE_TIMESTAMP_UTC).asLong();
-            Short greenLightDuration = jsonNode.get(GREEN_LIGHT_DURATION).shortValue();
-            Byte greenLightStatus = (byte) jsonNode.get(GREEN_LIGHT_STATUS).asInt();
-            Byte yellowLightStatus = (byte) jsonNode.get(YELLOW_LIGHT_STATUS).asInt();
-            Byte redLightStatus = (byte) jsonNode.get(RED_LIGHT_STATUS).asInt();
-            Short vehiclesPerSecond = jsonNode.get(VEHICLES_PER_SECOND).shortValue();
             Short averageVehiclesSpeed = jsonNode.get(AVERAGE_VEHICLES_SPEED).shortValue();
 
             Values values = new Values(
@@ -51,11 +46,6 @@ public class ValidityCheckBolt extends BaseRichBolt {
                     semaphoreLatitude,
                     semaphoreLongitude,
                     semaphoreTimestampUTC,
-                    greenLightDuration,
-                    greenLightStatus,
-                    yellowLightStatus,
-                    redLightStatus,
-                    vehiclesPerSecond,
                     averageVehiclesSpeed
             );
 
@@ -75,11 +65,6 @@ public class ValidityCheckBolt extends BaseRichBolt {
                 SEMAPHORE_LATITUDE,
                 SEMAPHORE_LONGITUDE,
                 SEMAPHORE_TIMESTAMP_UTC,
-                GREEN_LIGHT_DURATION,
-                GREEN_LIGHT_STATUS,
-                YELLOW_LIGHT_STATUS,
-                RED_LIGHT_STATUS,
-                VEHICLES_PER_SECOND,
                 AVERAGE_VEHICLES_SPEED
         ));
     }

@@ -39,10 +39,12 @@ public class SemaphoreSensorThread implements Runnable {
 
     private final KafkaProducer<String, String> producer;
     private final String topicName;
+    private final int waitTime;
 
-    public SemaphoreSensorThread(KafkaProducer<String, String> producer, String topicName) {
+    public SemaphoreSensorThread(KafkaProducer<String, String> producer, String topicName, int waitTime) {
         this.producer = producer;
         this.topicName = topicName;
+        this.waitTime = waitTime;
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
@@ -51,18 +53,18 @@ public class SemaphoreSensorThread implements Runnable {
         ObjectMapper mapper = new ObjectMapper();
 
         while (true) {
-            intersectionId = ThreadLocalRandom.current().nextLong(1, 20);
-            semaphoreId = ThreadLocalRandom.current().nextLong(1, 48);
+            intersectionId = ThreadLocalRandom.current().nextLong(1, 50);
+            semaphoreId = ThreadLocalRandom.current().nextLong(1, 50);
             semaphoreLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
             semaphoreLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
             semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
             greenLightDuration = (short) ThreadLocalRandom.current().nextInt(0, 300 + 1);
-            // greenLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
-            // yellowLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
-            // redLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
-            greenLightStatus = Byte.MAX_VALUE;
+            greenLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+            yellowLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+            redLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+            /*greenLightStatus = Byte.MAX_VALUE;
             yellowLightStatus = Byte.MAX_VALUE;
-            redLightStatus = Byte.MAX_VALUE;
+            redLightStatus = Byte.MAX_VALUE;*/
             vehiclesPerSecond = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
             averageVehiclesSpeed = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
 
@@ -75,7 +77,7 @@ public class SemaphoreSensorThread implements Runnable {
             }
 
             try {
-                Thread.sleep(2 * 100);
+                Thread.sleep(waitTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -83,6 +85,7 @@ public class SemaphoreSensorThread implements Runnable {
     }
 
     public SemaphoreSensorThread(KafkaProducer<String, String> producer, String topicName,
+                                 int waitTime,
                                  Long intersectionId, Long semaphoreId,
                                  Double semaphoreLatitude, Double semaphoreLonditude,
                                  Long semaphoreTimestampUTC, Short greenLightDuration,
@@ -91,6 +94,7 @@ public class SemaphoreSensorThread implements Runnable {
                                  Short averageVehiclesSpeed) {
         this.producer = producer;
         this.topicName = topicName;
+        this.waitTime = waitTime;
 
         this.intersectionId = intersectionId;
         this.semaphoreId = semaphoreId;
