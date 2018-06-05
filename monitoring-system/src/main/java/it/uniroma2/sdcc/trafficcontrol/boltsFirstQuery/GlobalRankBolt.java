@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
-import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.RANKING_DESTINATION;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.RANKING_PROCESSED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.AVERAGE_VEHICLES_SPEED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.UPDATE_PARTIAL;
@@ -115,7 +115,7 @@ public class GlobalRankBolt extends BaseRichBolt {
             objectNode.put(TIME_DIFF, currentTime - (intersectionItem.getInstallationTimestamp() + intersectionItem.getMeanExpirationTime()));
             */
 
-            producer.send(new ProducerRecord<>(RANKING_DESTINATION, objectNode.toString()));
+            producer.send(new ProducerRecord<>(RANKING_PROCESSED, objectNode.toString()));
         }
     }
 

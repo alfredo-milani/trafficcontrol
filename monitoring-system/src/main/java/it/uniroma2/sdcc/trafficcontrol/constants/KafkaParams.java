@@ -20,7 +20,7 @@ public interface KafkaParams {
     String MONITORING_SOURCE = "monitoring_source";
     String TO_VALIDATE = "to_validate";
     String VALIDATED = "validated";
-    String RANKING_DESTINATION = "ranking_destination";
+    String RANKING_PROCESSED = "ranking_processed";
 
     String MONITORING_QUERY1 = "monitoring_query1";
     String MONITORING_QUERY3_LAMP_HOURLY = "monitoring_query3_lamp_hourly";

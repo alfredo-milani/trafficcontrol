@@ -15,7 +15,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKE
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
-public class SecondTopology extends Topology {
+public class SecondTopology extends BaseTopology {
 
     private final static String CLASS_NAME = SecondTopology.class.getSimpleName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -59,15 +59,15 @@ public class SecondTopology extends Topology {
                 .allGrouping(VALUE_GLOBAL_MEDIAN,VALUE_GLOBAL_MEDIAN)
                 .setNumTasks(1);
 
-      /*  builder.setBolt(PARTIAL_RANK, new PartialRankBolt(10))
-                // .fieldsGrouping(FIELDS_SELECTION_FOR_RANKING, new Fields(SEMAPHORE_STATUS))
-                .shuffleGrouping(FIELDS_SELECTION_FOR_RANKING)
+      /*  builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankBolt(10))
+                // .fieldsGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT, new Fields(SEMAPHORE_STATUS))
+                .shuffleGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT)
                 .setNumTasks(4);
-        builder.setBolt(GLOBAL_RANK, new GlobalRankBolt(10), 1)
-                // .allGrouping(PARTIAL_RANK, UPDATE_PARTIAL)
-                // .allGrouping(PARTIAL_RANK, REMOVE)
-                .globalGrouping(PARTIAL_RANK, UPDATE_PARTIAL)
-                .globalGrouping(PARTIAL_RANK, REMOVE)
+        builder.setBolt(GLOBAL_RANK_BOLT, new GlobalRankBolt(10), 1)
+                // .allGrouping(PARTIAL_RANK_BOLT, UPDATE_PARTIAL)
+                // .allGrouping(PARTIAL_RANK_BOLT, REMOVE)
+                .globalGrouping(PARTIAL_RANK_BOLT, UPDATE_PARTIAL)
+                .globalGrouping(PARTIAL_RANK_BOLT, REMOVE)
                 .setNumTasks(1);*/
     }
 

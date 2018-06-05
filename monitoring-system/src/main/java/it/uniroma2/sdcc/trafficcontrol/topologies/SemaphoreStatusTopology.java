@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
-public class SemaphoreStatusTopology extends Topology {
+public class SemaphoreStatusTopology extends BaseTopology {
 
     private final static String CLASS_NAME = SemaphoreStatusTopology.class.getSimpleName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
@@ -29,7 +29,7 @@ public class SemaphoreStatusTopology extends Topology {
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
 
-        builder.setBolt(SEMAPHORE_STATUS_PUBLISHER, new SemaphoreStatusPublisher())
+        builder.setBolt(SEMAPHORE_STATUS_PUBLISHER_BOLT, new SemaphoreStatusPublisher())
                 .shuffleGrouping(SEMAPHORE_STATUS_BOLT)
                 .setNumTasks(2);
     }

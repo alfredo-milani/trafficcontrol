@@ -56,15 +56,15 @@ public class PartialRankWindowedBolt extends BaseWindowedBolt {
 
             // System.out.println(String.format("BOLT: %d\tINT ID: %d\n\n", d, intersectionId));
 
-            /*if (!semaphoreStatus) {
-                int index = ranking.indexOf(item);
-                if (index != -1) {
-                    ranking.remove(item);
-                    collector.emit(REMOVE, new Values(item));
-                }
-            } else {
-                update = ranking.update(item);
-            }*/
+            // if (!semaphoreStatus) {
+            //     int index = ranking.indexOf(item);
+            //     if (index != -1) {
+            //         ranking.remove(item);
+            //         collector.emit(REMOVE, new Values(item));
+            //     }
+            // } else {
+            //     update = ranking.update(item);
+            // }
 
             update = ranking.update(item);
 
@@ -74,8 +74,7 @@ public class PartialRankWindowedBolt extends BaseWindowedBolt {
             // System.out.println(String.format("INT: %d\tSEM: %d", intersectionId, semaphoreId));
         }
 
-        // TODO vedi se lasciare sempahore status
-        /* Emit if the local topK is changed */
+        // Emit if the local topK is changed
         if (update) {
             Ranking topK = ranking.getTopK();
             Values values = new Values(topK);

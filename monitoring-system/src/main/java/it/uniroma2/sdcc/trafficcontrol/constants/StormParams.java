@@ -8,7 +8,6 @@ public interface StormParams {
     // Validation bolts
     String VALIDITY_CHECK_BOLT = "validityCheckBolt";
     String AUTHENTICATION_CACHE_BOLT = "authentication_cache_bolt";
-    String AUTHENTICATION_CACHE_NAME = "auth_hit";
     String CACHE_HIT_STREAM = "cache_hit_stream";
     String CACHE_MISS_STREAM = "cache_miss_stream";
     String AUTHENTICATION_BOLT = "authentication_bolt";
@@ -16,14 +15,17 @@ public interface StormParams {
 
     // Semaphore status bolts
     String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
-    String SEMAPHORE_STATUS_PUBLISHER = "semaphore_status_publisher";
+    String SEMAPHORE_STATUS_PUBLISHER_BOLT = "semaphore_status_publisher_bolt";
     String REMOVE_STREAM = "remove_stream";
     String UPDATE_STREAM = "update_stream";
 
     // Ranking Bolts
-    String FIELDS_SELECTION_FOR_RANKING = "fields_selector_for_ranking";
+    String MEAN_CALCULATOR_BOLT = "mean_calculator_bolt";
+    String PARTIAL_RANK_BOLT = "partial_rank_bolt";
+    String GLOBAL_RANK_BOLT = "global_rank_bolt";
+    String RANKABLE_OBJECT = "rankable_object";
 
-    //per seconda query
+    // per seconda query
     String INTERSECTION_AND_GLOBAL_MEDIAN = "intersection_and_global_median";
     String FINAL_COMPARATOR = "final_comparator";
     String FIELDS_SELECTION_FOR_MEDIAN = "fields_selector_for_median";
@@ -52,9 +54,6 @@ public interface StormParams {
     String LAMP_PQUANTILE = "lpq";
     String GLOBAL_PQUANTILE = "gpq";
     String COMPARATOR = "comp";
-    String GLOBAL_RANK = "globalRank";
-    String PARTIAL_RANK = "partialRank";
-
 
     String S_METRONOME = "sMetronome";
     String D_METRONOME = "dMetronome";

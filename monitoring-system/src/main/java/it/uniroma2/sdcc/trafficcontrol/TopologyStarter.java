@@ -1,9 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
+import it.uniroma2.sdcc.trafficcontrol.topologies.BaseTopology;
 import it.uniroma2.sdcc.trafficcontrol.topologies.FirstTopology;
-import it.uniroma2.sdcc.trafficcontrol.topologies.SemaphoreStatusTopology;
-import it.uniroma2.sdcc.trafficcontrol.topologies.Topology;
 import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
 import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
@@ -49,9 +48,9 @@ public class TopologyStarter {
             System.exit(EXIT_FAILURE);
         }
 
-        ArrayList<Topology> topologies = new ArrayList<>();
+        ArrayList<BaseTopology> topologies = new ArrayList<>();
         topologies.add(new ValidationTopology());
-        topologies.add(new SemaphoreStatusTopology());
+        // topologies.add(new SemaphoreStatusTopology());
         topologies.add(new FirstTopology());
         // topologies.add(new SecondTopology());
         // topologies.add(new ThirdTopology());
@@ -83,7 +82,7 @@ public class TopologyStarter {
                 break;
 
             default:
-                TopologyStarter.getLOGGER().log(Level.SEVERE, "Errore sconosciuto");
+                LOGGER.log(Level.SEVERE, "Errore sconosciuto");
                 System.exit(EXIT_FAILURE);
         }
     }
@@ -134,7 +133,7 @@ public class TopologyStarter {
         try {
             cmd = parser.parse(options, args);
         } catch (ParseException e) {
-            TopologyStarter.getLOGGER().log(Level.CONFIG, e.getMessage());
+            LOGGER.log(Level.CONFIG, e.getMessage());
             formatter.printHelp(
                     String.format(
                             "<%s> -%s [local | cluster] -%s [IP address] -%s [port number] -%s [num of workers]",
@@ -196,7 +195,7 @@ public class TopologyStarter {
         );
     }
 
-    public static Logger getLOGGER() {
+    public Logger getLOGGER() {
         return LOGGER;
     }
 

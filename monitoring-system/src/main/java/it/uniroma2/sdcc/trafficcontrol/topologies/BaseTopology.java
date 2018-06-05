@@ -6,15 +6,16 @@ import org.apache.storm.topology.TopologyBuilder;
 
 import java.util.logging.Logger;
 
-public abstract class Topology {
+public abstract class BaseTopology {
 
     final TopologyBuilder builder;
     final Config config;
 
-    Topology() {
+    BaseTopology() {
         this.builder = new TopologyBuilder();
         this.config = new Config();
 
+        // Template pattern
         setConfig();
         setTopology();
     }
@@ -23,11 +24,11 @@ public abstract class Topology {
 
     protected abstract void setTopology();
 
-    public StormTopology createTopology() {
+    public final StormTopology createTopology() {
         return builder.createTopology();
     }
 
-    public Config getConfig() {
+    public final Config getConfig() {
         return config;
     }
 

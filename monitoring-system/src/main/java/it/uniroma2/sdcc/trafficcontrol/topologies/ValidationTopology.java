@@ -14,7 +14,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.TO_VALIDATE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
-public class ValidationTopology extends Topology {
+public class ValidationTopology extends BaseTopology {
 
     private final static String CLASS_NAME = ValidationTopology.class.getSimpleName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);

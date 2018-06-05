@@ -12,8 +12,8 @@ import org.apache.storm.tuple.Values;
 
 import java.util.Map;
 
+import static it.uniroma2.sdcc.trafficcontrol.constants.CacheParams.AUTHENTICATION_CACHE_NAME;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.AUTHENTICATION_CACHE_NAME;
 
 public class AuthenticationBolt extends BaseRichBolt {
 

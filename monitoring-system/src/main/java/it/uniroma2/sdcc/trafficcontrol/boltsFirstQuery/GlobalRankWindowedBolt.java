@@ -105,7 +105,7 @@ public class GlobalRankWindowedBolt extends BaseWindowedBolt {
             objectNode.put(TIME_DIFF, currentTime - (intersectionItem.getInstallationTimestamp() + intersectionItem.getMeanExpirationTime()));
             */
 
-            producer.send(new ProducerRecord<>(RANKING_DESTINATION, objectNode.toString()));
+            producer.send(new ProducerRecord<>(RANKING_PROCESSED, objectNode.toString()));
         }
     }
 

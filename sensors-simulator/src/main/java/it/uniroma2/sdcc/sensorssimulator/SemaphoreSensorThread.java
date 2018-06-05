@@ -54,7 +54,7 @@ public class SemaphoreSensorThread implements Runnable {
 
         while (true) {
             intersectionId = ThreadLocalRandom.current().nextLong(1, 50);
-            semaphoreId = ThreadLocalRandom.current().nextLong(1, 50);
+            semaphoreId = ThreadLocalRandom.current().nextLong(1, 250);
             semaphoreLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
             semaphoreLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
             semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
