@@ -36,6 +36,7 @@ public interface StormParams {
     //Green Setting bolts
     String FILTER_GREEN_BOLT = "filter_green_bolt";
     String GREEN_SETTER = "green_setter";
+    String GREEN_TEMPORIZATION_VALUE = "green_temporization_value";
 
 
     String PARSER_BOLT = "parser";

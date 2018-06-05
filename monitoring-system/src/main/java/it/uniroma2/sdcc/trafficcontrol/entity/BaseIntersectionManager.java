@@ -10,14 +10,14 @@ import java.util.List;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 
-public class BaseIntersectinoManager {
+public class BaseIntersectionManager {
 
     private final static ObjectMapper mapper = new ObjectMapper();
 
     protected final Long intersectionId;
     protected List<SemaphoreSensor> semaphoreSensors;
 
-    public BaseIntersectinoManager(Long intersectionId) {
+    public BaseIntersectionManager(Long intersectionId) {
         this.intersectionId = intersectionId;
     }
 

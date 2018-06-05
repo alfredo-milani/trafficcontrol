@@ -12,7 +12,6 @@ import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
-import static org.apache.logging.log4j.core.impl.ThrowableFormatOptions.CLASS_NAME;
 
 public class GreenSettingTopology extends BaseTopology {
 
@@ -30,16 +29,12 @@ public class GreenSettingTopology extends BaseTopology {
                 .setNumTasks(4);
 
         builder.setBolt(FILTER_GREEN_BOLT, new FilterBolt())
-                .shuffleGrouping(KAFKA_SPOUT)
+                .fieldsGrouping(KAFKA_SPOUT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
-
-
 
         builder.setBolt(GREEN_SETTER, new GreenSetter())
-                .fieldsGrouping(FILTER_GREEN_BOLT, new Fields(INTERSECTION_ID))
+                .shuffleGrouping(FILTER_GREEN_BOLT)
                 .setNumTasks(4);
-
-
 
 
     }

@@ -3,7 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple;
 
-public class MeanSpeedIntersectionManager extends BaseIntersectinoManager {
+public class MeanSpeedIntersectionManager extends BaseIntersectionManager {
 
     private final static ObjectMapper mapper = new ObjectMapper();
 

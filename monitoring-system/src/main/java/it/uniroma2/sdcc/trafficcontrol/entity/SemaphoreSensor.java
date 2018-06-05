@@ -146,4 +146,7 @@ public class SemaphoreSensor {
         );
     }
 
+    public Short getVehiclesNumber() {
+        return vehiclesNumber;
+    }
 }

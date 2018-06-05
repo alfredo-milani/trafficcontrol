@@ -22,6 +22,8 @@ public interface KafkaParams {
     String VALIDATED = "validated";
     String RANKING_PROCESSED = "ranking_processed";
     String GREEN_TEMPORIZATION = "green_temporization";
+    String ODD_SEMAPHORES = "odd_semaphores";
+    String EVEN_SEMAPHORES = "even_semaphores";
 
     String MONITORING_QUERY1 = "monitoring_query1";
     String MONITORING_QUERY3_LAMP_HOURLY = "monitoring_query3_lamp_hourly";
