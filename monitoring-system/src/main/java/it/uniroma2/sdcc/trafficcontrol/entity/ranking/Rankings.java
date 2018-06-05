@@ -122,7 +122,6 @@ public class Rankings implements Serializable {
     }
 
     public String toString() {
-        // return rankedItems.toString();
         StringBuilder buffer = new StringBuilder();
         buffer.append(String.format("%d\tRANKING:\n", System.currentTimeMillis()));
         rankedItems.forEach(r -> buffer.append(r).append("\n"));

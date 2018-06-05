@@ -5,7 +5,10 @@ import java.util.HashMap;
 public interface SemaphoreSensorTuple {
 
     // Frequenza emissione tuple
-    int SEMAPHORE_EMIT_FREQUENCY = 60;
+    Short SEMAPHORE_EMIT_FREQUENCY = 60;
+
+    // Numero di semafori da attendere prima di computare la media
+    Short SEMAPHORE_NUMBER_TO_COMPUTE_SPEED_MEAN = 4;
 
     // Chiavi per la tupla inviata dai sensori associati ai semafori
     String INTERSECTION_ID = "intersection_id";

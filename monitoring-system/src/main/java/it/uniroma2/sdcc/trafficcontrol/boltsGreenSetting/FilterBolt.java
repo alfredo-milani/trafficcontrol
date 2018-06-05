@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
+import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersectionManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
-import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IntersectionHandler;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -15,12 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.VEHICLES;
 
 public class FilterBolt extends BaseRichBolt {
 
     private OutputCollector collector;
-    private HashMap<Long, IntersectionHandler> handlerHashMap;
+    private HashMap<Long, MeanSpeedIntersectionManager> handlerHashMap;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
@@ -33,14 +32,14 @@ public class FilterBolt extends BaseRichBolt {
 
 
         try {
-            Long intersectionId = IntersectionHandler.getIntersectionIdFrom(tuple);
+            Long intersectionId = MeanSpeedIntersectionManager.getIntersectionIdFrom(tuple);
             SemaphoreSensor semaphoreSensor = SemaphoreSensor.getSemaphoreSensorFrom(tuple);
 
             // Se la chiave è presente ritorna l'istanza dalla hashMap,
             // altrimenti aggiungi il valore nella hashMap e ritorna null
-            IntersectionHandler intersectionFromHashMap = handlerHashMap.putIfAbsent(
+            MeanSpeedIntersectionManager intersectionFromHashMap = handlerHashMap.putIfAbsent(
                     intersectionId,
-                    new IntersectionHandler(intersectionId)
+                    new MeanSpeedIntersectionManager(intersectionId)
             );
 
             if (intersectionFromHashMap != null) {

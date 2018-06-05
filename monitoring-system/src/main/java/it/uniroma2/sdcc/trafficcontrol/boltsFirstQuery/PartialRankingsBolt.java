@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.IntersectionRankable;
+import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IntersectionRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankable;
 import org.apache.storm.tuple.Tuple;
 
