@@ -2,13 +2,11 @@ package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.FilterBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenSetter;
-import it.uniroma2.sdcc.trafficcontrol.boltsValidation.ValidityCheckBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.tuple.Fields;
 
 import java.util.logging.Logger;
 
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
@@ -20,7 +18,7 @@ public class GreenSettingTopology extends BaseTopology {
 
     @Override
     protected void setConfig() {
-        //vuota
+
     }
 
     @Override
@@ -35,11 +33,7 @@ public class GreenSettingTopology extends BaseTopology {
         builder.setBolt(GREEN_SETTER, new GreenSetter())
                 .shuffleGrouping(FILTER_GREEN_BOLT)
                 .setNumTasks(4);
-
-
     }
-
-
 
     @Override
     public String getClassName() {
@@ -50,4 +44,5 @@ public class GreenSettingTopology extends BaseTopology {
     public Logger getLOGGER() {
         return LOGGER;
     }
+
 }

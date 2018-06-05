@@ -2,7 +2,6 @@ package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
 import it.uniroma2.sdcc.trafficcontrol.entity.BaseIntersectionManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationManager;
-import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersectionManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -12,13 +11,9 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPORIZATION_VALUE;
 
 public class FilterBolt extends BaseRichBolt {
@@ -64,7 +59,7 @@ public class FilterBolt extends BaseRichBolt {
             }
 
 
-        }catch (IOException e) {
+        } catch (ClassCastException | IllegalArgumentException e) {
             e.printStackTrace();
         } finally {
             collector.ack(tuple);

@@ -10,11 +10,11 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.RANKABLE_OBJECT;
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 
 
 public class MeanCalculatorBolt extends BaseRichBolt {
@@ -41,14 +41,17 @@ public class MeanCalculatorBolt extends BaseRichBolt {
                     new MeanSpeedIntersectionManager(intersectionId)
             );
 
-            if (intersectionFromHashMap != null) {
+            // TODO verifica che l'intersezione ritornata dalla hashMap non sia una copia ma la referenza
+            if (intersectionFromHashMap != null) { // Intersezione da aggiornare
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
-
-                if (/* mean has been computed */ true) {
-                    collector.emit(new Values(handlerHashMap.remove(intersectionId)));
+                if (intersectionFromHashMap.isListReadyForComputation()) { // Controllo se sono arrivate tutte le tuple per computare la media
+                    intersectionFromHashMap.computeIntersectionMeanSpeed();
+                    if (intersectionFromHashMap.isMeanComputed()) {
+                        collector.emit(new Values(intersectionId, handlerHashMap.remove(intersectionId)));
+                    }
                 }
             }
-        } catch (IOException e) {
+        } catch (ClassCastException | IllegalArgumentException e) {
             e.printStackTrace();
         } finally {
             collector.ack(tuple);
@@ -57,7 +60,10 @@ public class MeanCalculatorBolt extends BaseRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields(RANKABLE_OBJECT));
+        declarer.declare(new Fields(
+                INTERSECTION_ID,
+                INTERSECTION_MEAN_SPEED_OBJECT
+        ));
     }
 
 }

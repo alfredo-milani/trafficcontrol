@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 
 public abstract class BaseTopology {
 
-    final TopologyBuilder builder;
-    final Config config;
+    protected final TopologyBuilder builder;
+    protected final Config config;
 
-    BaseTopology() {
-        this.builder = new TopologyBuilder();
+    public BaseTopology() {
         this.config = new Config();
+        this.builder = new TopologyBuilder();
 
         // Template pattern
         setConfig();

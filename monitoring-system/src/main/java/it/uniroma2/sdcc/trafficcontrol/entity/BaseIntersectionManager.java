@@ -1,37 +1,32 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.storm.tuple.Tuple;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 
-public class BaseIntersectionManager {
-
-    private final static ObjectMapper mapper = new ObjectMapper();
+public class BaseIntersectionManager implements Serializable {
 
     protected final Long intersectionId;
     protected List<SemaphoreSensor> semaphoreSensors;
 
     public BaseIntersectionManager(Long intersectionId) {
         this.intersectionId = intersectionId;
+        this.semaphoreSensors = new LinkedList<>();
     }
 
-    public static Long getIntersectionIdFrom(Tuple tuple) throws IOException {
-        String rawTuple = tuple.getStringByField(KAFKA_RAW_TUPLE);
-        JsonNode jsonNode = mapper.readTree(rawTuple);
-
-        return jsonNode.get(INTERSECTION_ID).asLong();
+    public static Long getIntersectionIdFrom(Tuple tuple) throws ClassCastException, IllegalArgumentException {
+        return tuple.getLongByField(INTERSECTION_ID);
     }
 
     public Long getIntersectionId() {
         return intersectionId;
     }
 
+    // TODO CONTROLLARE TIMESTAMP PRIMA DELL AGGIUNTA PER VEDERE SE è SCADUTA
     public boolean addSemaphoreSensor(SemaphoreSensor semaphoreSensor) {
         return semaphoreSensors.add(semaphoreSensor);
     }

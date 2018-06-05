@@ -1,18 +1,13 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.storm.tuple.Tuple;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class SemaphoreSensor {
-
-    private final static ObjectMapper mapper = new ObjectMapper();
+public class SemaphoreSensor implements Serializable {
 
     private Long semaphoreId;
     private Double semaphoreLatitude;
@@ -32,16 +27,13 @@ public class SemaphoreSensor {
         this.vehiclesNumber = vehiclesNumber;
     }
 
-    public static SemaphoreSensor getSemaphoreSensorFrom(Tuple tuple) throws IOException {
-        String rawTuple = tuple.getStringByField(KAFKA_RAW_TUPLE);
-        JsonNode jsonNode = mapper.readTree(rawTuple);
-
-        Long semaphoreId = jsonNode.get(SEMAPHORE_ID).asLong();
-        Double semaphoreLatitude = jsonNode.get(SEMAPHORE_LATITUDE).asDouble();
-        Double semaphoreLongitude = jsonNode.get(SEMAPHORE_LONGITUDE).asDouble();
-        Long semaphoreTimestampUTC = jsonNode.get(SEMAPHORE_TIMESTAMP_UTC).asLong();
-        Short averageVehiclesSpeed = jsonNode.get(AVERAGE_VEHICLES_SPEED).shortValue();
-        Short vehiclesNumber = jsonNode.get(VEHICLES).shortValue();
+    public static SemaphoreSensor getSemaphoreSensorFrom(Tuple tuple) throws ClassCastException, IllegalArgumentException {
+        Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
+        Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
+        Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
+        Long semaphoreTimestampUTC = tuple.getLongByField(SEMAPHORE_TIMESTAMP_UTC);
+        Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
+        Short vehiclesNumber = tuple.getShortByField(VEHICLES);
 
         return new SemaphoreSensor(
                 semaphoreId,
@@ -50,7 +42,6 @@ public class SemaphoreSensor {
                 semaphoreTimestampUTC,
                 averageVehiclesSpeed,
                 vehiclesNumber
-
         );
     }
 
@@ -149,4 +140,5 @@ public class SemaphoreSensor {
     public Short getVehiclesNumber() {
         return vehiclesNumber;
     }
+
 }

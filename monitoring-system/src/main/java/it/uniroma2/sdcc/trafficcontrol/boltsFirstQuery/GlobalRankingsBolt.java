@@ -1,9 +1,12 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
+import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractRankerBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import org.apache.storm.tuple.Tuple;
 
 import java.util.logging.Logger;
+
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.RANKABLE_OBJECT;
 
 /**
  * This bolt merges incoming {@link Rankings}.
@@ -29,10 +32,15 @@ public class GlobalRankingsBolt extends AbstractRankerBolt {
     }
 
     @Override
-    void updateRankingsWithTuple(Tuple tuple) {
-        Rankings rankingsToBeMerged = (Rankings) tuple.getValue(0);
+    public void updateRankingsWithTuple(Tuple tuple) {
+        Rankings rankingsToBeMerged = (Rankings) tuple.getValueByField(RANKABLE_OBJECT);
         super.getRankings().updateWith(rankingsToBeMerged);
         super.getRankings().pruneZeroCounts();
+    }
+
+    @Override
+    public void printR() {
+        System.out.println(getRankings().toString());
     }
 
     @Override

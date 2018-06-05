@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
+import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractRankerBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IntersectionRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankable;
 import org.apache.storm.tuple.Tuple;
@@ -24,8 +25,8 @@ public class PartialRankingsBolt extends AbstractRankerBolt {
     }
 
     @Override
-    void updateRankingsWithTuple(Tuple tuple) {
-        Rankable rankable = IntersectionRankable.from(tuple);
+    public void updateRankingsWithTuple(Tuple tuple) {
+        Rankable rankable = IntersectionRankable.getIntersectionRankableFrom(tuple);
         super.getRankings().updateWith(rankable);
     }
 

@@ -1,5 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
+import it.uniroma2.sdcc.trafficcontrol.bolts.BaseDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.GlobalRankingsBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.MeanCalculatorBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.PartialRankingsBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
@@ -31,8 +33,12 @@ public class FirstTopology extends BaseTopology {
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(VALIDATED), 2)
                 .setNumTasks(4);
 
+        builder.setBolt(BASE_DISPATCHER_BOLT, new BaseDispatcherBolt(), 2)
+                .shuffleGrouping(KAFKA_SPOUT)
+                .setNumTasks(4);
+
         builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(), 2)
-                .fieldsGrouping(KAFKA_SPOUT, new Fields(INTERSECTION_ID))
+                .fieldsGrouping(BASE_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
         /*
         builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankWindowedBolt(10).withWindow(
@@ -44,16 +50,17 @@ public class FirstTopology extends BaseTopology {
         builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankBolt(10), 2)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);*/
-        builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankingsBolt(10, 1), 1)
+
+        builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankingsBolt(10, 1), 2)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID))
-                .setNumTasks(1);
-        /*
-        builder.setBolt(GLOBAL_RANK_BOLT, new GlobalRankWindowedBolt(10).withWindow(
+                .setNumTasks(4);
+        builder.setBolt(GLOBAL_RANK_BOLT, new GlobalRankingsBolt(10))
+                .globalGrouping(PARTIAL_RANK_BOLT);
+        /*builder.setBolt(GLOBAL_RANK_BOLT, new GlobalRankWindowedBolt(10).withWindow(
                 BaseWindowedBolt.Duration.minutes(1),
                 BaseWindowedBolt.Duration.seconds(10)
                 ))
-                .globalGrouping(PARTIAL_RANK_BOLT);
-                */
+                .globalGrouping(PARTIAL_RANK_BOLT);*/
     }
 
     @Override

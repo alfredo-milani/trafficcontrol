@@ -45,7 +45,7 @@ public class PQuantile {
 
     }
 
-    //from the 6-th observation
+    //getIntersectionRankableFrom the 6-th observation
     public void observation(double x) {
 
         int k = findCell(x);  //find cell and adjust extreme values q[i] if necessary

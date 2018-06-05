@@ -72,7 +72,7 @@ public class GlobalRankBolt extends BaseRichBolt {
             }
 
         } else {
-            /*Delete from the list the streetlamps with broken lamps or lamps that no longer exceed the average life time*/
+            /*Delete getIntersectionRankableFrom the list the streetlamps with broken lamps or lamps that no longer exceed the average life time*/
             IntersectionItem intersectionItem = (IntersectionItem) tuple.getValueByField(RANK_ITEM);
             /*
             Vcchio codice

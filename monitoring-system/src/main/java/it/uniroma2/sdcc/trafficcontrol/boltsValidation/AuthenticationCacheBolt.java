@@ -10,7 +10,6 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.CacheParams.AUTHENTICATION_CACHE_NAME;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
@@ -21,53 +20,55 @@ public class AuthenticationCacheBolt extends BaseRichBolt {
 
     private OutputCollector collector;
     private EhCacheManager cacheManager;
-    private int i;
 
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
         this.collector = collector;
         this.cacheManager = new EhCacheManager(AUTHENTICATION_CACHE_NAME);
-        i = ThreadLocalRandom.current().nextInt(0, 90);
     }
 
     @Override
     public void execute(Tuple tuple) {
-        Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
-        Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
-        Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
-        Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
-        Long semaphoreTimestampUTC = tuple.getLongByField(SEMAPHORE_TIMESTAMP_UTC);
-        Short greenLightDuration = tuple.getShortByField(GREEN_LIGHT_DURATION);
-        Byte greenLightStatus = tuple.getByteByField(GREEN_LIGHT_STATUS);
-        Byte yellowLightStatus = tuple.getByteByField(YELLOW_LIGHT_STATUS);
-        Byte redLightStatus = tuple.getByteByField(RED_LIGHT_STATUS);
-        Short vehiclesPerSecond = tuple.getShortByField(VEHICLES);
-        Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
+        try {
+            Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
+            Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
+            Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
+            Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
+            Long semaphoreTimestampUTC = tuple.getLongByField(SEMAPHORE_TIMESTAMP_UTC);
+            Short greenLightDuration = tuple.getShortByField(GREEN_LIGHT_DURATION);
+            Byte greenLightStatus = tuple.getByteByField(GREEN_LIGHT_STATUS);
+            Byte yellowLightStatus = tuple.getByteByField(YELLOW_LIGHT_STATUS);
+            Byte redLightStatus = tuple.getByteByField(RED_LIGHT_STATUS);
+            Short vehiclesPerSecond = tuple.getShortByField(VEHICLES);
+            Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
 
-        Values values = new Values(
-                intersectionId,
-                semaphoreId,
-                semaphoreLatitude,
-                semaphoreLongitude,
-                semaphoreTimestampUTC,
-                greenLightDuration,
-                greenLightStatus,
-                yellowLightStatus,
-                redLightStatus,
-                vehiclesPerSecond,
-                averageVehiclesSpeed
-        );
+            Values values = new Values(
+                    intersectionId,
+                    semaphoreId,
+                    semaphoreLatitude,
+                    semaphoreLongitude,
+                    semaphoreTimestampUTC,
+                    greenLightDuration,
+                    greenLightStatus,
+                    yellowLightStatus,
+                    redLightStatus,
+                    vehiclesPerSecond,
+                    averageVehiclesSpeed
+            );
 
-        // Verifica se il sensore è nella cache
-        if (cacheManager.isKeyInCache(semaphoreId)) {
-            // System.out.println("boltsValidation: " + i + "\tCACHE HIT: " + semaphoreId);
-            collector.emit(CACHE_HIT_STREAM, values);
-        } else {
-            // System.out.println("boltsValidation: " + i + "\tCACHE MISS: " + semaphoreId);
-            collector.emit(CACHE_MISS_STREAM, values);
+            // Verifica se il sensore è nella cache
+            if (cacheManager.isKeyInCache(semaphoreId)) {
+                // System.out.println("boltsValidation: " + i + "\tCACHE HIT: " + semaphoreId);
+                collector.emit(CACHE_HIT_STREAM, values);
+            } else {
+                // System.out.println("boltsValidation: " + i + "\tCACHE MISS: " + semaphoreId);
+                collector.emit(CACHE_MISS_STREAM, values);
+            }
+        } catch (ClassCastException | IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            collector.ack(tuple);
         }
-
-        collector.ack(tuple);
     }
 
     @Override

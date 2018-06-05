@@ -20,10 +20,12 @@ public interface StormParams {
     String UPDATE_STREAM = "update_stream";
 
     // Ranking Bolts
+    String BASE_DISPATCHER_BOLT = "base_dispatcher_bolt";
     String MEAN_CALCULATOR_BOLT = "mean_calculator_bolt";
+    String INTERSECTION_MEAN_SPEED_OBJECT = "intersection_mean_speed_object";
+    String RANKABLE_OBJECT = "rankable_object";
     String PARTIAL_RANK_BOLT = "partial_rank_bolt";
     String GLOBAL_RANK_BOLT = "global_rank_bolt";
-    String RANKABLE_OBJECT = "rankable_object";
 
     // per seconda query
     String INTERSECTION_AND_GLOBAL_MEDIAN = "intersection_and_global_median";

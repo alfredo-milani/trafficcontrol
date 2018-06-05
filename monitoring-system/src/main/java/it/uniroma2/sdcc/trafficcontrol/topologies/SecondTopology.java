@@ -1,12 +1,12 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
+import it.uniroma2.sdcc.trafficcontrol.bolts.BaseDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery.FiledsSelectorForMedian;
 import it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery.FinalComparator;
 import it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery.IntersectionAndGlobalMedian;
 import it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus.SemaphoreStatusBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsValidation.AuthenticationBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsValidation.AuthenticationCacheBolt;
-import it.uniroma2.sdcc.trafficcontrol.boltsValidation.ValidityCheckBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 
 import java.util.logging.Logger;
@@ -32,11 +32,11 @@ public class SecondTopology extends BaseTopology {
     protected void setTopology() {
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(VALIDATED))
                 .setNumTasks(4);
-        builder.setBolt(VALIDITY_CHECK_BOLT, new ValidityCheckBolt())
+        builder.setBolt(BASE_DISPATCHER_BOLT, new BaseDispatcherBolt())
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
         builder.setBolt(AUTHENTICATION_CACHE_BOLT, new AuthenticationCacheBolt(), 4)
-                .shuffleGrouping(VALIDITY_CHECK_BOLT)
+                .shuffleGrouping(BASE_DISPATCHER_BOLT)
                 .setNumTasks(4);
         builder.setBolt(AUTHENTICATION_BOLT, new AuthenticationBolt(), 3)
                 .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_MISS_STREAM)

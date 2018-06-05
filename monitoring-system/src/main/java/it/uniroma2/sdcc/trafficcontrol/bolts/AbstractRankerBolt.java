@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
+package it.uniroma2.sdcc.trafficcontrol.bolts;
 
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import org.apache.storm.Config;
@@ -65,14 +65,19 @@ public abstract class AbstractRankerBolt extends BaseBasicBolt {
     public final void execute(Tuple tuple, BasicOutputCollector collector) {
         if (TupleUtils.isTick(tuple)) {
             // getLogger().log(Level.INFO, "Received tick tuple, triggering emit of current rankings");
-            // emitRankings(collector);
-            System.out.println(rankings.toString());
+            emitRankings(collector);
+            // System.out.println(rankings.toString());
+            printR();
         } else {
             updateRankingsWithTuple(tuple);
         }
     }
 
-    abstract void updateRankingsWithTuple(Tuple tuple);
+    public void printR() {
+
+    }
+
+    public abstract void updateRankingsWithTuple(Tuple tuple);
 
     private void emitRankings(BasicOutputCollector collector) {
         collector.emit(new Values(rankings.copy()));

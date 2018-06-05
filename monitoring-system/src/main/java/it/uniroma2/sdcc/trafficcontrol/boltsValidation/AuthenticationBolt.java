@@ -28,48 +28,51 @@ public class AuthenticationBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
-        Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
-        Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
-        Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
-        Long semaphoreTimestampUTC = tuple.getLongByField(SEMAPHORE_TIMESTAMP_UTC);
-        Short greenLightDuration = tuple.getShortByField(GREEN_LIGHT_DURATION);
-        Byte greenLightStatus = tuple.getByteByField(GREEN_LIGHT_STATUS);
-        Byte yellowLightStatus = tuple.getByteByField(YELLOW_LIGHT_STATUS);
-        Byte redLightStatus = tuple.getByteByField(RED_LIGHT_STATUS);
-        Short vehiclesPerSecond = tuple.getShortByField(VEHICLES);
-        Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
+        try {
+            Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
+            Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
+            Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
+            Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
+            Long semaphoreTimestampUTC = tuple.getLongByField(SEMAPHORE_TIMESTAMP_UTC);
+            Short greenLightDuration = tuple.getShortByField(GREEN_LIGHT_DURATION);
+            Byte greenLightStatus = tuple.getByteByField(GREEN_LIGHT_STATUS);
+            Byte yellowLightStatus = tuple.getByteByField(YELLOW_LIGHT_STATUS);
+            Byte redLightStatus = tuple.getByteByField(RED_LIGHT_STATUS);
+            Short vehiclesPerSecond = tuple.getShortByField(VEHICLES);
+            Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
 
-        Values values = new Values(
-                intersectionId,
-                semaphoreId,
-                semaphoreLatitude,
-                semaphoreLongitude,
-                semaphoreTimestampUTC,
-                greenLightDuration,
-                greenLightStatus,
-                yellowLightStatus,
-                redLightStatus,
-                vehiclesPerSecond,
-                averageVehiclesSpeed
-        );
+            Values values = new Values(
+                    intersectionId,
+                    semaphoreId,
+                    semaphoreLatitude,
+                    semaphoreLongitude,
+                    semaphoreTimestampUTC,
+                    greenLightDuration,
+                    greenLightStatus,
+                    yellowLightStatus,
+                    redLightStatus,
+                    vehiclesPerSecond,
+                    averageVehiclesSpeed
+            );
 
-        boolean semaphoreInSystem;
-        synchronized (cacheManager.getCacheManager()) {
-            // Double checked lock
-            if (!(semaphoreInSystem = cacheManager.isKeyInCache(semaphoreId))) {
-                if (semaphoreInSystem = RESTfulAPI.semaphoreExist(semaphoreId)) {
-                    cacheManager.put(semaphoreId, tuple.getSourceStreamId());
-                    // System.out.println(String.format("CACHE PUT: %d\tCACHE DIM: %d", semaphoreId, cacheManager.size()));
+            boolean semaphoreInSystem;
+            synchronized (cacheManager.getCacheManager()) {
+                // Double checked lock
+                if (!(semaphoreInSystem = cacheManager.isKeyInCache(semaphoreId))) {
+                    if (semaphoreInSystem = RESTfulAPI.semaphoreExist(semaphoreId)) {
+                        cacheManager.put(semaphoreId, tuple.getSourceStreamId());
+                    }
                 }
             }
-        }
 
-        if (semaphoreInSystem) {
-            collector.emit(values);
+            if (semaphoreInSystem) {
+                collector.emit(values);
+            }
+        } catch (ClassCastException | IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            collector.ack(tuple);
         }
-
-        collector.ack(tuple);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
+package it.uniroma2.sdcc.trafficcontrol.bolts;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,18 +10,19 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class ValidityCheckBolt extends BaseRichBolt {
+public class BaseDispatcherBolt extends BaseRichBolt {
 
-    private OutputCollector collector;
-    private ObjectMapper mapper;
+    protected ObjectMapper mapper;
+    protected OutputCollector collector;
 
     @Override
-    public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
+    public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         this.collector = collector;
         this.mapper = new ObjectMapper();
     }
@@ -60,7 +61,7 @@ public class ValidityCheckBolt extends BaseRichBolt {
             );
 
             collector.emit(values);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             collector.ack(tuple);

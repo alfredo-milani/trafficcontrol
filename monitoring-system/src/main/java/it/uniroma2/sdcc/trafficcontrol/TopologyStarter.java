@@ -3,7 +3,6 @@ package it.uniroma2.sdcc.trafficcontrol;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
 import it.uniroma2.sdcc.trafficcontrol.topologies.BaseTopology;
 import it.uniroma2.sdcc.trafficcontrol.topologies.FirstTopology;
-import it.uniroma2.sdcc.trafficcontrol.topologies.GreenSettingTopology;
 import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
 import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
@@ -26,7 +25,7 @@ public class TopologyStarter {
      *
      * Each worker process can run one or more executors, or threads, where each executor is a thread spawned by the worker process.
      *
-     * Each executor runs one or more tasks from the same component, where a component is a spouts or boltsValidation from a topologies.
+     * Each executor runs one or more tasks getIntersectionRankableFrom the same component, where a component is a spouts or boltsValidation getIntersectionRankableFrom a topologies.
      *
      *
      *
@@ -55,7 +54,7 @@ public class TopologyStarter {
         topologies.add(new FirstTopology());
         // topologies.add(new SecondTopology());
         // topologies.add(new ThirdTopology());
-        topologies.add(new GreenSettingTopology());
+        // topologies.add(new GreenSettingTopology());
 
         switch (MODE_SELECTED) {
             case MODE_LOCAL:

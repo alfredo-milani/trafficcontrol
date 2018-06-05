@@ -1,9 +1,9 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
+import it.uniroma2.sdcc.trafficcontrol.bolts.BaseDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsValidation.AuthenticationBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsValidation.AuthenticationCacheBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsValidation.ValidationPublisherBolt;
-import it.uniroma2.sdcc.trafficcontrol.boltsValidation.ValidityCheckBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.tuple.Fields;
 
@@ -29,11 +29,11 @@ public class ValidationTopology extends BaseTopology {
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(TO_VALIDATE), 2)
                 .setNumTasks(4);
 
-        builder.setBolt(VALIDITY_CHECK_BOLT, new ValidityCheckBolt(), 2)
+        builder.setBolt(BASE_DISPATCHER_BOLT, new BaseDispatcherBolt(), 2)
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
         builder.setBolt(AUTHENTICATION_CACHE_BOLT, new AuthenticationCacheBolt(), 4)
-                .fieldsGrouping(VALIDITY_CHECK_BOLT, new Fields(INTERSECTION_ID))
+                .fieldsGrouping(BASE_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
         builder.setBolt(AUTHENTICATION_BOLT, new AuthenticationBolt(), 6)
                 .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_MISS_STREAM)

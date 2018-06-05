@@ -14,7 +14,7 @@ import java.util.Properties;
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 
-public class KafkaBolt extends BaseRichBolt {
+public class BaseKafkaPublisherBolt extends BaseRichBolt {
 
     protected OutputCollector collector;
     protected KafkaProducer<String, String> producer;

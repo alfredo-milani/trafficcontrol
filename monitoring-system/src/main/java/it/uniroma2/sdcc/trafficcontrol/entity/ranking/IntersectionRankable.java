@@ -1,27 +1,24 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersectionManager;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
-import org.apache.storm.shade.com.google.common.collect.Lists;
 import org.apache.storm.tuple.Tuple;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 
 public class IntersectionRankable implements Rankable, Serializable {
 
     private final static ObjectMapper mapper = new ObjectMapper();
 
     private final Long intersectionId;
-    private final Long meanIntersectionSpeed;
+    private final int meanIntersectionSpeed;
     private final ImmutableList<Object> fields;
 
-    public IntersectionRankable(Long intersectionId, Long meanIntersectionSpeed, Object... otherFields) {
+    public IntersectionRankable(Long intersectionId, int meanIntersectionSpeed, Object... otherFields) {
         if (intersectionId < 0) {
             throw new IllegalArgumentException("Intersection id must not be >= 0");
         }
@@ -44,34 +41,23 @@ public class IntersectionRankable implements Rankable, Serializable {
      * @param tuple
      * @return new instance based on the provided tuple
      */
-    public static IntersectionRankable from(Tuple tuple) {
-        try {
-            String rawTuple = tuple.getStringByField(KAFKA_RAW_TUPLE);
-            JsonNode jsonNode = mapper.readTree(rawTuple);
+    public static IntersectionRankable getIntersectionRankableFrom(Tuple tuple) throws IllegalArgumentException {
+        MeanSpeedIntersectionManager meanSpeedIntersectionManager =
+                (MeanSpeedIntersectionManager) tuple.getValueByField(INTERSECTION_MEAN_SPEED_OBJECT);
 
-            Long intersectionId = jsonNode.get(INTERSECTION_ID).asLong();
-            Long semaphoreId = jsonNode.get(SEMAPHORE_ID).asLong();
-            Double semaphoreLatitude = jsonNode.get(SEMAPHORE_LATITUDE).asDouble();
-            Double semaphoreLongitude = jsonNode.get(SEMAPHORE_LONGITUDE).asDouble();
-            Long semaphoreTimestampUTC = jsonNode.get(SEMAPHORE_TIMESTAMP_UTC).asLong();
-            Short averageVehiclesSpeed = jsonNode.get(AVERAGE_VEHICLES_SPEED).shortValue();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        List<Object> otherFields = Lists.newArrayList(tuple.getValues());
-        Object obj = otherFields.remove(0);
-        Long count = (Long) otherFields.remove(0);
-        // return new IntersectionRankable(obj, count, otherFields.toArray());
-        return null;
+        Object[] k = {6, 9};
+        return new IntersectionRankable(
+                meanSpeedIntersectionManager.getIntersectionId(),
+                meanSpeedIntersectionManager.getMeanIntersectionSpeed(),
+                k
+        );
     }
 
     public Object getObject() {
         return intersectionId;
     }
 
-    public long getMeanIntersectionSpeed() {
+    public int getMeanIntersectionSpeed() {
         return meanIntersectionSpeed;
     }
 
@@ -103,7 +89,8 @@ public class IntersectionRankable implements Rankable, Serializable {
             return false;
         }
         IntersectionRankable other = (IntersectionRankable) o;
-        return intersectionId.equals(other.intersectionId) && meanIntersectionSpeed == other.meanIntersectionSpeed;
+        return intersectionId.equals(other.intersectionId) &&
+                meanIntersectionSpeed == other.meanIntersectionSpeed;
     }
 
     @Override
@@ -117,6 +104,9 @@ public class IntersectionRankable implements Rankable, Serializable {
 
     public String toString() {
         StringBuilder buf = new StringBuilder();
+        buf.append("INTERSECTION RANKABLE -\t")
+                .append(String.format("Mean intersection speed: %d\t", meanIntersectionSpeed))
+                .append(String.format("Intersection id: %d", intersectionId));
 
         return buf.toString();
     }
@@ -130,8 +120,11 @@ public class IntersectionRankable implements Rankable, Serializable {
     @Override
     public Rankable copy() {
         List<Object> shallowCopyOfFields = ImmutableList.copyOf(getFields());
-        // return new IntersectionRankable(getObject(), getMeanIntersectionSpeed(), shallowCopyOfFields);
-        return null;
+        return new IntersectionRankable(
+                (Long) getObject(),
+                getMeanIntersectionSpeed(),
+                shallowCopyOfFields
+        );
     }
 
 }

@@ -50,11 +50,9 @@ public class KafkaSpout extends BaseRichSpout {
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
-                // Valore di registrazione della tuple presso il topic kafka
-                // TODO TIMESTAMP INUTILE (perchè penso sia quello di quando arriva su kafka
-                // TODO mentre a noi serve quello generato dal sensore)
+                // Timestamp della tupla nel topic
                 Long timestamp = record.timestamp();
-                // Tupla effettiva (contenente il timestamp relativo alla registrazione effettiva dei valori)
+                // Valore tupla
                 String tuple = record.value();
 
                 collector.emit(new Values(timestamp, tuple));
