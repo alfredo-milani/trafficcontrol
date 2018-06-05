@@ -32,7 +32,7 @@ public class SemaphoreSensorThread implements Runnable {
     private Byte yellowLightStatus;
     @JsonProperty(RED_LIGHT_STATUS)
     private Byte redLightStatus;
-    @JsonProperty(VEHICLES_PER_SECOND)
+    @JsonProperty(VEHICLES)
     private Short vehiclesPerSecond;
     @JsonProperty(AVERAGE_VEHICLES_SPEED)
     private Short averageVehiclesSpeed;

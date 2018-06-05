@@ -1,0 +1,51 @@
+package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.storm.task.OutputCollector;
+import org.apache.storm.task.TopologyContext;
+import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.topology.base.BaseRichBolt;
+import org.apache.storm.tuple.Tuple;
+
+import java.util.Map;
+import java.util.Properties;
+
+import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SERIALIZER_VALUE;
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.VEHICLES;
+
+public class GreenSetter extends BaseRichBolt {
+
+    private OutputCollector collector;
+    private KafkaProducer<String, String> producer;
+
+
+    @Override
+    public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
+
+        this.collector = collector;
+
+        Properties props = new Properties();
+        props.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
+        props.put(KEY_SERIALIZER, SERIALIZER_VALUE);
+        props.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
+
+        producer = new KafkaProducer<>(props);
+    }
+
+    @Override
+    public void execute(Tuple input) {
+
+
+        Short numberOfVeichle= input.getShortByField(VEHICLES);
+
+
+
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+
+    }
+}

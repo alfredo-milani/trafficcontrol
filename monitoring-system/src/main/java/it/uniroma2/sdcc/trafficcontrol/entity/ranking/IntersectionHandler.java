@@ -11,7 +11,7 @@ import java.util.List;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 
-public class IntersectionMeanSpeedHandler {
+public class IntersectionHandler {
 
     private final static ObjectMapper mapper = new ObjectMapper();
 
@@ -21,7 +21,7 @@ public class IntersectionMeanSpeedHandler {
     private List<SemaphoreSensor> semaphoreSensors;
     private int meanIntersectionSpeed;
 
-    public IntersectionMeanSpeedHandler(Long intersectionId) {
+    public IntersectionHandler(Long intersectionId) {
         this.intersectionId = intersectionId;
     }
 

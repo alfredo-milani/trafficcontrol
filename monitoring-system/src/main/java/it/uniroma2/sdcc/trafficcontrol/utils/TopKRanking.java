@@ -55,7 +55,7 @@ public class TopKRanking {
         return ranking.remove(item);
     }
 
-    public int indexOf(IntersectionItem item) {
+    public int  indexOf(IntersectionItem item) {
         for (int i = 0; i < ranking.size(); i++) {
             if (item.equals(ranking.get(i)))
                 return i;

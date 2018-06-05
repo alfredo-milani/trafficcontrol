@@ -19,15 +19,17 @@ public class SemaphoreSensor {
     private Double semaphoreLongitude;
     private Long semaphoreTimestampUTC;
     private Short averageVehiclesSpeed;
+    private Short vehiclesNumber;
 
     public SemaphoreSensor(Long semaphoreId, Double semaphoreLatitude,
                            Double semaphoreLongitude, Long semaphoreTimestampUTC,
-                           Short averageVehiclesSpeed) {
+                           Short averageVehiclesSpeed, Short vehiclesNumber) {
         this.semaphoreId = semaphoreId;
         this.semaphoreLatitude = semaphoreLatitude;
         this.semaphoreLongitude = semaphoreLongitude;
         this.semaphoreTimestampUTC = semaphoreTimestampUTC;
         this.averageVehiclesSpeed = averageVehiclesSpeed;
+        this.vehiclesNumber = vehiclesNumber;
     }
 
     public static SemaphoreSensor getSemaphoreSensorFrom(Tuple tuple) throws IOException {
@@ -39,13 +41,16 @@ public class SemaphoreSensor {
         Double semaphoreLongitude = jsonNode.get(SEMAPHORE_LONGITUDE).asDouble();
         Long semaphoreTimestampUTC = jsonNode.get(SEMAPHORE_TIMESTAMP_UTC).asLong();
         Short averageVehiclesSpeed = jsonNode.get(AVERAGE_VEHICLES_SPEED).shortValue();
+        Short vehiclesNumber = jsonNode.get(VEHICLES).shortValue();
 
         return new SemaphoreSensor(
                 semaphoreId,
                 semaphoreLatitude,
                 semaphoreLongitude,
                 semaphoreTimestampUTC,
-                averageVehiclesSpeed
+                averageVehiclesSpeed,
+                vehiclesNumber
+
         );
     }
 
@@ -136,7 +141,8 @@ public class SemaphoreSensor {
                 semaphoreLatitude,
                 semaphoreLongitude,
                 semaphoreTimestampUTC,
-                averageVehiclesSpeed
+                averageVehiclesSpeed,
+                vehiclesNumber
         );
     }
 

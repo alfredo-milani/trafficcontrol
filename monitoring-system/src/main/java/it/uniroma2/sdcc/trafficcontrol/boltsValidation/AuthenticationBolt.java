@@ -37,7 +37,7 @@ public class AuthenticationBolt extends BaseRichBolt {
         Byte greenLightStatus = tuple.getByteByField(GREEN_LIGHT_STATUS);
         Byte yellowLightStatus = tuple.getByteByField(YELLOW_LIGHT_STATUS);
         Byte redLightStatus = tuple.getByteByField(RED_LIGHT_STATUS);
-        Short vehiclesPerSecond = tuple.getShortByField(VEHICLES_PER_SECOND);
+        Short vehiclesPerSecond = tuple.getShortByField(VEHICLES);
         Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
 
         Values values = new Values(
@@ -84,7 +84,7 @@ public class AuthenticationBolt extends BaseRichBolt {
                 GREEN_LIGHT_STATUS,
                 YELLOW_LIGHT_STATUS,
                 RED_LIGHT_STATUS,
-                VEHICLES_PER_SECOND,
+                VEHICLES,
                 AVERAGE_VEHICLES_SPEED
         ));
     }

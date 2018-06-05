@@ -29,7 +29,7 @@ public class FiledsSelectorForMedian extends BaseRichBolt {
         Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
         Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
         Boolean semaphorestatus = tuple.getBooleanByField(SEMAPHORE_STATUS);
-        Short numberOfVehicle = tuple.getShortByField(VEHICLES_PER_SECOND);
+        Short numberOfVehicle = tuple.getShortByField(VEHICLES);
 
         Values values = new Values(
                 intersectionId,
@@ -55,7 +55,7 @@ public class FiledsSelectorForMedian extends BaseRichBolt {
                 SEMAPHORE_LATITUDE,
                 SEMAPHORE_LONGITUDE,
                 SEMAPHORE_STATUS,
-                VEHICLES_PER_SECOND
+                VEHICLES
         ));
     }
 

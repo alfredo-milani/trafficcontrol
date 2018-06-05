@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
+package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IntersectionHandler;
@@ -14,22 +14,24 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.RANKABLE_OBJECT;
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.VEHICLES;
 
+public class FilterBolt extends BaseRichBolt {
 
-public class MeanCalculatorBolt extends BaseRichBolt {
-
-    private HashMap<Long, IntersectionHandler> handlerHashMap;
     private OutputCollector collector;
+    private HashMap<Long, IntersectionHandler> handlerHashMap;
 
     @Override
-    public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
+    public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         this.collector = collector;
         this.handlerHashMap = new HashMap<>();
     }
 
     @Override
     public void execute(Tuple tuple) {
+
+
         try {
             Long intersectionId = IntersectionHandler.getIntersectionIdFrom(tuple);
             SemaphoreSensor semaphoreSensor = SemaphoreSensor.getSemaphoreSensorFrom(tuple);
@@ -44,37 +46,33 @@ public class MeanCalculatorBolt extends BaseRichBolt {
             if (intersectionFromHashMap != null) {
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
 
+
+
                 if (/* mean has been computed */ true) {
                     // TODO emetti sse sono almeno 2 semafori (con id semaforo pari/dispari)
                     collector.emit(new Values(handlerHashMap.remove(intersectionId)));
                 }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }finally {
             collector.ack(tuple);
         }
+
+
+
+
+
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields(RANKABLE_OBJECT));
+        declarer.declare(new Fields(
+                INTERSECTION_ID,
+                SEMAPHORE_ID,
+                VEHICLES
+        ));
+
     }
-
-    public static void main(String[] a) {
-        HashMap<Long, IntersectionHandler> handlerHashMap = new HashMap<>();
-        IntersectionHandler j = new IntersectionHandler(343L);
-        IntersectionHandler i = new IntersectionHandler(122L);
-
-        handlerHashMap.put(2L, j);
-        // handlerHashMap.putIfAbsent(2L, i);
-
-
-        System.out.println("TEST: " + i.hashCode());
-        System.out.println("TEST: " + j.hashCode());
-        System.out.println("TEST: " + handlerHashMap.putIfAbsent(2L, i));
-        System.out.println("TEST: " + handlerHashMap.get(2L).hashCode());
-        System.out.println("TEST: " + handlerHashMap.size());
-    }
-
 }

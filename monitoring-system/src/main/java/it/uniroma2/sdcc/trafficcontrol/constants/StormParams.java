@@ -33,6 +33,11 @@ public interface StormParams {
     String UPDATE_GLOBAL_MEDIAN = "update_global_median";
     String VALUE_GLOBAL_MEDIAN = "value_global_median";
 
+    //Green Setting bolts
+    String FILTER_GREEN_BOLT = "filter_green_bolt";
+    String GREEN_SETTER = "green_setter";
+
+
     String PARSER_BOLT = "parser";
     String SELECTOR_BOLT = "selector";
     String SELECTOR_BOLT_2 = "selector2";

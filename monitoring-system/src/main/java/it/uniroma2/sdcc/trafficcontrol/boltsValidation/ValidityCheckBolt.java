@@ -42,7 +42,7 @@ public class ValidityCheckBolt extends BaseRichBolt {
             Byte greenLightStatus = (byte) jsonNode.get(GREEN_LIGHT_STATUS).asInt();
             Byte yellowLightStatus = (byte) jsonNode.get(YELLOW_LIGHT_STATUS).asInt();
             Byte redLightStatus = (byte) jsonNode.get(RED_LIGHT_STATUS).asInt();
-            Short vehiclesPerSecond = jsonNode.get(VEHICLES_PER_SECOND).shortValue();
+            Short vehiclesPerSecond = jsonNode.get(VEHICLES).shortValue();
             Short averageVehiclesSpeed = jsonNode.get(AVERAGE_VEHICLES_SPEED).shortValue();
 
             Values values = new Values(
@@ -79,7 +79,7 @@ public class ValidityCheckBolt extends BaseRichBolt {
                 GREEN_LIGHT_STATUS,
                 YELLOW_LIGHT_STATUS,
                 RED_LIGHT_STATUS,
-                VEHICLES_PER_SECOND,
+                VEHICLES,
                 AVERAGE_VEHICLES_SPEED
         ));
     }

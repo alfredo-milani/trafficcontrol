@@ -48,6 +48,7 @@ public class PartialRankBolt extends BaseRichBolt {
         Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
         Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
         Boolean semaphoreStatus = tuple.getBooleanByField(SEMAPHORE_STATUS);
+        System.out.println("STATO SEMAFORO------------------------------->"+semaphoreStatus);
         Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
         IntersectionItem item = new IntersectionItem(intersectionId,semaphoreId,semaphoreLatitude,semaphoreLongitude,averageVehiclesSpeed);
 
@@ -60,7 +61,6 @@ public class PartialRankBolt extends BaseRichBolt {
         } else {
             update = ranking.update(item);
         }
-
 		/* Emit if the local topK is changed */
         if (update) {
             Ranking topK = ranking.getTopK();

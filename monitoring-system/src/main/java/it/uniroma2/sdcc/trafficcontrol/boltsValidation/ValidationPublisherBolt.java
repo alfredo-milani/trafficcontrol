@@ -21,7 +21,7 @@ public class ValidationPublisherBolt extends KafkaBolt {
         Byte greenLightStatus = tuple.getByteByField(GREEN_LIGHT_STATUS);
         Byte yellowLightStatus = tuple.getByteByField(YELLOW_LIGHT_STATUS);
         Byte redLightStatus = tuple.getByteByField(RED_LIGHT_STATUS);
-        Short vehiclesPerSecond = tuple.getShortByField(VEHICLES_PER_SECOND);
+        Short vehiclesPerSecond = tuple.getShortByField(VEHICLES);
         Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
 
         ObjectNode objectNode = mapper.createObjectNode();
@@ -34,7 +34,7 @@ public class ValidationPublisherBolt extends KafkaBolt {
         objectNode.put(GREEN_LIGHT_STATUS, greenLightStatus);
         objectNode.put(YELLOW_LIGHT_STATUS, yellowLightStatus);
         objectNode.put(RED_LIGHT_STATUS, redLightStatus);
-        objectNode.put(VEHICLES_PER_SECOND, vehiclesPerSecond);
+        objectNode.put(VEHICLES, vehiclesPerSecond);
         objectNode.put(AVERAGE_VEHICLES_SPEED, averageVehiclesSpeed);
 
         producer.send(new ProducerRecord<>(VALIDATED, objectNode.toString()));

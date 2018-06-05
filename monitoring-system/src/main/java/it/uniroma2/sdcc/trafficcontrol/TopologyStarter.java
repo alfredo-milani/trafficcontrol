@@ -3,6 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
 import it.uniroma2.sdcc.trafficcontrol.topologies.BaseTopology;
 import it.uniroma2.sdcc.trafficcontrol.topologies.FirstTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.GreenSettingTopology;
 import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
 import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
@@ -54,7 +55,7 @@ public class TopologyStarter {
         topologies.add(new FirstTopology());
         // topologies.add(new SecondTopology());
         // topologies.add(new ThirdTopology());
-        // topologies.add(new TemporizationTopology());
+        topologies.add(new GreenSettingTopology());
 
         switch (MODE_SELECTED) {
             case MODE_LOCAL:

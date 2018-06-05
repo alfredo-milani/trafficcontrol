@@ -53,7 +53,7 @@ public class IntersectionAndGlobalMedian extends BaseRichBolt {
         Long intersectionId = tuple.getLongByField(INTERSECTION_ID);
         Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
         Boolean semaphoreStatus = tuple.getBooleanByField(SEMAPHORE_STATUS);
-        Short numeberVehicle = tuple.getShortByField(VEHICLES_PER_SECOND);
+        Short numeberVehicle = tuple.getShortByField(VEHICLES);
         IntersectionItem item = new IntersectionItem(intersectionId,semaphoreId,numeberVehicle);
 
 
