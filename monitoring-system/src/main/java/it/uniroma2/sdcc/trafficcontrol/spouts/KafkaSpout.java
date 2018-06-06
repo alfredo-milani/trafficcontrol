@@ -30,7 +30,7 @@ public class KafkaSpout extends BaseRichSpout {
     }
 
     @Override
-    public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
+    public final void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         this.collector = collector;
 
         Properties props = new Properties();
@@ -46,7 +46,7 @@ public class KafkaSpout extends BaseRichSpout {
 
     @SuppressWarnings("InfiniteLoopStatement")
     @Override
-    public void nextTuple() {
+    public final void nextTuple() {
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
@@ -61,7 +61,7 @@ public class KafkaSpout extends BaseRichSpout {
     }
 
     @Override
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+    public final void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields(KAFKA_TIMESTAMP, KAFKA_RAW_TUPLE));
     }
 

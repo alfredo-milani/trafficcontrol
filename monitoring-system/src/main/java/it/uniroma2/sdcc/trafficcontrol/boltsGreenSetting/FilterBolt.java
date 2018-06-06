@@ -27,7 +27,6 @@ public class FilterBolt extends BaseRichBolt {
         this.handlerHashMap = new HashMap<>();
     }
 
-
     @Override
     public void execute(Tuple tuple) {
         try {
@@ -41,23 +40,16 @@ public class FilterBolt extends BaseRichBolt {
                     new GreenTemporizationManager(intersectionId)
             );
 
-
             if (intersectionFromHashMap != null) {
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
-
-
-
                     //if(semaphoreSensorsEven.size()==2)
+                // TODO crea 2 strem: uno per i pari e uno per i dispari e crea i relativi bolt che estendono BaseKafkaPublisherBolt
                 if (intersectionFromHashMap.getSemaphoreSensorsEven().size()==2 ||
                         intersectionFromHashMap.getSemaphoreSensorsOdd().size()==2) {
                     // TODO emetti sse sono almeno 2 semafori (con id semaforo pari/dispari)
                     collector.emit(new Values(handlerHashMap.remove(intersectionId)));
                 }
-
-
-
             }
-
 
         } catch (ClassCastException | IllegalArgumentException e) {
             e.printStackTrace();
@@ -71,4 +63,5 @@ public class FilterBolt extends BaseRichBolt {
         declarer.declare(new Fields(GREEN_TEMPORIZATION_VALUE));
 
     }
+
 }

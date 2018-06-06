@@ -7,6 +7,7 @@ import org.apache.storm.tuple.Fields;
 
 import java.util.logging.Logger;
 
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.GREEN_TEMPORIZATION;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
@@ -30,7 +31,7 @@ public class GreenSettingTopology extends BaseTopology {
                 .fieldsGrouping(KAFKA_SPOUT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
 
-        builder.setBolt(GREEN_SETTER, new GreenSetter())
+        builder.setBolt(GREEN_SETTER, new GreenSetter(GREEN_TEMPORIZATION))
                 .shuffleGrouping(FILTER_GREEN_BOLT)
                 .setNumTasks(4);
     }

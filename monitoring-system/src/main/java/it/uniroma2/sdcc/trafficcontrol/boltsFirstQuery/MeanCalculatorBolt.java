@@ -41,7 +41,6 @@ public class MeanCalculatorBolt extends BaseRichBolt {
                     new MeanSpeedIntersectionManager(intersectionId)
             );
 
-            // TODO verifica che l'intersezione ritornata dalla hashMap non sia una copia ma la referenza
             if (intersectionFromHashMap != null) { // Intersezione da aggiornare
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
                 if (intersectionFromHashMap.isListReadyForComputation()) { // Controllo se sono arrivate tutte le tuple per computare la media

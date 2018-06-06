@@ -1,21 +1,22 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.uniroma2.sdcc.trafficcontrol.bolts.BaseKafkaPublisherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 
 import java.util.List;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.EVEN_SEMAPHORES;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.ODD_SEMAPHORES;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_EMIT_FREQUENCY;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPORIZATION_VALUE;
 
 public class GreenSetter extends BaseKafkaPublisherBolt {
-
 
     private int s=1850;
     private int ip = 5;
@@ -24,16 +25,20 @@ public class GreenSetter extends BaseKafkaPublisherBolt {
     private int cycleDuration = 200;
     private int L = 4;
 
-
+    public GreenSetter(String topic) {
+        super(topic);
+    }
 
     @Override
-    public void execute(Tuple input) {
-        GreenTemporizationManager greenTemporizationManager = (GreenTemporizationManager) input.getValueByField(GREEN_TEMPORIZATION_VALUE);
+    protected String computeStringToPublish(Tuple tuple) throws ClassCastException, IllegalArgumentException {
+        GreenTemporizationManager greenTemporizationManager = (GreenTemporizationManager) tuple.getValueByField(GREEN_TEMPORIZATION_VALUE);
 
         List<SemaphoreSensor> evenSensors =  greenTemporizationManager.getSemaphoreSensorsEven();
         List<SemaphoreSensor> oddSensors =  greenTemporizationManager.getSemaphoreSensorsOdd();
         int q0,q1,q2,q3;
 
+        // TODO per emettere sia pari che dispari vedi il todo in FilterBolt
+        ObjectMapper mapper = new ObjectMapper();
         if(evenSensors.size()==2){
             q0 = evenSensors.get(0).getVehiclesNumber()/SEMAPHORE_EMIT_FREQUENCY;
             q1 = evenSensors.get(1).getVehiclesNumber()/SEMAPHORE_EMIT_FREQUENCY;
@@ -49,7 +54,7 @@ public class GreenSetter extends BaseKafkaPublisherBolt {
             objectNode.put(EVEN_SEMAPHORES,"even");
             objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueEven);
 
-            producer.send(new ProducerRecord<>(GREEN_TEMPORIZATION, objectNode.toString()));
+            return objectNode.toString();
         }
 
         if(oddSensors.size()==2){
@@ -67,7 +72,20 @@ public class GreenSetter extends BaseKafkaPublisherBolt {
             objectNode.put(ODD_SEMAPHORES,"odd");
             objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueOdd);
 
-            producer.send(new ProducerRecord<>(GREEN_TEMPORIZATION, objectNode.toString()));
+            return objectNode.toString();
         }
+
+        throw new IllegalArgumentException("Ne pari ne dispari");
     }
+
+    @Override
+    protected void doAfter() {
+
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+
+    }
+
 }

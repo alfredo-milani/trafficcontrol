@@ -7,6 +7,7 @@ import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import java.util.logging.Logger;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_STATUS;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
 public class SemaphoreStatusTopology extends BaseTopology {
@@ -24,12 +25,11 @@ public class SemaphoreStatusTopology extends BaseTopology {
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(VALIDATED), 2)
                 .setNumTasks(4);
 
-        // Semafori con problemi alle lampade vengono scartati dalla classifica
         builder.setBolt(SEMAPHORE_STATUS_BOLT, new SemaphoreStatusBolt(), 2)
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
 
-        builder.setBolt(SEMAPHORE_STATUS_PUBLISHER_BOLT, new SemaphoreStatusPublisher())
+        builder.setBolt(SEMAPHORE_STATUS_PUBLISHER_BOLT, new SemaphoreStatusPublisher(SEMAPHORE_STATUS))
                 .shuffleGrouping(SEMAPHORE_STATUS_BOLT)
                 .setNumTasks(2);
     }

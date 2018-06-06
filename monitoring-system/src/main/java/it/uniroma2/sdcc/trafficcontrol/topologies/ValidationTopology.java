@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKERS_SELECTED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.TO_VALIDATE;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
@@ -32,13 +33,14 @@ public class ValidationTopology extends BaseTopology {
         builder.setBolt(BASE_DISPATCHER_BOLT, new BaseDispatcherBolt(), 2)
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
+        // TODO creare altra cache per i sensori mobili
         builder.setBolt(AUTHENTICATION_CACHE_BOLT, new AuthenticationCacheBolt(), 4)
                 .fieldsGrouping(BASE_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
         builder.setBolt(AUTHENTICATION_BOLT, new AuthenticationBolt(), 6)
                 .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_MISS_STREAM)
                 .setNumTasks(6);
-        builder.setBolt(VALIDATION_PUBLISHER_BOLT, new ValidationPublisherBolt(), 2)
+        builder.setBolt(VALIDATION_PUBLISHER_BOLT, new ValidationPublisherBolt(VALIDATED), 2)
                 .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_HIT_STREAM)
                 .shuffleGrouping(AUTHENTICATION_BOLT)
                 .setNumTasks(4);
