@@ -18,8 +18,9 @@ public interface KafkaParams {
 
     // Kafka's topics
     String MONITORING_SOURCE = "monitoring_source";
-    String TO_VALIDATE = "to_validate";
-    String VALIDATED = "validated";
+    String GENERIC_TUPLE_TO_VALIDATE = "generic_tuple_to_validate";
+    String SEMAPHORE_SENSOR_VALIDATED = "semaphore_sensor_validated";
+    String MOBILE_SENSOR_VALIDATED = "mobile_sensor_validated";
     String RANKING_PROCESSED = "ranking_processed";
     String GREEN_TEMPORIZATION = "green_temporization";
     String ODD_SEMAPHORES = "odd_semaphores";

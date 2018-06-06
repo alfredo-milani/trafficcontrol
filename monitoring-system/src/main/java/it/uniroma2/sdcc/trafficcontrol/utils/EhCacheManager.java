@@ -10,11 +10,10 @@ import java.io.Serializable;
 public class EhCacheManager {
 
     // Non ci può essere più di una istanza di CacheManager per JVM
-    private final CacheManager cacheManager;
+    private final static CacheManager cacheManager = CacheManager.getInstance();
     private final Cache cache;
 
     public EhCacheManager(String cacheName) {
-        cacheManager = CacheManager.getInstance();
         cache = cacheManager.getCache(cacheName);
 
         if (cache == null) {

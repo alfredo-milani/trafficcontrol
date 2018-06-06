@@ -1,19 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.BaseDispatcherBolt;
-import it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery.FiledsSelectorForMedian;
-import it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery.FinalComparator;
-import it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery.IntersectionAndGlobalMedian;
-import it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus.SemaphoreStatusBolt;
-import it.uniroma2.sdcc.trafficcontrol.boltsValidation.AuthenticationBolt;
-import it.uniroma2.sdcc.trafficcontrol.boltsValidation.AuthenticationCacheBolt;
-import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
-
 import java.util.logging.Logger;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKERS_SELECTED;
-import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
 public class SecondTopology extends BaseTopology {
 
@@ -30,20 +19,20 @@ public class SecondTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(VALIDATED))
+        /*builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED))
                 .setNumTasks(4);
         builder.setBolt(BASE_DISPATCHER_BOLT, new BaseDispatcherBolt())
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
-        builder.setBolt(AUTHENTICATION_CACHE_BOLT, new AuthenticationCacheBolt(), 4)
+        builder.setBolt(AUTHENTICATION_CACHE_BOLT, new SemaphoreSensorAuthCacheBolt(), 4)
                 .shuffleGrouping(BASE_DISPATCHER_BOLT)
                 .setNumTasks(4);
-        builder.setBolt(AUTHENTICATION_BOLT, new AuthenticationBolt(), 3)
+        builder.setBolt(SEMAPHORE_AUTH_DB_BOLT, new AuthenticationDBBolt(), 3)
                 .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_MISS_STREAM)
                 .setNumTasks(6);
         builder.setBolt(SEMAPHORE_STATUS_BOLT, new SemaphoreStatusBolt())
                 .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_HIT_STREAM)
-                .shuffleGrouping(AUTHENTICATION_BOLT)
+                .shuffleGrouping(SEMAPHORE_AUTH_DB_BOLT)
                 .setNumTasks(4);
 
         builder.setBolt(FIELDS_SELECTION_FOR_MEDIAN, new FiledsSelectorForMedian())
@@ -57,7 +46,7 @@ public class SecondTopology extends BaseTopology {
                 .allGrouping(UPDATE_GLOBAL_MEDIAN,UPDATE_GLOBAL_MEDIAN)
                 .allGrouping(REMOVE_GLOBAL_MEDIAN_ITEM,REMOVE_GLOBAL_MEDIAN_ITEM)
                 .allGrouping(VALUE_GLOBAL_MEDIAN,VALUE_GLOBAL_MEDIAN)
-                .setNumTasks(1);
+                .setNumTasks(1);*/
 
       /*  builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankBolt(10))
                 // .fieldsGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT, new Fields(SEMAPHORE_STATUS))

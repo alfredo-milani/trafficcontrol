@@ -13,13 +13,13 @@ import java.util.Properties;
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 
-public abstract class BaseKafkaPublisherBolt extends BaseRichBolt {
+public abstract class AbstractKafkaPublisherBolt extends BaseRichBolt {
 
     private OutputCollector collector;
     private KafkaProducer<String, String> producer;
     private final String topic;
 
-    public BaseKafkaPublisherBolt(String topic) {
+    public AbstractKafkaPublisherBolt(String topic) {
         this.topic = topic;
     }
 
@@ -38,6 +38,7 @@ public abstract class BaseKafkaPublisherBolt extends BaseRichBolt {
     @Override
     public final void execute(Tuple tuple) {
         try {
+            doBefore();
             producer.send(new ProducerRecord<>(topic, computeStringToPublish(tuple)));
             doAfter();
         } catch (Exception e) {
@@ -47,7 +48,9 @@ public abstract class BaseKafkaPublisherBolt extends BaseRichBolt {
         }
     }
 
-    protected abstract String computeStringToPublish(Tuple tuple);
+    protected abstract void doBefore();
+
+    protected abstract String computeStringToPublish(Tuple tuple) throws Exception;
 
     protected abstract void doAfter();
 

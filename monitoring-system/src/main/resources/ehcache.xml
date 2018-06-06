@@ -16,9 +16,20 @@
     If there are more than 10000 elements it will overflow to the
     disk cache, which in this configuration will go to wherever java.io.tmp is
     defined on your system. On a standard Linux system this will be /tmp" -->
-    <cache name="auth_hit"
-           maxEntriesLocalHeap="10000"
-           maxEntriesLocalDisk="1000"
+    <cache name="semaphore_authentication_cache_name"
+           maxEntriesLocalHeap="1000"
+           maxEntriesLocalDisk="100000"
+           eternal="false"
+           diskSpoolBufferSizeMB="20"
+           timeToIdleSeconds="300" timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+        <persistence strategy="localTempSwap"/>
+    </cache>
+
+    <cache name="mobile_authentication_cache_name"
+           maxEntriesLocalHeap="1000"
+           maxEntriesLocalDisk="100000"
            eternal="false"
            diskSpoolBufferSizeMB="20"
            timeToIdleSeconds="300" timeToLiveSeconds="600"

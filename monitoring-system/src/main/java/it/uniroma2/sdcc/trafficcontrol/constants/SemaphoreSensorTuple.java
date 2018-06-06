@@ -4,6 +4,9 @@ import java.util.HashMap;
 
 public interface SemaphoreSensorTuple {
 
+    // Semaphore sensor
+    String SEMAPHORE_SENSOR = "semaphore_sensor";
+
     // Frequenza emissione tuple
     Short SEMAPHORE_EMIT_FREQUENCY = 60;
 

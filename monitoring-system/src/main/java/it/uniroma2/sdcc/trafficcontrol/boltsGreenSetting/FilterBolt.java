@@ -43,7 +43,7 @@ public class FilterBolt extends BaseRichBolt {
             if (intersectionFromHashMap != null) {
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
                     //if(semaphoreSensorsEven.size()==2)
-                // TODO crea 2 strem: uno per i pari e uno per i dispari e crea i relativi bolt che estendono BaseKafkaPublisherBolt
+                // TODO crea 2 strem: uno per i pari e uno per i dispari e crea i relativi bolt che estendono AbstractKafkaPublisherBolt
                 if (intersectionFromHashMap.getSemaphoreSensorsEven().size()==2 ||
                         intersectionFromHashMap.getSemaphoreSensorsOdd().size()==2) {
                     // TODO emetti sse sono almeno 2 semafori (con id semaforo pari/dispari)

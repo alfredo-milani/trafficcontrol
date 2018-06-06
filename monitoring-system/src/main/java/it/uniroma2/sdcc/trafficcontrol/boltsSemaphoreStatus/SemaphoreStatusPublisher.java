@@ -2,16 +2,21 @@ package it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.uniroma2.sdcc.trafficcontrol.bolts.BaseKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractKafkaPublisherBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class SemaphoreStatusPublisher extends BaseKafkaPublisherBolt {
+public class SemaphoreStatusPublisher extends AbstractKafkaPublisherBolt {
 
     public SemaphoreStatusPublisher(String topic) {
         super(topic);
+    }
+
+    @Override
+    protected void doBefore() {
+
     }
 
     @Override

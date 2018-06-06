@@ -27,7 +27,7 @@ public class RESTfulAPI {
 
     }
 
-    public static boolean semaphoreExist(Long id) {
+    public static boolean semaphoreSensorExist(Long id) {
         // TODO A SCOPO DI TEST / SE IL DB è SPENTO
         if (id >= 0)
             return true;
@@ -56,12 +56,23 @@ public class RESTfulAPI {
         return statusCode >= STATUS_CODE_200 && statusCode < STATUS_CODE_300;
     }
 
+    public static boolean mobileSensorExist(Long id) {
+        // TODO A SCOPO DI TEST / SE IL DB è SPENTO
+        if (id >= 0)
+            return id >= 0;
+        else
+            return false;
+        // TODO END TEST
+
+        // TODO
+    }
+
     public static void main(String[] a) {
         for (int i = 0; i < 100; ++i) {
             Long random = ThreadLocalRandom.current().nextLong(1, 50);
             LOGGER.log(
                     Level.INFO,
-                    String.format("ID: %d\tRecord exist: %s", random, RESTfulAPI.semaphoreExist(random))
+                    String.format("ID: %d\tRecord exist: %s", random, RESTfulAPI.semaphoreSensorExist(random))
             );
 
             /*

@@ -10,7 +10,7 @@ import org.apache.storm.tuple.Fields;
 import java.util.logging.Logger;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKERS_SELECTED;
-import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.VALIDATED;
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SEMAPHORE_SENSOR_VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
@@ -30,7 +30,7 @@ public class FirstTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(VALIDATED), 2)
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED), 2)
                 .setNumTasks(4);
 
         builder.setBolt(BASE_DISPATCHER_BOLT, new BaseDispatcherBolt(), 2)

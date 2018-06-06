@@ -5,13 +5,20 @@ public interface StormParams {
     // Spout
     String KAFKA_SPOUT = "kafkaSpout";
 
+    // Sensor type
+    String SEMAPHORE_SENSOR_STREAM = "semaphore_sensor_stream";
+    String MOBILE_SENSOR_STREAM = "mobile_sensor_stream";
+
     // Validation bolts
     String VALIDITY_CHECK_BOLT = "validityCheckBolt";
-    String AUTHENTICATION_CACHE_BOLT = "authentication_cache_bolt";
+    String SEMAPHORE_SENSOR_AUTH_CACHE_BOLT = "semaphore_sensor_auth_cache_bolt";
+    String MOBILE_SENSOR_AUTH_CACHE_BOLT = "mobile_sensor_auth_cache_bolt";
     String CACHE_HIT_STREAM = "cache_hit_stream";
     String CACHE_MISS_STREAM = "cache_miss_stream";
-    String AUTHENTICATION_BOLT = "authentication_bolt";
-    String VALIDATION_PUBLISHER_BOLT = "validation_publisher_bolt";
+    String SEMAPHORE_AUTH_DB_BOLT = "semaphore_auth_db_bolt";
+    String MOBILE_AUTH_DB_BOLT = "mobile_auth_db_bolt";
+    String SEMAPHORE_VALIDATION_PUBLISHER_BOLT = "semaphore_validation_publisher_bolt";
+    String MOBILE_VALIDATION_PUBLISHER_BOLT = "mobile_validation_publisher_bolt";
 
     // Semaphore status bolts
     String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
@@ -21,6 +28,7 @@ public interface StormParams {
 
     // Ranking Bolts
     String BASE_DISPATCHER_BOLT = "base_dispatcher_bolt";
+    String VALIDATION_DISPATCHER_BOLT = "validation_dispatcher_bolt";
     String MEAN_CALCULATOR_BOLT = "mean_calculator_bolt";
     String INTERSECTION_MEAN_SPEED_OBJECT = "intersection_mean_speed_object";
     String RANKABLE_OBJECT = "rankable_object";

@@ -2,6 +2,9 @@ package it.uniroma2.sdcc.trafficcontrol.constants;
 
 public interface MobileSensorTuple {
 
+    // Mobile sensor
+    String MOBILE_SENSOR = "mobile_sensor";
+
     // Chiavi per la tupla inviata dai sensori associati ai dispositivi mobili
     String MOBILE_ID = "mobile_id";
     String MOBILE_TIMESTAMP_UTC = "mobile_timestamp_utc";

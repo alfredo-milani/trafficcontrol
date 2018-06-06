@@ -30,7 +30,7 @@ public class StartProducer {
         KafkaProducer<String, String> producer = new KafkaProducer<>(producerProperties);
 
         for (int i = 0; i < threads; ++i) {
-            new Thread(new SemaphoreSensorThread(producer, TO_VALIDATE, waitingTimeMillis)).start();
+            new Thread(new SemaphoreSensorThread(producer, GENERIC_TUPLE_TO_VALIDATE, waitingTimeMillis)).start();
         }
     }
 

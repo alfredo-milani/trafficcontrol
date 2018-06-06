@@ -2,7 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.uniroma2.sdcc.trafficcontrol.bolts.BaseKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractKafkaPublisherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -16,7 +16,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INT
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_EMIT_FREQUENCY;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPORIZATION_VALUE;
 
-public class GreenSetter extends BaseKafkaPublisherBolt {
+public class GreenSetter extends AbstractKafkaPublisherBolt {
 
     private int s=1850;
     private int ip = 5;
@@ -27,6 +27,11 @@ public class GreenSetter extends BaseKafkaPublisherBolt {
 
     public GreenSetter(String topic) {
         super(topic);
+    }
+
+    @Override
+    protected void doBefore() {
+
     }
 
     @Override
