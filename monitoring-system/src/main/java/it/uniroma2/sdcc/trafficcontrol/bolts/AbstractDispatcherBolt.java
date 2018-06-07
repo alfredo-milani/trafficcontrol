@@ -34,6 +34,7 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
             if (stream.equals(DEFAULT_STREAM)) {
                 collector.emit(streamValueHashMap.get(DEFAULT_STREAM));
             } else {
+                // TODO generalizzare per più stream
                 collector.emit(stream, streamValueHashMap.get(stream));
             }
 

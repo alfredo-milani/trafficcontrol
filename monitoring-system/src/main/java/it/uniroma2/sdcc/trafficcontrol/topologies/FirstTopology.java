@@ -1,8 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.MeanSpeedDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.GlobalRankingsBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.MeanCalculatorBolt;
+import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.MeanSpeedDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.PartialRankingsBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.tuple.Fields;
@@ -30,8 +30,8 @@ public class FirstTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED), 1)
-                .setNumTasks(1);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED), 2)
+                .setNumTasks(4);
 
         builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt(), 2)
                 .shuffleGrouping(KAFKA_SPOUT)
@@ -51,6 +51,7 @@ public class FirstTopology extends BaseTopology {
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);*/
 
+        // TODO implementare sliding window
         builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankingsBolt(10, 1), 2)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);

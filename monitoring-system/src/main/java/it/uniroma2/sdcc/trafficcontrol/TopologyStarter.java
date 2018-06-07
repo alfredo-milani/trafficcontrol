@@ -23,7 +23,7 @@ public class TopologyStarter {
      *
      * Each worker process can run one or more executors, or threads, where each executor is a thread spawned by the worker process.
      *
-     * Each executor runs one or more tasks getIntersectionRankableFrom the same component, where a component is a spouts or boltsValidation getIntersectionRankableFrom a topologies.
+     * Each executor runs one or more tasks from the same component, where a component is a spouts or boltsValidation from a topologies.
      *
      *
      *
