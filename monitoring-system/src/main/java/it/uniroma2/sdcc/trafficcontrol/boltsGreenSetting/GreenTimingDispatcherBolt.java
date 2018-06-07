@@ -1,5 +1,6 @@
-package it.uniroma2.sdcc.trafficcontrol.bolts;
+package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
+import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -10,7 +11,7 @@ import org.apache.storm.tuple.Values;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 
-public class MeanSpeedDispatcherBolt extends AbstractDispatcherBolt {
+public class GreenTimingDispatcherBolt extends AbstractDispatcherBolt {
 
     @Override
     protected void doBefore() {
@@ -26,9 +27,8 @@ public class MeanSpeedDispatcherBolt extends AbstractDispatcherBolt {
 
         streamValueHashMap.put(
                 DEFAULT_STREAM,
-                new Values(richSemaphoreSensor.getSemaphoreId(), richSemaphoreSensor)
+                new Values(richSemaphoreSensor.getIntersectionId(), richSemaphoreSensor)
         );
-
         return DEFAULT_STREAM;
     }
 

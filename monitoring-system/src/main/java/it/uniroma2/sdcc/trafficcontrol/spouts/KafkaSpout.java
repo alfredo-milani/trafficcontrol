@@ -35,7 +35,7 @@ public class KafkaSpout extends BaseRichSpout {
 
         Properties props = new Properties();
         props.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
-        props.put(GROUP_ID, APP_NAME);
+        props.put(GROUP_ID, String.format("%s - %d", APP_NAME, this.hashCode()));
         props.put(AUTO_COMMIT, TRUE_VALUE);
         props.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);
         props.put(VALUE_DESERIALIZER, DESERIALIZER_VALUE);

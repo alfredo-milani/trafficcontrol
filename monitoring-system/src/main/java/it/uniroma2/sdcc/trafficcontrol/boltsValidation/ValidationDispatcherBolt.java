@@ -35,7 +35,7 @@ public class ValidationDispatcherBolt extends AbstractDispatcherBolt {
             streamValueHashMap.putIfAbsent(MOBILE_SENSOR_STREAM, new Values(mobileSensor.getMobileId(), mobileSensor));
             return MOBILE_SENSOR_STREAM;
         } else {
-            throw new BadTuple(String.format("Bad tuple: %s", tuple.toString()));
+            throw new BadTuple();
         }
     }
 

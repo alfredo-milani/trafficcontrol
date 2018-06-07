@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.FilterBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenSetter;
+import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenTimingDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.tuple.Fields;
 
@@ -27,8 +28,12 @@ public class GreenSettingTopology extends BaseTopology {
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED), 2)
                 .setNumTasks(4);
 
+        builder.setBolt(GREEN_TIMING_DISPATCHER_BOLT, new GreenTimingDispatcherBolt(), 2)
+                .shuffleGrouping(KAFKA_SPOUT)
+                .setNumTasks(2);
+
         builder.setBolt(FILTER_GREEN_BOLT, new FilterBolt())
-                .fieldsGrouping(KAFKA_SPOUT, new Fields(INTERSECTION_ID))
+                .fieldsGrouping(GREEN_TIMING_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
 
         builder.setBolt(GREEN_SETTER, new GreenSetter(GREEN_TEMPORIZATION))

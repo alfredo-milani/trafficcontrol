@@ -3,7 +3,6 @@ package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporization;
 import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
-import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -15,6 +14,7 @@ import org.apache.storm.tuple.Values;
 import java.util.HashMap;
 import java.util.Map;
 
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPORIZATION_VALUE;
 
 public class FilterBolt extends BaseRichBolt {
@@ -31,10 +31,7 @@ public class FilterBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         try {
-            RichSemaphoreSensor richSemaphoreSensor = RichSemaphoreSensor.getInstanceFrom(tuple);
-            if (richSemaphoreSensor == null) {
-                throw new BadTuple(String.format("Bad tuple: %s", tuple.toString()));
-            }
+            RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) tuple.getValueByField(SEMAPHORE_SENSOR);
 
             Long intersectionId = richSemaphoreSensor.getIntersectionId();
             SemaphoreSensor semaphoreSensor = SemaphoreSensor.getInstanceFrom(richSemaphoreSensor);
@@ -57,7 +54,7 @@ public class FilterBolt extends BaseRichBolt {
                 }
             }
 
-        } catch (ClassCastException | IllegalArgumentException | BadTuple e) {
+        } catch (ClassCastException | IllegalArgumentException e) {
             e.printStackTrace();
         } finally {
             collector.ack(tuple);

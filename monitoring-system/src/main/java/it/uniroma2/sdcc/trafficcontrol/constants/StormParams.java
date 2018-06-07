@@ -44,6 +44,7 @@ public interface StormParams {
     String VALUE_GLOBAL_MEDIAN = "value_global_median";
 
     //Green Setting bolts
+    String GREEN_TIMING_DISPATCHER_BOLT = "green_timing_dispatcher_bolt";
     String FILTER_GREEN_BOLT = "filter_green_bolt";
     String GREEN_SETTER = "green_setter";
     String GREEN_TEMPORIZATION_VALUE = "green_temporization_value";
