@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersectionManager;
+import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.tuple.Tuple;
 
@@ -42,8 +42,8 @@ public class IntersectionRankable implements Rankable, Serializable {
      * @return new instance based on the provided tuple
      */
     public static IntersectionRankable getIntersectionRankableFrom(Tuple tuple) throws IllegalArgumentException {
-        MeanSpeedIntersectionManager meanSpeedIntersectionManager =
-                (MeanSpeedIntersectionManager) tuple.getValueByField(INTERSECTION_MEAN_SPEED_OBJECT);
+        MeanSpeedIntersection meanSpeedIntersectionManager =
+                (MeanSpeedIntersection) tuple.getValueByField(INTERSECTION_MEAN_SPEED_OBJECT);
 
         Object[] k = {6, 9};
         return new IntersectionRankable(

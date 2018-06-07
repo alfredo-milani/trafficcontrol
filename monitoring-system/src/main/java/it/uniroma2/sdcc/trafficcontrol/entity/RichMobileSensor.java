@@ -32,10 +32,7 @@ public class RichMobileSensor implements RichSensor {
 
     public static RichMobileSensor getInstanceFrom(Tuple tuple) {
         try {
-            // TODO vedi se lasciare in questo metodo o nel chiamante
             String rawTuple = tuple.getStringByField(KAFKA_RAW_TUPLE);
-            // TODO end
-
             JsonNode jsonNode = mapper.readTree(rawTuple);
 
             // Verifica correttezza valori tupla

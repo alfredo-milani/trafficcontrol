@@ -21,6 +21,7 @@ public interface KafkaParams {
     String GENERIC_TUPLE_TO_VALIDATE = "generic_tuple_to_validate";
     String SEMAPHORE_SENSOR_VALIDATED = "semaphore_sensor_validated";
     String MOBILE_SENSOR_VALIDATED = "mobile_sensor_validated";
+    String SEMAPHORE_LIGHT_STATUS = "semaphore_status";
     String RANKING_PROCESSED = "ranking_processed";
     String GREEN_TEMPORIZATION = "green_temporization";
     String ODD_SEMAPHORES = "odd_semaphores";
@@ -37,7 +38,6 @@ public interface KafkaParams {
     String MONITORING_QUERY3_ROAD_WEEKLY = "monitoring_query3_road_weekly";
     String MONITORING_QUERY3_CITY_WEEKLY = "monitoring_query3_city_weekly";
     String MONITORING_QUERY4 = "monitoring_query4";
-    String SEMAPHORE_STATUS = "semaphore_status";
 
     // Kafka's tuples informations
     String KAFKA_TIMESTAMP = "kafka_timestamp";

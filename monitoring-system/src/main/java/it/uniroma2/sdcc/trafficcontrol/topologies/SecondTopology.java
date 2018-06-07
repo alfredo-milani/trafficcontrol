@@ -21,11 +21,11 @@ public class SecondTopology extends BaseTopology {
     protected void setTopology() {
         /*builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED))
                 .setNumTasks(4);
-        builder.setBolt(BASE_DISPATCHER_BOLT, new BaseDispatcherBolt())
+        builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt())
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
         builder.setBolt(AUTHENTICATION_CACHE_BOLT, new SemaphoreSensorAuthCacheBolt(), 4)
-                .shuffleGrouping(BASE_DISPATCHER_BOLT)
+                .shuffleGrouping(MEAN_SPEED_DISPATCHER_BOLT)
                 .setNumTasks(4);
         builder.setBolt(SEMAPHORE_AUTH_DB_BOLT, new AuthenticationDBBolt(), 3)
                 .shuffleGrouping(AUTHENTICATION_CACHE_BOLT, CACHE_MISS_STREAM)
@@ -49,7 +49,7 @@ public class SecondTopology extends BaseTopology {
                 .setNumTasks(1);*/
 
       /*  builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankBolt(10))
-                // .fieldsGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT, new Fields(SEMAPHORE_STATUS))
+                // .fieldsGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT, new Fields(SEMAPHORE_LIGHT_STATUS))
                 .shuffleGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT)
                 .setNumTasks(4);
         builder.setBolt(GLOBAL_RANK_BOLT, new GlobalRankBolt(10), 1)

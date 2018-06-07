@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.BaseDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.bolts.MeanSpeedDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.GlobalRankingsBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.MeanCalculatorBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.PartialRankingsBolt;
@@ -33,12 +33,12 @@ public class FirstTopology extends BaseTopology {
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED), 2)
                 .setNumTasks(4);
 
-        builder.setBolt(BASE_DISPATCHER_BOLT, new BaseDispatcherBolt(), 2)
+        builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt(), 2)
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
 
         builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(), 2)
-                .fieldsGrouping(BASE_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
+                .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
         /*
         builder.setBolt(PARTIAL_RANK_BOLT, new PartialRankWindowedBolt(10).withWindow(

@@ -1,11 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 
-import org.apache.storm.tuple.Tuple;
-
 import java.io.Serializable;
-
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
 public class SemaphoreSensor implements Serializable {
 
@@ -27,21 +23,14 @@ public class SemaphoreSensor implements Serializable {
         this.vehiclesNumber = vehiclesNumber;
     }
 
-    public static SemaphoreSensor getSemaphoreSensorFrom(Tuple tuple) throws ClassCastException, IllegalArgumentException {
-        Long semaphoreId = tuple.getLongByField(SEMAPHORE_ID);
-        Double semaphoreLatitude = tuple.getDoubleByField(SEMAPHORE_LATITUDE);
-        Double semaphoreLongitude = tuple.getDoubleByField(SEMAPHORE_LONGITUDE);
-        Long semaphoreTimestampUTC = tuple.getLongByField(SEMAPHORE_TIMESTAMP_UTC);
-        Short averageVehiclesSpeed = tuple.getShortByField(AVERAGE_VEHICLES_SPEED);
-        Short vehiclesNumber = tuple.getShortByField(VEHICLES);
-
+    public static SemaphoreSensor getInstanceFrom(RichSemaphoreSensor richSemaphoreSensor) {
         return new SemaphoreSensor(
-                semaphoreId,
-                semaphoreLatitude,
-                semaphoreLongitude,
-                semaphoreTimestampUTC,
-                averageVehiclesSpeed,
-                vehiclesNumber
+                richSemaphoreSensor.getSemaphoreId(),
+                richSemaphoreSensor.getSemaphoreLatitude(),
+                richSemaphoreSensor.getSemaphoreLongitude(),
+                richSemaphoreSensor.getSemaphoreTimestampUTC(),
+                richSemaphoreSensor.getAverageVehiclesSpeed(),
+                richSemaphoreSensor.getVehiclesNumber()
         );
     }
 

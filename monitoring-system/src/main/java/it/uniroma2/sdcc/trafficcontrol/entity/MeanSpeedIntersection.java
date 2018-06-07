@@ -2,14 +2,14 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_NUMBER_TO_COMPUTE_SPEED_MEAN;
 
-public class MeanSpeedIntersectionManager extends BaseIntersectionManager {
+public class MeanSpeedIntersection extends BaseIntersection {
 
     private final static int ERROR_IN_INTERSECTION_TOPOLOGY = -2;
     private final static int MEAN_SPEED_NOT_COMPUTED = -1;
 
     private int meanIntersectionSpeed = MEAN_SPEED_NOT_COMPUTED;
 
-    public MeanSpeedIntersectionManager(Long intersectionId) {
+    public MeanSpeedIntersection(Long intersectionId) {
         super(intersectionId);
     }
 

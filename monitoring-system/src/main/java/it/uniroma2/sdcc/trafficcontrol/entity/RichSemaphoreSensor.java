@@ -23,14 +23,14 @@ public class RichSemaphoreSensor implements RichSensor {
     private Byte greenLightStatus;
     private Byte yellowLightStatus;
     private Byte redLightStatus;
-    private Short vehiclesPerSecond;
+    private Short vehiclesNumber;
     private Short averageVehiclesSpeed;
 
     public RichSemaphoreSensor(Long intersectionId, Long semaphoreId,
                                Double semaphoreLatitude, Double semaphoreLongitude,
                                Long semaphoreTimestampUTC, Short greenLightDuration,
                                Byte greenLightStatus, Byte yellowLightStatus,
-                               Byte redLightStatus, Short vehiclesPerSecond,
+                               Byte redLightStatus, Short vehiclesNumber,
                                Short averageVehiclesSpeed) {
         this.intersectionId = intersectionId;
         this.semaphoreId = semaphoreId;
@@ -41,16 +41,13 @@ public class RichSemaphoreSensor implements RichSensor {
         this.greenLightStatus = greenLightStatus;
         this.yellowLightStatus = yellowLightStatus;
         this.redLightStatus = redLightStatus;
-        this.vehiclesPerSecond = vehiclesPerSecond;
+        this.vehiclesNumber = vehiclesNumber;
         this.averageVehiclesSpeed = averageVehiclesSpeed;
     }
 
     public static RichSemaphoreSensor getInstanceFrom(Tuple tuple) {
         try {
-            // TODO vedi se lasciare in questo metodo o nel chiamante
             String rawTuple = tuple.getStringByField(KAFKA_RAW_TUPLE);
-            // TODO end
-
             JsonNode jsonNode = mapper.readTree(rawTuple);
 
             // Verifica correttezza valori tupla
@@ -96,7 +93,7 @@ public class RichSemaphoreSensor implements RichSensor {
         objectNode.put(GREEN_LIGHT_STATUS, greenLightStatus);
         objectNode.put(YELLOW_LIGHT_STATUS, yellowLightStatus);
         objectNode.put(RED_LIGHT_STATUS, redLightStatus);
-        objectNode.put(VEHICLES, vehiclesPerSecond);
+        objectNode.put(VEHICLES, vehiclesNumber);
         objectNode.put(AVERAGE_VEHICLES_SPEED, averageVehiclesSpeed);
 
         return objectNode.toString();
@@ -174,12 +171,12 @@ public class RichSemaphoreSensor implements RichSensor {
         this.redLightStatus = redLightStatus;
     }
 
-    public Short getVehiclesPerSecond() {
-        return vehiclesPerSecond;
+    public Short getVehiclesNumber() {
+        return vehiclesNumber;
     }
 
-    public void setVehiclesPerSecond(Short vehiclesPerSecond) {
-        this.vehiclesPerSecond = vehiclesPerSecond;
+    public void setVehiclesNumber(Short vehiclesNumber) {
+        this.vehiclesNumber = vehiclesNumber;
     }
 
     public Short getAverageVehiclesSpeed() {

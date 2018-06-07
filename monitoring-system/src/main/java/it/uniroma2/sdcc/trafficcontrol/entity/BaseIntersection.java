@@ -8,12 +8,12 @@ import java.util.List;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 
-public class BaseIntersectionManager implements Serializable {
+public class BaseIntersection implements Serializable {
 
     protected final Long intersectionId;
     protected List<SemaphoreSensor> semaphoreSensors;
 
-    public BaseIntersectionManager(Long intersectionId) {
+    public BaseIntersection(Long intersectionId) {
         this.intersectionId = intersectionId;
         this.semaphoreSensors = new LinkedList<>();
     }

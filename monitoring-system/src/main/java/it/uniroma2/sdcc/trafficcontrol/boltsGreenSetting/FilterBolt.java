@@ -1,8 +1,9 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.BaseIntersectionManager;
-import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationManager;
+import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporization;
+import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -19,7 +20,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPOR
 public class FilterBolt extends BaseRichBolt {
 
     private OutputCollector collector;
-    private HashMap<Long, GreenTemporizationManager> handlerHashMap;
+    private HashMap<Long, GreenTemporization> handlerHashMap;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
@@ -30,14 +31,19 @@ public class FilterBolt extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         try {
-            Long intersectionId = BaseIntersectionManager.getIntersectionIdFrom(tuple);
-            SemaphoreSensor semaphoreSensor = SemaphoreSensor.getSemaphoreSensorFrom(tuple);
+            RichSemaphoreSensor richSemaphoreSensor = RichSemaphoreSensor.getInstanceFrom(tuple);
+            if (richSemaphoreSensor == null) {
+                throw new BadTuple(String.format("Bad tuple: %s", tuple.toString()));
+            }
+
+            Long intersectionId = richSemaphoreSensor.getIntersectionId();
+            SemaphoreSensor semaphoreSensor = SemaphoreSensor.getInstanceFrom(richSemaphoreSensor);
 
             // Se la chiave è presente ritorna l'istanza dalla hashMap,
             // altrimenti aggiungi il valore nella hashMap e ritorna null
-            GreenTemporizationManager intersectionFromHashMap = handlerHashMap.putIfAbsent(
+            GreenTemporization intersectionFromHashMap = handlerHashMap.putIfAbsent(
                     intersectionId,
-                    new GreenTemporizationManager(intersectionId)
+                    new GreenTemporization(intersectionId)
             );
 
             if (intersectionFromHashMap != null) {
@@ -51,7 +57,7 @@ public class FilterBolt extends BaseRichBolt {
                 }
             }
 
-        } catch (ClassCastException | IllegalArgumentException e) {
+        } catch (ClassCastException | IllegalArgumentException | BadTuple e) {
             e.printStackTrace();
         } finally {
             collector.ack(tuple);

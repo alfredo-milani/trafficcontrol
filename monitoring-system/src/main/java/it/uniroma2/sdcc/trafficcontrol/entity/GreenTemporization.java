@@ -3,13 +3,13 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GreenTemporizationManager extends BaseIntersectionManager {
+public class GreenTemporization extends BaseIntersection {
 
     List<SemaphoreSensor> semaphoreSensorsEven;
     List<SemaphoreSensor> semaphoreSensorsOdd;
 
 
-    public GreenTemporizationManager(Long intersectionId) {
+    public GreenTemporization(Long intersectionId) {
 
         super(intersectionId);
         semaphoreSensorsEven = new ArrayList<>();

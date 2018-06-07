@@ -11,6 +11,8 @@ import java.util.Map;
 
 public abstract class AbstractDispatcherBolt extends BaseRichBolt {
 
+    protected final static String DEFAULT_STREAM = "default_stream";
+
     private OutputCollector collector;
     protected final HashMap<String, Values> streamValueHashMap;
 
@@ -29,7 +31,11 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
             doBefore();
 
             String stream = computeValuesToEmit(tuple);
-            collector.emit(stream, streamValueHashMap.get(stream));
+            if (stream.equals(DEFAULT_STREAM)) {
+                collector.emit(streamValueHashMap.get(DEFAULT_STREAM));
+            } else {
+                collector.emit(stream, streamValueHashMap.get(stream));
+            }
 
             doAfter();
         } catch (Exception e) {
@@ -42,6 +48,16 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
 
     protected abstract void doBefore();
 
+    /**
+     * Computa la stringa da emettere verso il bolt successivo nella topologia.
+     * In questo metodo è preferibile popolare l'hashMap che mappa gli streams con i valori da emettere.
+     * In caso si vuole emettere la tupla sullo stream di default, utilizzare {@link AbstractDispatcherBolt#DEFAULT_STREAM}
+     * come chiave di {@link AbstractDispatcherBolt#streamValueHashMap}
+     *
+     * @param tuple Tupla ricevuta dal bolt precedente
+     * @return Stream sul quale emettere la tupla
+     * @throws Exception Generica eccezione
+     */
     protected abstract String computeValuesToEmit(Tuple tuple) throws Exception;
 
     protected abstract void doAfter();

@@ -27,7 +27,7 @@ public interface StormParams {
     String UPDATE_STREAM = "update_stream";
 
     // Ranking Bolts
-    String BASE_DISPATCHER_BOLT = "base_dispatcher_bolt";
+    String MEAN_SPEED_DISPATCHER_BOLT = "mean_speed_dispatcher_bolt";
     String VALIDATION_DISPATCHER_BOLT = "validation_dispatcher_bolt";
     String MEAN_CALCULATOR_BOLT = "mean_calculator_bolt";
     String INTERSECTION_MEAN_SPEED_OBJECT = "intersection_mean_speed_object";
