@@ -30,7 +30,7 @@ public class FirstTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED), 2)
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 2)
                 .setNumTasks(4);
 
         builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt(), 2)

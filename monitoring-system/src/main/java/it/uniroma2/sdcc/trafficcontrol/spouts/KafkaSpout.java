@@ -21,12 +21,20 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 
 public class KafkaSpout extends BaseRichSpout {
 
+    private final static String DEFAULT_GROPU_ID = APP_NAME;
+
     private SpoutOutputCollector collector;
     private KafkaConsumer<String, String> consumer;
     private final String sourceTopic;
+    private final String groupId;
 
     public KafkaSpout(String sourceTopic) {
+        this(sourceTopic, DEFAULT_GROPU_ID);
+    }
+
+    public KafkaSpout(String sourceTopic, String groupId) {
         this.sourceTopic = sourceTopic;
+        this.groupId = groupId;
     }
 
     @Override
@@ -35,7 +43,7 @@ public class KafkaSpout extends BaseRichSpout {
 
         Properties props = new Properties();
         props.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
-        props.put(GROUP_ID, String.format("%s - %d", APP_NAME, this.hashCode()));
+        props.put(GROUP_ID, groupId);
         props.put(AUTO_COMMIT, TRUE_VALUE);
         props.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);
         props.put(VALUE_DESERIALIZER, DESERIALIZER_VALUE);

@@ -19,7 +19,7 @@ public class SecondTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        /*builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED))
+        /*builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME))
                 .setNumTasks(4);
         builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt())
                 .shuffleGrouping(KAFKA_SPOUT)
