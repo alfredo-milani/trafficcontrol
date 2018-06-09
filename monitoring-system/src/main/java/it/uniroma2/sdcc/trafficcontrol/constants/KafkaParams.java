@@ -22,7 +22,7 @@ public interface KafkaParams {
     String SEMAPHORE_SENSOR_VALIDATED = "semaphore_sensor_validated";
     String MOBILE_SENSOR_VALIDATED = "mobile_sensor_validated";
     String SEMAPHORE_LIGHT_STATUS = "semaphore_status";
-    String RANKING_PROCESSED = "ranking_processed";
+    String RANKINGS_PROCESSED = "rankings_processed";
     String GREEN_TEMPORIZATION = "green_temporization";
     String ODD_SEMAPHORES = "odd_semaphores";
     String EVEN_SEMAPHORES = "even_semaphores";

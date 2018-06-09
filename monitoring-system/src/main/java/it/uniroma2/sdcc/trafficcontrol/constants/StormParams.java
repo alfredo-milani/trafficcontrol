@@ -31,9 +31,10 @@ public interface StormParams {
     String VALIDATION_DISPATCHER_BOLT = "validation_dispatcher_bolt";
     String MEAN_CALCULATOR_BOLT = "mean_calculator_bolt";
     String INTERSECTION_MEAN_SPEED_OBJECT = "intersection_mean_speed_object";
-    String RANKABLE_OBJECT = "rankable_object";
-    String PARTIAL_RANK_BOLT = "partial_rank_bolt";
-    String GLOBAL_RANK_BOLT = "global_rank_bolt";
+    String PARTIAL_RANKINGS_OBJECT = "partial_rankable_object";
+    String GLOBAL_RANKINGS_OBJECT = "global_rankable_object";
+    String PARTIAL_WINDOWED_RANK_BOLT = "partial_windowed_rank_bolt";
+    String GLOBAL_WINDOWED_RANK_BOLT = "global_windowed_rank_bolt";
 
     // per seconda query
     String INTERSECTION_AND_GLOBAL_MEDIAN = "intersection_and_global_median";
@@ -50,35 +51,7 @@ public interface StormParams {
     String GREEN_TEMPORIZATION_VALUE = "green_temporization_value";
 
 
-    String PARSER_BOLT = "parser";
-    String SELECTOR_BOLT = "selector";
-    String SELECTOR_BOLT_2 = "selector2";
-    String SELECTOR_BOLT_3_4 = "selector3";
-    String SHEDDER = "shedder";
-    String FILTER_BOLT_QUERY_1 = "filter1";
-    String FILTER_BOLT_QUERY_2 = "filter2";
-    String METRONOME = "metronome";
-    String COMPUTE_MEAN_LAMP = "cml";
-    String COMPUTE_MEAN_LAMP_24H = "cml24";
-    String COMPUTE_MEAN_LAMP_WEEK = "cmlweek";
-    String COMPUTE_MEAN_STREET = "cms";
-    String COMPUTE_MEAN_STREET_24H = "cms24";
-    String COMPUTE_MEAN_STREET_WEEK = "cmsweek";
-    String COMPUTE_MEAN_CITY = "cmc";
-    String COMPUTE_MEAN_CITY_24H = "cmc24";
-    String COMPUTE_MEAN_CITY_WEEK = "cmcweek";
-    String COUNT_LAMP_FOR_ROAD = "clfr";
-    String LAMP_PQUANTILE = "lpq";
-    String GLOBAL_PQUANTILE = "gpq";
-    String COMPARATOR = "comp";
-
-    String S_METRONOME = "sMetronome";
-    String D_METRONOME = "dMetronome";
     String UPDATE_PARTIAL = "update";
     String REMOVE = "remove";
-    String S_TUPLE = "sTuple";
-    String S_NUM = "nRoad";
-    String MEDIAN = "median";
-    String LAMPS_FOR_ROAD = "lampsForRoad";
 
 }

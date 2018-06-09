@@ -7,7 +7,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
@@ -70,7 +69,7 @@ public class SemaphoreSensorThread implements Runnable {
 
             try {
                 String jsonStringLamp = mapper.writeValueAsString(this);
-                StartProducer.getLOGGER().log(Level.INFO, jsonStringLamp);
+                // StartProducer.getLOGGER().log(Level.INFO, jsonStringLamp);
                 producer.send(new ProducerRecord<>(topicName, jsonStringLamp));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();

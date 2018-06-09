@@ -1,6 +1,5 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.tuple.Tuple;
@@ -11,8 +10,6 @@ import java.util.List;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 
 public class IntersectionRankable implements Rankable, Serializable {
-
-    private final static ObjectMapper mapper = new ObjectMapper();
 
     private final Long intersectionId;
     private final int meanIntersectionSpeed;
@@ -96,7 +93,7 @@ public class IntersectionRankable implements Rankable, Serializable {
     @Override
     public int hashCode() {
         int result = 17;
-        int countHash = (int) (meanIntersectionSpeed ^ (meanIntersectionSpeed >>> 32));
+        int countHash = (int) (meanIntersectionSpeed ^ ((long) meanIntersectionSpeed >>> 32));
         result = 31 * result + countHash;
         result = 31 * result + intersectionId.hashCode();
         return result;

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public interface IWindow<T> {
 
-    ArrayList<T> getNewEvents();
+    ArrayList<T> getNewEventsWindow();
 
-    ArrayList<T> getCurrentEvents();
+    ArrayList<T> getCurrentEventsWindow();
 
-    ArrayList<T> getExpiredEvents();
+    ArrayList<T> getExpiredEventsWindow();
 
 }

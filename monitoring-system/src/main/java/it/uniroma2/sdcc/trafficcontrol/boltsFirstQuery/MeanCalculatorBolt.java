@@ -45,6 +45,8 @@ public class MeanCalculatorBolt extends BaseRichBolt {
                     new MeanSpeedIntersection(intersectionId)
             );
 
+            // TODO mettere finesrta temporale anche qui e nella add() controllare se aggiungere all'intersezione o se
+            // crearne una nuova perché quella è scaduta
             if (intersectionFromHashMap != null) { // Intersezione da aggiornare
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
                 if (intersectionFromHashMap.isListReadyForComputation()) { // Controllo se sono arrivate tutte le tuple per computare la media
