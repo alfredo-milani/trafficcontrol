@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.exceptions;
 
-public class RecordNotFound extends Exception {
+public class RecordNotFound extends RuntimeException {
 
     public RecordNotFound() {
         super();
