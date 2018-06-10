@@ -10,7 +10,7 @@ import java.io.IOException;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class RichSemaphoreSensor implements RichSensor {
+public class RichSemaphoreSensor implements RichSensor<RichSemaphoreSensor> {
 
     private final static ObjectMapper mapper = new ObjectMapper();
 
@@ -81,6 +81,7 @@ public class RichSemaphoreSensor implements RichSensor {
         }
     }
 
+    @Override
     public String getJsonFromInstance() {
         ObjectNode objectNode = mapper.createObjectNode();
 

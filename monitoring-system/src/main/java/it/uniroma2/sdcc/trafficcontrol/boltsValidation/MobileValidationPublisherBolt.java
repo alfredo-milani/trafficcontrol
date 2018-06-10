@@ -5,28 +5,21 @@ import it.uniroma2.sdcc.trafficcontrol.entity.RichMobileSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.MOBILE_SENSOR;
 
-public class MobileValidationPublisherBolt extends AbstractKafkaPublisherBolt {
+public class MobileValidationPublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
     public MobileValidationPublisherBolt(String topic) {
         super(topic);
     }
 
     @Override
-    protected void doBefore() {
-
-    }
-
-    @Override
-    protected String computeStringToPublish(Tuple tuple) {
+    protected ArrayList<String> computeStringToPublish(Tuple tuple) {
         RichMobileSensor mobileSensor = (RichMobileSensor) tuple.getValueByField(MOBILE_SENSOR);
-        return mobileSensor.getJsonFromInstance();
-    }
-
-    @Override
-    protected void doAfter() {
-
+        return new ArrayList<>(Collections.singletonList(mobileSensor.getJsonFromInstance()));
     }
 
     @Override

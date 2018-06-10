@@ -5,28 +5,21 @@ import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 
-public class SemaphoreValidationPublisherBolt extends AbstractKafkaPublisherBolt {
+public class SemaphoreValidationPublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
     public SemaphoreValidationPublisherBolt(String topic) {
         super(topic);
     }
 
     @Override
-    protected void doBefore() {
-
-    }
-
-    @Override
-    protected String computeStringToPublish(Tuple tuple) {
+    protected ArrayList<String> computeStringToPublish(Tuple tuple) {
         RichSemaphoreSensor semaphoreSensor = (RichSemaphoreSensor) tuple.getValueByField(SEMAPHORE_SENSOR);
-        return semaphoreSensor.getJsonFromInstance();
-    }
-
-    @Override
-    protected void doAfter() {
-
+        return new ArrayList<>(Collections.singletonList(semaphoreSensor.getJsonFromInstance()));
     }
 
     @Override

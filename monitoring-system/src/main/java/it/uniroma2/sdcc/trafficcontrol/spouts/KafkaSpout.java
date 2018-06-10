@@ -21,7 +21,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 
 public class KafkaSpout extends BaseRichSpout {
 
-    private final static String DEFAULT_GROPU_ID = APP_NAME;
+    private final static String DEFAULT_GROUP_ID = APP_NAME;
 
     private SpoutOutputCollector collector;
     private KafkaConsumer<String, String> consumer;
@@ -29,7 +29,7 @@ public class KafkaSpout extends BaseRichSpout {
     private final String groupId;
 
     public KafkaSpout(String sourceTopic) {
-        this(sourceTopic, DEFAULT_GROPU_ID);
+        this(sourceTopic, DEFAULT_GROUP_ID);
     }
 
     public KafkaSpout(String sourceTopic, String groupId) {

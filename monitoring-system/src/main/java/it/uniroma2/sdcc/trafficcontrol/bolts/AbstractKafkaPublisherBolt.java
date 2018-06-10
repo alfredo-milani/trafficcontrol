@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.bolts;
 
+import com.sun.istack.internal.NotNull;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.storm.task.OutputCollector;
@@ -7,16 +8,17 @@ import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 
-public abstract class AbstractKafkaPublisherBolt extends BaseRichBolt {
+public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
 
     private OutputCollector collector;
-    private KafkaProducer<String, String> producer;
+    private KafkaProducer<String, V> producer;
     private final String topic;
 
     public AbstractKafkaPublisherBolt(String topic) {
@@ -38,9 +40,7 @@ public abstract class AbstractKafkaPublisherBolt extends BaseRichBolt {
     @Override
     public final void execute(Tuple tuple) {
         try {
-            doBefore();
-            producer.send(new ProducerRecord<>(topic, computeStringToPublish(tuple)));
-            doAfter();
+            computeStringToPublish(tuple).forEach(v -> producer.send(new ProducerRecord<>(topic, v)));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -48,10 +48,7 @@ public abstract class AbstractKafkaPublisherBolt extends BaseRichBolt {
         }
     }
 
-    protected abstract void doBefore();
-
-    protected abstract String computeStringToPublish(Tuple tuple) throws Exception;
-
-    protected abstract void doAfter();
+    @NotNull
+    protected abstract ArrayList<V> computeStringToPublish(Tuple tuple) throws Exception;
 
 }

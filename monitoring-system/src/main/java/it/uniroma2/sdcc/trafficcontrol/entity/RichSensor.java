@@ -1,5 +1,15 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
-public interface RichSensor extends BasicSensor {
+import org.apache.logging.log4j.core.util.Assert;
+import org.apache.storm.tuple.Tuple;
+
+public interface RichSensor<T> extends BasicSensor {
+
+    static RichSensor getInstanceFrom(Tuple tuple) {
+        Assert.requireNonEmpty(tuple);
+        return null;
+    }
+
+    String getJsonFromInstance();
 
 }
