@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.storm.tuple.Tuple;
 
 import java.util.LinkedList;
@@ -7,7 +8,7 @@ import java.util.List;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 
-public class BaseIntersection implements BasicSensor {
+public class BaseIntersection implements ISensor {
 
     private final static Long NOT_INITIALIZED = null;
 
@@ -44,6 +45,15 @@ public class BaseIntersection implements BasicSensor {
 
     public void setSemaphoreSensors(List<SemaphoreSensor> semaphoreSensors) {
         this.semaphoreSensors = semaphoreSensors;
+    }
+
+    @Override
+    public String getJsonFromInstance() {
+        ObjectNode objectNode = mapper.createObjectNode();
+
+        objectNode.put(INTERSECTION_ID, intersectionId);
+
+        return objectNode.toString();
     }
 
 }

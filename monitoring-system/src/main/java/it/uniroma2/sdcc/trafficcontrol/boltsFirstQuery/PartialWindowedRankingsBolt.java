@@ -58,9 +58,9 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
             rankings.updateWith(rankable);
         });
 
-        if (!oldRankings.equals(rankings) /* && rankings.size() != 0 */) {
+        if (!oldRankings.equals(rankings) && rankings.size() != 0) {
             collector.emit(new Values(rankings));
-            System.out.println(rankings.toString());
+            // System.out.println(rankings.toString());
         }
     }
 

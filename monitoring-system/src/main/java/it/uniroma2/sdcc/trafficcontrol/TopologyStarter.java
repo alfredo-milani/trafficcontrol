@@ -1,7 +1,9 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
-import it.uniroma2.sdcc.trafficcontrol.topologies.*;
+import it.uniroma2.sdcc.trafficcontrol.topologies.BaseTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.FirstTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
 import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
@@ -33,6 +35,10 @@ public class TopologyStarter {
      * So in this case each storm will be running two tasks per executor.
      * By default, the number of tasks is set to be the same as the number of executors, i.e. Storm will run one task per thread.
      *
+     * In our topology, we also define the number of worker processess.
+     * Each process runs in a separate JVM process and can run on the same machine or any machine in the cluster.
+     * Each executor is run on a single thread.
+     *
      */
 
     private final static String CLASS_NAME = TopologyStarter.class.getName();
@@ -48,11 +54,11 @@ public class TopologyStarter {
 
         ArrayList<BaseTopology> topologies = new ArrayList<>();
         topologies.add(new ValidationTopology());
-        topologies.add(new SemaphoreStatusTopology());
+        // topologies.add(new SemaphoreStatusTopology());
         topologies.add(new FirstTopology());
         // topologies.add(new SecondTopology());
         // topologies.add(new ThirdTopology());
-        topologies.add(new GreenSettingTopology());
+        // topologies.add(new GreenSettingTopology());
 
         switch (MODE_SELECTED) {
             case MODE_LOCAL:

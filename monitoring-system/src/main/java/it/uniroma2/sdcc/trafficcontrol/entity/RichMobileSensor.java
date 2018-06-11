@@ -1,7 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.storm.tuple.Tuple;
 
@@ -10,9 +9,7 @@ import java.io.IOException;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.*;
 
-public class RichMobileSensor implements RichSensor<RichMobileSensor> {
-
-    private final static ObjectMapper mapper = new ObjectMapper();
+public class RichMobileSensor implements ISensor<RichMobileSensor> {
 
     private Long mobileId;
     private Long mobileTimestampUTC;

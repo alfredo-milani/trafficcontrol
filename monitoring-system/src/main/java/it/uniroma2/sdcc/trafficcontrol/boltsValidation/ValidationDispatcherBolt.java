@@ -1,9 +1,9 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.ISensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.RichMobileSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
-import it.uniroma2.sdcc.trafficcontrol.entity.RichSensor;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
@@ -22,11 +22,11 @@ public class ValidationDispatcherBolt extends AbstractDispatcherBolt {
 
     @Override
     protected void declareStreamValue(Tuple tuple, Map<String, Values> streamValueHashMap) throws BadTuple {
-        RichSensor richSensor;
-        if ((richSensor = RichSemaphoreSensor.getInstanceFrom(tuple)) != null) {
-            streamValueHashMap.put(SEMAPHORE_SENSOR_STREAM, new Values(((RichSemaphoreSensor) richSensor).getSemaphoreId(), richSensor));
-        } else if ((richSensor = RichMobileSensor.getInstanceFrom(tuple)) != null) {
-            streamValueHashMap.putIfAbsent(MOBILE_SENSOR_STREAM, new Values(((RichMobileSensor) richSensor).getMobileId(), richSensor));
+        ISensor sensor;
+        if ((sensor = RichSemaphoreSensor.getInstanceFrom(tuple)) != null) {
+            streamValueHashMap.put(SEMAPHORE_SENSOR_STREAM, new Values(((RichSemaphoreSensor) sensor).getSemaphoreId(), sensor));
+        } else if ((sensor = RichMobileSensor.getInstanceFrom(tuple)) != null) {
+            streamValueHashMap.putIfAbsent(MOBILE_SENSOR_STREAM, new Values(((RichMobileSensor) sensor).getMobileId(), sensor));
         } else {
             throw new BadTuple();
         }

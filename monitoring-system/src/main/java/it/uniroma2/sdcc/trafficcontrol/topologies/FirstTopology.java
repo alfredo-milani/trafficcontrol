@@ -38,15 +38,15 @@ public class FirstTopology extends BaseTopology {
                 .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
 
-        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialWindowedRankingsBolt(), 2)
+        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialWindowedRankingsBolt(6, 2), 4)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
-        builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalWindowedRankingsBolt(4, 2))
+        builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalWindowedRankingsBolt(6, 2))
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT);
 
         builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new GlobalRankingsPublisherBolt(RANKINGS_PROCESSED), 2)
                 .shuffleGrouping(GLOBAL_WINDOWED_RANK_BOLT)
-                .setNumTasks(4);
+                .setNumTasks(2);
     }
 
     @Override

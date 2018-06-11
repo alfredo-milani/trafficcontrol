@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class StatusSemaphoreSensor implements BasicSensor {
+public class StatusSemaphoreSensor implements ISensor {
 
     public enum SemaphoreStatus {
         WORKING,

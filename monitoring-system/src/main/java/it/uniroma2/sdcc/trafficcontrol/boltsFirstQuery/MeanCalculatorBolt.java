@@ -21,7 +21,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION
 
 public class MeanCalculatorBolt extends BaseRichBolt {
 
-    private HashMap<Long, MeanSpeedIntersection> handlerHashMap;
+    private Map<Long, MeanSpeedIntersection> handlerHashMap;
     private OutputCollector collector;
 
     @Override

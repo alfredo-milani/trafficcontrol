@@ -87,14 +87,20 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             throw new IllegalArgumentException(
                     String.format("The emit frequency must be >= 1 seconds (you requested %d seconds)", emitFrequencyInSeconds));
         }
+        if (emitFrequencyInSeconds > windowSizeInSeconds) {
+            throw new IllegalArgumentException(String.format(
+                    "The emit frequency must be <= window size (you selected: frequency to %d and window to %d",
+                    emitFrequencyInSeconds,
+                    windowSizeInSeconds
+            ));
+        }
 
         this.windowSizeInSeconds = windowSizeInSeconds;
         this.windowSizeInMillis = this.windowSizeInSeconds * 1000;
         this.emitFrequencyInSeconds = emitFrequencyInSeconds;
         this.emitFrequencyInMillis = this.emitFrequencyInSeconds * 1000;
-        this.lowerBoundWindow = System.currentTimeMillis();
-        this.upperBoundWindow = this.lowerBoundWindow + this.emitFrequencyInMillis;
         this.eventsWindow = new EventsWindow();
+        this.lowerBoundWindow = this.upperBoundWindow = System.currentTimeMillis();
     }
 
     @Override
@@ -104,54 +110,67 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
     @Override
     public final void execute(Tuple tuple) {
-        if (TupleUtils.isTick(tuple)) {
-            // Aggiungo gli eventi occorsi nello sliding interval nella lista degli eventi correnti
-            eventsWindow.getCurrentEventsMap().putAll(eventsWindow.getNewEventsMap());
+        try {
+            if (TupleUtils.isTick(tuple)) {
+                // Avanzamento head finestra temporale
+                upperBoundWindow += emitFrequencyInMillis;
 
-            // Avanzamento head finestra temporale
-            upperBoundWindow += emitFrequencyInMillis;
+                if (upperBoundWindow - lowerBoundWindow > windowSizeInMillis) {
+                    // La finestra dal tempo 0 è > windowSize
+                    // Avanzamento tail finestra temporale
+                    lowerBoundWindow += emitFrequencyInMillis;
 
-            if (upperBoundWindow - lowerBoundWindow > windowSizeInMillis) {
-                // La finestra dal tempo 0 è >= windowSize
-                // Avanzamento tail finestra temporale
-                lowerBoundWindow += emitFrequencyInMillis;
-
-                Iterator<Map.Entry<Long, Tuple>> iterator = eventsWindow.getCurrentEventsMap().entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<Long, Tuple> record = iterator.next();
-                    if (record.getKey() < lowerBoundWindow) {
-                        // Aggiunta dei valori eliminati in expiredEventMap
-                        eventsWindow.getExpiredEventsMap().put(record.getKey(), record.getValue());
-                        // Eliminazione eventi usciti dalla finestra temporale corrente
-                        iterator.remove();
+                    Iterator<Map.Entry<Long, Tuple>> iterator = eventsWindow.getCurrentEventsMap().entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<Long, Tuple> record = iterator.next();
+                        if (record.getKey() < lowerBoundWindow) {
+                            // Aggiunta dei valori eliminati in expiredEventMap
+                            eventsWindow.getExpiredEventsMap().put(record.getKey(), record.getValue());
+                            // Eliminazione eventi usciti dalla finestra temporale corrente
+                            iterator.remove();
+                        }
                     }
                 }
+
+                // Aggiungo gli eventi occorsi nello sliding interval nella lista degli eventi correnti
+                eventsWindow.getCurrentEventsMap().putAll(eventsWindow.getNewEventsMap());
+
+                onTick(collector, eventsWindow);
+
+                eventsWindow.getNewEventsMap().clear();
+                eventsWindow.getExpiredEventsMap().clear();
+            } else {
+                Long timestampToUse = System.currentTimeMillis();
+
+                Long timestampFromTuple = getTimestampFrom(tuple);
+                if (timestampFromTuple != null) {
+                    if (timestampFromTuple < lowerBoundWindow || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis) {
+                        return;
+                    }
+                    timestampToUse = timestampFromTuple;
+                }
+
+                eventsWindow.getNewEventsMap().put(timestampToUse, tuple);
+
+                onTupleReceived(tuple);
             }
-
-            onTick(collector, eventsWindow);
-
-            eventsWindow.getNewEventsMap().clear();
-            eventsWindow.getExpiredEventsMap().clear();
-        } else {
-            Long tupleTimestamp = getTimestampFrom(tuple);
-            if (tupleTimestamp != null && (tupleTimestamp < lowerBoundWindow || tupleTimestamp > upperBoundWindow)) {
-                // TODO skippa tupla
-            }
-            Long timestamp = tupleTimestamp == null ?
-                    System.currentTimeMillis() : tupleTimestamp;
-
-            eventsWindow.getNewEventsMap().put(timestamp, tuple);
-
-            onTupleReceived(tuple);
+        } finally {
+            collector.ack(tuple);
         }
-
-        collector.ack(tuple);
     }
 
     protected abstract void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow);
 
     protected abstract void onTupleReceived(Tuple tuple);
 
+    /**
+     * Metodo opzionale che permette di utilizzare un eventuale timestamp contenuto all'interno della tupla.
+     * Se invece si vuole utilizzare il timestamp di arrivo della tupla nel bolt {@link AbstractWindowedBolt} per
+     * determinare se una tupla è nuova o scaduta ritornare il valore null (comportamento di default)
+     *
+     * @param tuple Tupla dalla quale estrarre il timestamp
+     * @return Timestamp
+     */
     protected Long getTimestampFrom(Tuple tuple) {
         return null;
     }

@@ -77,18 +77,25 @@ public class Rankings implements Serializable {
 
     public List<Rankable> getRankings() {
         List<Rankable> copy = Lists.newLinkedList();
-        rankedItems.stream().map(Rankable::copy).forEach(copy::add);
+        for (int i = 0; i < rankedItems.size(); ++i) {
+            copy.add(i, rankedItems.get(i).copy());
+        }
+        /*for (Rankable r : rankedItems) {
+            copy.add(r.copy());
+        }*/
         return ImmutableList.copyOf(copy);
     }
 
     public void updateWithThreadSafe(Rankings other) {
         synchronized (rankedItems) {
-            other.getRankingsThreadSafe().forEach(this::updateWithThreadSafe);
+            other.getRankings().forEach(this::updateWithThreadSafe);
         }
     }
 
     public void updateWith(Rankings other) {
-        other.getRankings().forEach(this::updateWith);
+        for (Rankable r : other.getRankings()) {
+            updateWith(r);
+        }
     }
 
     public void updateWithThreadSafe(Rankable r) {
@@ -107,12 +114,15 @@ public class Rankings implements Serializable {
 
     public void removeIfExistsThreadSafe(Rankings other) {
         synchronized (rankedItems) {
-            other.getRankingsThreadSafe().forEach(this::removeIfExistsThreadSafe);
+            other.getRankings().forEach(this::removeIfExistsThreadSafe);
         }
     }
 
     public void removeIfExists(Rankings other) {
-        other.getRankings().forEach(this::removeIfExists);
+        List<Rankable> rankables = other.getRankings();
+        for (Rankable r : rankables) {
+            removeIfExists(r);
+        }
     }
 
     public boolean removeIfExistsThreadSafe(Rankable r) {
@@ -221,11 +231,11 @@ public class Rankings implements Serializable {
         }
 
         Rankings other = (Rankings) o;
-        return rankedItems.equals(other.getRankingsThreadSafe());
+        return rankedItems.equals(other.getRankings());
     }
 
     public static void main(String[] a) {
-        IntersectionRankable intersectionRankable1 = new IntersectionRankable(12L, 32);
+        /*IntersectionRankable intersectionRankable1 = new IntersectionRankable(12L, 32);
         IntersectionRankable intersectionRankable2 = new IntersectionRankable(13L, 43);
         IntersectionRankable intersectionRankable3 = new IntersectionRankable(111L, 65);
 
@@ -251,7 +261,11 @@ public class Rankings implements Serializable {
 
         rankings.removeIfExists(rankings1);
         rankings.getRankings().forEach(all -> System.out.println("R1: " + all.toString()));
-        rankings1.getRankings().forEach(all -> System.out.println("R2: " + all.toString()));
+        rankings1.getRankings().forEach(all -> System.out.println("R2: " + all.toString()));*/
+
+        /*Rankings r1 = new Rankings(10);
+        Rankings r2 = new Rankings(10);
+        System.out.println("R1: " + r1.hashCode() + "\tR: " + r1.copy(false).hashCode());*/
     }
 
 }
