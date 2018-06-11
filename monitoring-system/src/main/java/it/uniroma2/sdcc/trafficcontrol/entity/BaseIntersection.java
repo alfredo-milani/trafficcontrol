@@ -30,7 +30,6 @@ public class BaseIntersection implements ISensor {
         return intersectionId;
     }
 
-    // TODO CONTROLLARE TIMESTAMP PRIMA DELL AGGIUNTA PER VEDERE SE è SCADUTA
     public boolean addSemaphoreSensor(SemaphoreSensor semaphoreSensor) {
         if (oldestSemaphoreTimestam == NOT_INITIALIZED) {
             oldestSemaphoreTimestam = semaphoreSensor.getSemaphoreTimestampUTC();

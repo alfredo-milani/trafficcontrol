@@ -9,7 +9,7 @@ import java.util.List;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 
-public class IntersectionRankable implements Rankable, Serializable {
+public class IntersectionRankable implements IRankable, Serializable {
 
     private final Long intersectionId;
     private final int meanIntersectionSpeed;
@@ -66,7 +66,7 @@ public class IntersectionRankable implements Rankable, Serializable {
     }
 
     @Override
-    public int compareTo(Rankable other) {
+    public int compareTo(IRankable other) {
         long delta = this.getMeanIntersectionSpeed() - other.getMeanIntersectionSpeed();
         if (delta > 0) {
             return 1;
@@ -115,7 +115,7 @@ public class IntersectionRankable implements Rankable, Serializable {
      * @return
      */
     @Override
-    public Rankable copy() {
+    public IRankable copy() {
         List<Object> shallowCopyOfFields = ImmutableList.copyOf(getFields());
         return new IntersectionRankable(
                 (Long) getObject(),

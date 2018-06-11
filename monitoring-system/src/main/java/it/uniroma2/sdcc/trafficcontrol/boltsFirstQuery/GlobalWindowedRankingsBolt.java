@@ -46,7 +46,7 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
 
     @Override
     protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
-        Rankings oldRankings = rankings.copy(false);
+        Rankings oldRankings = rankings.copy();
 
         eventsWindow.getExpiredEventsWindow().forEach(t -> {
             Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
@@ -63,12 +63,12 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
 
         eventsWindow.getExpiredEventsWindow().forEach(t -> {
             Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
-            System.out.println(rankings.toString());
+            // System.out.println(rankings.toString());
         });
     }
 
     @Override
-    protected void onTupleReceived(Tuple tuple) {
+    protected void onValidTupleReceived(Tuple tuple) {
 
     }
 
@@ -85,6 +85,6 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
     // deve avere finesrtre temporali) altrimenti valori vecchi (scaduti dopo i 15 minuti) saranno inviati al
     // global bolt anche se nella sua finestra temporale sono usciti e quindi non andrebbero considerati
 
-    // TODO SISTEMARE NULLPOINTER EXCEPTION in removeIfExistsThreadSafe(rankins) -> rankedItems.stream().map(Rankable::copy).forEach(copy::add);
+    // TODO SISTEMARE NULLPOINTER EXCEPTION in removeIfExistsThreadSafe(rankins) -> rankedItems.stream().map(IRankable::copy).forEach(copy::add);
 
 }

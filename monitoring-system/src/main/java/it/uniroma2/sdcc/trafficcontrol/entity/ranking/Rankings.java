@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.tools.javac.util.Assert;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 
@@ -16,7 +17,7 @@ public class Rankings implements Serializable {
     private static final int DEFAULT_TOP_N = 10;
 
     private final int maxSize;
-    private final List<Rankable> rankedItems = Lists.newArrayList();
+    private final List<IRankable> rankedItems = Lists.newArrayList();
 
     public Rankings() {
         this(DEFAULT_TOP_N);
@@ -35,14 +36,9 @@ public class Rankings implements Serializable {
      *
      * @param other
      */
-    public Rankings(Rankings other, boolean threadSafety) {
+    public Rankings(Rankings other) {
         this(other.maxSize());
-
-        if (threadSafety) {
-            updateWithThreadSafe(other);
-        } else {
-            updateWith(other);
-        }
+        updateWith(other);
     }
 
     /**
@@ -59,83 +55,34 @@ public class Rankings implements Serializable {
         return rankedItems.size();
     }
 
-    /**
-     * The returned defensive copy is only "somewhat" defensive.  We do, for instance, return a defensive copy of the
-     * enclosing List instance, and we do try to defensively copy any contained Rankable objects, too.  However, the
-     * contract of {link org.apache.storm.starter.tools.Rankable#copy()} does not guarantee that any Object's embedded within
-     * a Rankable will be defensively copied, too.
-     *
-     * @return a somewhat defensive copy of ranked items
-     */
-    public List<Rankable> getRankingsThreadSafe() {
-        synchronized (rankedItems) {
-            List<Rankable> copy = Lists.newLinkedList();
-            rankedItems.stream().map(Rankable::copy).forEach(copy::add);
-            return ImmutableList.copyOf(copy);
-        }
-    }
-
-    public List<Rankable> getRankings() {
-        List<Rankable> copy = Lists.newLinkedList();
+    public List<IRankable> getRankings() {
+        List<IRankable> copy = Lists.newLinkedList();
         for (int i = 0; i < rankedItems.size(); ++i) {
             copy.add(i, rankedItems.get(i).copy());
         }
-        /*for (Rankable r : rankedItems) {
-            copy.add(r.copy());
-        }*/
         return ImmutableList.copyOf(copy);
     }
 
-    public void updateWithThreadSafe(Rankings other) {
-        synchronized (rankedItems) {
-            other.getRankings().forEach(this::updateWithThreadSafe);
-        }
-    }
-
     public void updateWith(Rankings other) {
-        for (Rankable r : other.getRankings()) {
-            updateWith(r);
-        }
+        other.getRankings().forEach(this::updateWith);
     }
 
-    public void updateWithThreadSafe(Rankable r) {
-        synchronized (rankedItems) {
-            addOrReplace(r);
-            rerank();
-            shrinkRankingsIfNeeded();
-        }
-    }
-
-    public void updateWith(Rankable r) {
+    public void updateWith(IRankable r) {
         addOrReplace(r);
         rerank();
         shrinkRankingsIfNeeded();
     }
 
-    public void removeIfExistsThreadSafe(Rankings other) {
-        synchronized (rankedItems) {
-            other.getRankings().forEach(this::removeIfExistsThreadSafe);
-        }
-    }
-
     public void removeIfExists(Rankings other) {
-        List<Rankable> rankables = other.getRankings();
-        for (Rankable r : rankables) {
-            removeIfExists(r);
-        }
+        List<IRankable> rankables = other.getRankings();
+        rankables.forEach(this::removeIfExists);
     }
 
-    public boolean removeIfExistsThreadSafe(Rankable r) {
-        synchronized (rankedItems) {
-            return rankedItems.remove(r);
-        }
-    }
-
-    public void removeIfExists(Rankable r) {
+    public void removeIfExists(IRankable r) {
         rankedItems.remove(r);
     }
 
-    private void addOrReplace(Rankable r) {
+    private void addOrReplace(IRankable r) {
         Integer rank = findRankOf(r);
         if (rank != null) {
             rankedItems.set(rank, r);
@@ -144,7 +91,7 @@ public class Rankings implements Serializable {
         }
     }
 
-    private Integer findRankOf(Rankable r) {
+    private Integer findRankOf(IRankable r) {
         Object tag = r.getObject();
         for (int rank = 0; rank < rankedItems.size(); ++rank) {
             Object cur = rankedItems.get(rank).getObject();
@@ -163,22 +110,6 @@ public class Rankings implements Serializable {
     private void shrinkRankingsIfNeeded() {
         if (rankedItems.size() > maxSize) {
             rankedItems.remove(maxSize);
-        }
-    }
-
-    /**
-     * Removes ranking entries that have a count of zero.
-     */
-    public void pruneZeroCountsThreadSafe() {
-        synchronized (rankedItems) {
-            int i = 0;
-            while (i < rankedItems.size()) {
-                if (rankedItems.get(i).getMeanIntersectionSpeed() == 0) {
-                    rankedItems.remove(i);
-                } else {
-                    i++;
-                }
-            }
         }
     }
 
@@ -217,8 +148,8 @@ public class Rankings implements Serializable {
     /**
      * Creates a (defensive) copy of itself.
      */
-    public Rankings copy(boolean threadSafety) {
-        return new Rankings(this, threadSafety);
+    public Rankings copy() {
+        return new Rankings(this);
     }
 
     @Override
@@ -266,6 +197,7 @@ public class Rankings implements Serializable {
         /*Rankings r1 = new Rankings(10);
         Rankings r2 = new Rankings(10);
         System.out.println("R1: " + r1.hashCode() + "\tR: " + r1.copy(false).hashCode());*/
+        Assert.checkNonNull(null);
     }
 
 }

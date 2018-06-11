@@ -144,7 +144,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
                 Long timestampFromTuple = getTimestampFrom(tuple);
                 if (timestampFromTuple != null) {
-                    if (timestampFromTuple < lowerBoundWindow || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis) {
+                    if (timestampFromTuple < lowerBoundWindow /* TODO non chiaro... || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis */) {
                         return;
                     }
                     timestampToUse = timestampFromTuple;
@@ -152,7 +152,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
                 eventsWindow.getNewEventsMap().put(timestampToUse, tuple);
 
-                onTupleReceived(tuple);
+                onValidTupleReceived(tuple);
             }
         } finally {
             collector.ack(tuple);
@@ -161,7 +161,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
     protected abstract void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow);
 
-    protected abstract void onTupleReceived(Tuple tuple);
+    protected abstract void onValidTupleReceived(Tuple tuple);
 
     /**
      * Metodo opzionale che permette di utilizzare un eventuale timestamp contenuto all'interno della tupla.

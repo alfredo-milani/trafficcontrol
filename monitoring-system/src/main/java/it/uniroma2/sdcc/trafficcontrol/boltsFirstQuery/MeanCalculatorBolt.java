@@ -1,12 +1,12 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
+import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
+import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
 import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
 import org.apache.storm.task.OutputCollector;
-import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
-import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
@@ -19,22 +19,30 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEM
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 
 
-public class MeanCalculatorBolt extends BaseRichBolt {
+public class MeanCalculatorBolt extends AbstractWindowedBolt {
 
-    private Map<Long, MeanSpeedIntersection> handlerHashMap;
-    private OutputCollector collector;
+    private final Map<Long, MeanSpeedIntersection> handlerHashMap;
 
-    @Override
-    public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
-        this.collector = collector;
+    public MeanCalculatorBolt(int windowSizeInSeconds) {
+        this(windowSizeInSeconds, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
+    }
+
+    public MeanCalculatorBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+        super(windowSizeInSeconds, emitFrequencyInSeconds);
         this.handlerHashMap = new HashMap<>();
     }
 
     @Override
-    public void execute(Tuple tuple) {
-        try {
-            RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) tuple.getValueByField(SEMAPHORE_SENSOR);
+    protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
+        eventsWindow.getExpiredEventsWindow().forEach(t -> {
+            RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR);
+            Long intersectionId = richSemaphoreSensor.getIntersectionId();
 
+            handlerHashMap.remove(intersectionId);
+        });
+
+        eventsWindow.getNewEventsWindow().forEach(t -> {
+            RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR);
             Long intersectionId = richSemaphoreSensor.getIntersectionId();
             SemaphoreSensor semaphoreSensor = SemaphoreSensor.getInstanceFrom(richSemaphoreSensor);
 
@@ -45,8 +53,6 @@ public class MeanCalculatorBolt extends BaseRichBolt {
                     new MeanSpeedIntersection(intersectionId)
             );
 
-            // TODO mettere finesrta temporale anche qui e nella add() controllare se aggiungere all'intersezione o se
-            // crearne una nuova perché quella è scaduta
             if (intersectionFromHashMap != null) { // Intersezione da aggiornare
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
                 if (intersectionFromHashMap.isListReadyForComputation()) { // Controllo se sono arrivate tutte le tuple per computare la media
@@ -56,11 +62,18 @@ public class MeanCalculatorBolt extends BaseRichBolt {
                     }
                 }
             }
-        } catch (ClassCastException | IllegalArgumentException e) {
-            e.printStackTrace();
-        } finally {
-            collector.ack(tuple);
-        }
+        });
+    }
+
+    @Override
+    protected void onValidTupleReceived(Tuple tuple) {
+
+    }
+
+    @Override
+    protected Long getTimestampFrom(Tuple tuple) {
+        RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) tuple.getValueByField(SEMAPHORE_SENSOR);
+        return richSemaphoreSensor.getSemaphoreTimestampUTC();
     }
 
     @Override

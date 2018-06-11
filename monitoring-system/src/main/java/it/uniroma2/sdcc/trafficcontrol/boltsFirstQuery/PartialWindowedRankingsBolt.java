@@ -2,8 +2,8 @@ package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
+import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IntersectionRankable;
-import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -47,14 +47,14 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
 
     @Override
     protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
-        Rankings oldRankings = rankings.copy(false);
+        Rankings oldRankings = rankings.copy();
 
         eventsWindow.getExpiredEventsWindow().forEach(t -> {
-            Rankable rankable = IntersectionRankable.getIntersectionRankableFrom(t);
+            IRankable rankable = IntersectionRankable.getIntersectionRankableFrom(t);
             rankings.removeIfExists(rankable);
         });
         eventsWindow.getNewEventsWindow().forEach(t -> {
-            Rankable rankable = IntersectionRankable.getIntersectionRankableFrom(t);
+            IRankable rankable = IntersectionRankable.getIntersectionRankableFrom(t);
             rankings.updateWith(rankable);
         });
 
@@ -65,14 +65,14 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
     }
 
     @Override
-    protected void onTupleReceived(Tuple tuple) {
+    protected void onValidTupleReceived(Tuple tuple) {
 
     }
 
     @Override
     protected Long getTimestampFrom(Tuple tuple) {
         // TODO modificare classe IntersectionRankable
-        return null;
+        return super.getTimestampFrom(tuple);
     }
 
     @Override

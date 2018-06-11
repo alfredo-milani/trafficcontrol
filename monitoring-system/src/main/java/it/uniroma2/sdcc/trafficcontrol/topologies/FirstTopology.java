@@ -34,7 +34,7 @@ public class FirstTopology extends BaseTopology {
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
 
-        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(), 2)
+        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(18, 2), 4)
                 .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
 

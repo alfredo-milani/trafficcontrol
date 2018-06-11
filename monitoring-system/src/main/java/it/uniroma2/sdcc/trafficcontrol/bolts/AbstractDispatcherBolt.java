@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.bolts;
 
+import com.sun.tools.javac.util.Assert;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadStream;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -9,7 +10,6 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractDispatcherBolt extends BaseRichBolt {
@@ -17,13 +17,6 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
     protected final static String DEFAULT_STREAM = "default_stream";
 
     private OutputCollector collector;
-    private final Map<String, Values> streamValueMap;
-    private final Map<String, Fields> streamFieldMap;
-
-    public AbstractDispatcherBolt() {
-        this.streamValueMap = new HashMap<>();
-        this.streamFieldMap = new HashMap<>();
-    }
 
     @Override
     public final void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
@@ -33,7 +26,8 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
     @Override
     public final void execute(Tuple tuple) {
         try {
-            declareStreamValue(tuple, streamValueMap);
+            Map<String, Values> streamValueMap = declareStreamValue(tuple);
+            Assert.checkNonNull(streamValueMap);
 
             if (streamValueMap.get(DEFAULT_STREAM) != null) {
                 if (streamValueMap.size() > 1) {
@@ -55,15 +49,15 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
      * Computa la stringa da emettere verso il bolt successivo nella topologia.
      *
      * @param tuple Tupla ricevuta dal bolt precedente
-     * @param streamValueMap variabile che mappa lo stream di output e i valori che devo emessi sullo stesso.
-     *                           Se si vuole usare lo stream di default utilizzare la key {@link AbstractDispatcherBolt#DEFAULT_STREAM}
+     * Se si vuole usare lo stream di default utilizzare la key {@link AbstractDispatcherBolt#DEFAULT_STREAM}
      * @throws Exception Generica eccezione
      */
-    protected abstract void declareStreamValue(Tuple tuple, Map<String, Values> streamValueMap) throws Exception;
+    protected abstract Map<String, Values> declareStreamValue(Tuple tuple) throws Exception;
 
     @Override
     public final void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declareStreamField(streamFieldMap);
+        Map<String, Fields> streamFieldMap = declareStreamField();
+        Assert.checkNonNull(streamFieldMap);
 
         try {
             if (streamFieldMap.get(DEFAULT_STREAM) != null) {
@@ -83,9 +77,8 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
      * Computa la stringa da emettere verso il bolt successivo nella topologia.
      * In questo metodo è preferibile popolare l'hashMap che mappa gli streams con i campi da emettere.
      *
-     * @param streamFieldMap variabile che mappa lo stream di output e i valori che devo emessi sullo stesso.
-     *                       Se si vuole usare lo stream di default utilizzare la key {@link AbstractDispatcherBolt#DEFAULT_STREAM}
+     * Se si vuole usare lo stream di default utilizzare la key {@link AbstractDispatcherBolt#DEFAULT_STREAM}
      */
-    protected abstract void declareStreamField(Map<String, Fields> streamFieldMap);
+    protected abstract Map<String, Fields> declareStreamField();
 
 }

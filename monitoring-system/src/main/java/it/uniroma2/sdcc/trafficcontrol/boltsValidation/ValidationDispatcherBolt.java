@@ -9,6 +9,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.MOBILE_ID;
@@ -21,28 +22,29 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.SEMAPHORE_SE
 public class ValidationDispatcherBolt extends AbstractDispatcherBolt {
 
     @Override
-    protected void declareStreamValue(Tuple tuple, Map<String, Values> streamValueHashMap) throws BadTuple {
+    protected Map<String, Values> declareStreamValue(Tuple tuple) throws BadTuple {
         ISensor sensor;
         if ((sensor = RichSemaphoreSensor.getInstanceFrom(tuple)) != null) {
-            streamValueHashMap.put(SEMAPHORE_SENSOR_STREAM, new Values(((RichSemaphoreSensor) sensor).getSemaphoreId(), sensor));
+            ISensor finalSemaphoreSensor = sensor;
+            return new HashMap<String, Values>() {{
+                put(SEMAPHORE_SENSOR_STREAM, new Values(((RichSemaphoreSensor) finalSemaphoreSensor).getSemaphoreId(), finalSemaphoreSensor));
+            }};
         } else if ((sensor = RichMobileSensor.getInstanceFrom(tuple)) != null) {
-            streamValueHashMap.putIfAbsent(MOBILE_SENSOR_STREAM, new Values(((RichMobileSensor) sensor).getMobileId(), sensor));
+            ISensor finalMobileSensor = sensor;
+            return new HashMap<String, Values>() {{
+                put(MOBILE_SENSOR_STREAM, new Values(((RichMobileSensor) finalMobileSensor).getMobileId(), finalMobileSensor));
+            }};
         } else {
             throw new BadTuple();
         }
     }
 
     @Override
-    protected void declareStreamField(Map<String, Fields> streamFieldMap) {
-        streamFieldMap.put(
-                SEMAPHORE_SENSOR_STREAM,
-                new Fields(SEMAPHORE_ID, SEMAPHORE_SENSOR)
-        );
-
-        streamFieldMap.put(
-                MOBILE_SENSOR_STREAM,
-                new Fields(MOBILE_ID, MOBILE_SENSOR)
-        );
+    protected Map<String, Fields> declareStreamField() {
+        return new HashMap<String, Fields>() {{
+            put(SEMAPHORE_SENSOR_STREAM, new Fields(SEMAPHORE_ID, SEMAPHORE_SENSOR));
+            put(MOBILE_SENSOR_STREAM, new Fields(MOBILE_ID, MOBILE_SENSOR));
+        }};
     }
 
 }

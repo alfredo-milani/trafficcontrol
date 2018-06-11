@@ -57,6 +57,7 @@ public class SemaphoreSensorThread implements Runnable {
             semaphoreLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
             semaphoreLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
             semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
+            semaphoreTimestampUTC = System.currentTimeMillis();
             greenLightDuration = (short) ThreadLocalRandom.current().nextInt(0, 300 + 1);
             greenLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
             yellowLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);

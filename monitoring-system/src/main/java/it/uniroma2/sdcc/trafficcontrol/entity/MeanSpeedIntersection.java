@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_NUMBER_TO_COMPUTE_SPEED_MEAN;
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED;
 
 public class MeanSpeedIntersection extends BaseIntersection {
 
@@ -15,9 +15,9 @@ public class MeanSpeedIntersection extends BaseIntersection {
 
     private int computeIntersectionMeanSpeed(Short... values) {
         int count = values.length;
-        if (count < SEMAPHORE_NUMBER_TO_COMPUTE_SPEED_MEAN) {
+        if (count < SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED) {
             return meanIntersectionSpeed = MEAN_SPEED_NOT_COMPUTED;
-        } else if (count > SEMAPHORE_NUMBER_TO_COMPUTE_SPEED_MEAN) {
+        } else if (count > SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED) {
             return meanIntersectionSpeed = ERROR_IN_INTERSECTION_TOPOLOGY;
         }
 
@@ -42,7 +42,7 @@ public class MeanSpeedIntersection extends BaseIntersection {
     }
 
     public boolean isListReadyForComputation() {
-        return semaphoreSensors.size() == SEMAPHORE_NUMBER_TO_COMPUTE_SPEED_MEAN;
+        return semaphoreSensors.size() == SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED;
     }
 
     public int getMeanIntersectionSpeed() {
