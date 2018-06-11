@@ -20,27 +20,6 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.*;
 
 public class TopologyStarter {
 
-    /* TODO INFORMAZIONI
-     * Apache Storm processes, called workers, run on predefined ports on the machine that hosts Storm.
-     *
-     * Each worker process can run one or more executors, or threads, where each executor is a thread spawned by the worker process.
-     *
-     * Each executor runs one or more tasks from the same component, where a component is a spouts or boltsValidation from a topologies.
-     *
-     *
-     *
-     * In storm the term parallelism hint is used to specify the initial number of executor (threads) of a component (spouts, boltsValidation) (this can be changed in the run time)
-     *
-     * the setNumTasks(4) indicate to run 4 associated tasks (this will be same throughout the lifetime of a topologies).
-     * So in this case each storm will be running two tasks per executor.
-     * By default, the number of tasks is set to be the same as the number of executors, i.e. Storm will run one task per thread.
-     *
-     * In our topology, we also define the number of worker processess.
-     * Each process runs in a separate JVM process and can run on the same machine or any machine in the cluster.
-     * Each executor is run on a single thread.
-     *
-     */
-
     private final static String CLASS_NAME = TopologyStarter.class.getName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 

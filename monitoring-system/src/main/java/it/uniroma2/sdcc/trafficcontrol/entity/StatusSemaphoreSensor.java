@@ -57,7 +57,7 @@ public class StatusSemaphoreSensor implements ISensor {
         );
     }
 
-    public String getJsonFromInstance() {
+    public String getJsonStringFromInstance() {
         ObjectNode objectNode = mapper.createObjectNode();
 
         objectNode.put(INTERSECTION_ID, intersectionId);

@@ -31,7 +31,7 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
     }
 
     @Override
-    protected ArrayList<String> computeStringToPublish(Tuple tuple) throws ClassCastException, IllegalArgumentException {
+    protected ArrayList<String> computeValueToPublish(Tuple tuple) throws ClassCastException, IllegalArgumentException {
         ArrayList<String> strings = new ArrayList<>();
         GreenTemporization greenTemporizationManager = (GreenTemporization) tuple.getValueByField(GREEN_TEMPORIZATION_VALUE);
 

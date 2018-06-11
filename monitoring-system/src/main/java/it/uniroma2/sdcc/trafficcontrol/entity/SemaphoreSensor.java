@@ -1,9 +1,11 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 
-import java.io.Serializable;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class SemaphoreSensor implements Serializable {
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
+
+public class SemaphoreSensor implements ISensor {
 
     private Long semaphoreId;
     private Double semaphoreLatitude;
@@ -32,6 +34,19 @@ public class SemaphoreSensor implements Serializable {
                 richSemaphoreSensor.getAverageVehiclesSpeed(),
                 richSemaphoreSensor.getVehiclesNumber()
         );
+    }
+
+    @Override
+    public String getJsonStringFromInstance() {
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put(SEMAPHORE_ID, semaphoreId);
+        objectNode.put(SEMAPHORE_LATITUDE, semaphoreLatitude);
+        objectNode.put(SEMAPHORE_LONGITUDE, semaphoreLongitude);
+        objectNode.put(SEMAPHORE_TIMESTAMP_UTC, semaphoreTimestampUTC);
+        objectNode.put(AVERAGE_VEHICLES_SPEED, averageVehiclesSpeed);
+        objectNode.put(VEHICLES, vehiclesNumber);
+
+        return objectNode.toString();
     }
 
     public Long getSemaphoreId() {
@@ -93,23 +108,19 @@ public class SemaphoreSensor implements Serializable {
         int result = 17;
         int countHash = (averageVehiclesSpeed ^ (averageVehiclesSpeed >>> 32));
         result = 31 * result + countHash;
-        result = 31 * result + semaphoreId.hashCode();
+        result = (int) (31 * result + semaphoreId.hashCode() + semaphoreTimestampUTC);
         return result;
     }
 
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf
-                .append(String.format(
-                        "SEMAPHORE ID: %d\ttimestamp (UTC) - %d\n",
-                        semaphoreId,
-                        semaphoreTimestampUTC
-                ))
-                .append(String.format("Latitude: %1$,.2f\n", semaphoreLatitude))
-                .append(String.format("Longitude: %1$,.2f\n", semaphoreLongitude))
-                .append(String.format("Mean vehicles speed: %d", averageVehiclesSpeed));
-
-        return buf.toString();
+        return String.format(
+                "Semaphore %d - <timestamp - %d>\n",
+                semaphoreId,
+                semaphoreTimestampUTC
+        ) +
+                String.format("Latitude: %1$,.2f\n", semaphoreLatitude) +
+                String.format("Longitude: %1$,.2f\n", semaphoreLongitude) +
+                String.format("Mean vehicles speed: %d", averageVehiclesSpeed);
     }
 
     @Override

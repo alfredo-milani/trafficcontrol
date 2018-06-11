@@ -9,7 +9,7 @@ import java.io.IOException;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.*;
 
-public class RichMobileSensor implements ISensor<RichMobileSensor> {
+public class RichMobileSensor implements ISensor {
 
     private Long mobileId;
     private Long mobileTimestampUTC;
@@ -52,7 +52,7 @@ public class RichMobileSensor implements ISensor<RichMobileSensor> {
     }
 
     @Override
-    public String getJsonFromInstance() {
+    public String getJsonStringFromInstance() {
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put(MOBILE_ID, mobileId);
         objectNode.put(MOBILE_TIMESTAMP_UTC, mobileTimestampUTC);

@@ -47,12 +47,20 @@ public class BaseIntersection implements ISensor {
     }
 
     @Override
-    public String getJsonFromInstance() {
+    public String getJsonStringFromInstance() {
         ObjectNode objectNode = mapper.createObjectNode();
 
         objectNode.put(INTERSECTION_ID, intersectionId);
 
         return objectNode.toString();
+    }
+
+    public Long getOldestSemaphoreTimestam() {
+        return oldestSemaphoreTimestam;
+    }
+
+    public void setOldestSemaphoreTimestam(Long oldestSemaphoreTimestam) {
+        this.oldestSemaphoreTimestam = oldestSemaphoreTimestam;
     }
 
 }

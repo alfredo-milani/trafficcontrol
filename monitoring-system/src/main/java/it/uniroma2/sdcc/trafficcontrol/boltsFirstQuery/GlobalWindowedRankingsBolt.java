@@ -60,11 +60,6 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
         if (!oldRankings.equals(rankings)) {
             collector.emit(new Values(rankings));
         }
-
-        eventsWindow.getExpiredEventsWindow().forEach(t -> {
-            Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
-            // System.out.println(rankings.toString());
-        });
     }
 
     @Override
@@ -76,15 +71,5 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields(GLOBAL_RANKINGS_OBJECT));
     }
-
-    // TODO i partial bolt devo sempre emettere tuple? Perché, nel caso in cui la posizione nella classifica
-    // locale non cambia, ma cambia solo il valore della media, nella classifica globale potrebbe cambiare la posizione
-    // in classifica.
-
-    // TODO anche qui i valori expired devono essere eliminati dalla classifica locale (quindi anche questo bolt
-    // deve avere finesrtre temporali) altrimenti valori vecchi (scaduti dopo i 15 minuti) saranno inviati al
-    // global bolt anche se nella sua finestra temporale sono usciti e quindi non andrebbero considerati
-
-    // TODO SISTEMARE NULLPOINTER EXCEPTION in removeIfExistsThreadSafe(rankins) -> rankedItems.stream().map(IRankable::copy).forEach(copy::add);
 
 }

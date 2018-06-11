@@ -2,8 +2,8 @@ package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
-import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IRankable;
-import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IntersectionRankable;
+import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
+import it.uniroma2.sdcc.trafficcontrol.entity.ranking.MeanSpeedIntersectionRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -11,6 +11,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.PARTIAL_RANKINGS_OBJECT;
 
 public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
@@ -49,18 +50,15 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
     protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
         Rankings oldRankings = rankings.copy();
 
-        eventsWindow.getExpiredEventsWindow().forEach(t -> {
-            IRankable rankable = IntersectionRankable.getIntersectionRankableFrom(t);
-            rankings.removeIfExists(rankable);
-        });
-        eventsWindow.getNewEventsWindow().forEach(t -> {
-            IRankable rankable = IntersectionRankable.getIntersectionRankableFrom(t);
-            rankings.updateWith(rankable);
-        });
+        eventsWindow
+                .getExpiredEventsWindow()
+                .forEach(t -> rankings.removeIfExists(MeanSpeedIntersectionRankable.getInstanceFrom(t)));
+        eventsWindow
+                .getNewEventsWindow()
+                .forEach(t -> rankings.updateWith(MeanSpeedIntersectionRankable.getInstanceFrom(t)));
 
         if (!oldRankings.equals(rankings) && rankings.size() != 0) {
             collector.emit(new Values(rankings));
-            // System.out.println(rankings.toString());
         }
     }
 
@@ -71,8 +69,8 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
 
     @Override
     protected Long getTimestampFrom(Tuple tuple) {
-        // TODO modificare classe IntersectionRankable
-        return super.getTimestampFrom(tuple);
+        MeanSpeedIntersection meanSpeedIntersection = (MeanSpeedIntersection) tuple.getValueByField(INTERSECTION_MEAN_SPEED_OBJECT);
+        return meanSpeedIntersection.getOldestSemaphoreTimestam();
     }
 
     @Override

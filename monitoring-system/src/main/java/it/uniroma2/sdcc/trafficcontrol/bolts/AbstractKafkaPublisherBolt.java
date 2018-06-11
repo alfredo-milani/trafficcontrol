@@ -40,7 +40,7 @@ public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
     @Override
     public final void execute(Tuple tuple) {
         try {
-            computeStringToPublish(tuple).forEach(v -> producer.send(new ProducerRecord<>(topic, v)));
+            computeValueToPublish(tuple).forEach(v -> producer.send(new ProducerRecord<>(topic, v)));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -49,6 +49,6 @@ public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
     }
 
     @NotNull
-    protected abstract ArrayList<V> computeStringToPublish(Tuple tuple) throws Exception;
+    protected abstract ArrayList<V> computeValueToPublish(Tuple tuple) throws Exception;
 
 }

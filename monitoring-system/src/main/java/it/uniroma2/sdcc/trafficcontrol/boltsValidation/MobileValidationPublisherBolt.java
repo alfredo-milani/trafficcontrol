@@ -17,9 +17,9 @@ public class MobileValidationPublisherBolt extends AbstractKafkaPublisherBolt<St
     }
 
     @Override
-    protected ArrayList<String> computeStringToPublish(Tuple tuple) {
+    protected ArrayList<String> computeValueToPublish(Tuple tuple) {
         RichMobileSensor mobileSensor = (RichMobileSensor) tuple.getValueByField(MOBILE_SENSOR);
-        return new ArrayList<>(Collections.singletonList(mobileSensor.getJsonFromInstance()));
+        return new ArrayList<>(Collections.singletonList(mobileSensor.getJsonStringFromInstance()));
     }
 
     @Override

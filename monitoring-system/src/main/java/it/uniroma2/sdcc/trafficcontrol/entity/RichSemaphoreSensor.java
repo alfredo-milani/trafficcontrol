@@ -9,7 +9,7 @@ import java.io.IOException;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class RichSemaphoreSensor implements ISensor<RichSemaphoreSensor> {
+public class RichSemaphoreSensor implements ISensor {
 
     private Long intersectionId;
     private Long semaphoreId;
@@ -79,7 +79,7 @@ public class RichSemaphoreSensor implements ISensor<RichSemaphoreSensor> {
     }
 
     @Override
-    public String getJsonFromInstance() {
+    public String getJsonStringFromInstance() {
         ObjectNode objectNode = mapper.createObjectNode();
 
         objectNode.put(INTERSECTION_ID, intersectionId);

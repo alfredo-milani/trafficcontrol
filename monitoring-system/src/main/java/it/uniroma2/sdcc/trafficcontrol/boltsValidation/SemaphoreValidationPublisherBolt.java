@@ -17,9 +17,9 @@ public class SemaphoreValidationPublisherBolt extends AbstractKafkaPublisherBolt
     }
 
     @Override
-    protected ArrayList<String> computeStringToPublish(Tuple tuple) {
+    protected ArrayList<String> computeValueToPublish(Tuple tuple) {
         RichSemaphoreSensor semaphoreSensor = (RichSemaphoreSensor) tuple.getValueByField(SEMAPHORE_SENSOR);
-        return new ArrayList<>(Collections.singletonList(semaphoreSensor.getJsonFromInstance()));
+        return new ArrayList<>(Collections.singletonList(semaphoreSensor.getJsonStringFromInstance()));
     }
 
     @Override

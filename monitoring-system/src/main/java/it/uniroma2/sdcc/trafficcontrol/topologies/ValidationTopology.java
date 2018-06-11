@@ -26,22 +26,22 @@ public class ValidationTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE), 4)
-                .setNumTasks(8);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE), 6)
+                .setNumTasks(6);
 
         builder.setBolt(
                 VALIDATION_DISPATCHER_BOLT,
                 new ValidationDispatcherBolt(),
-                4
+                6
         )
                 .shuffleGrouping(KAFKA_SPOUT)
-                .setNumTasks(8);
+                .setNumTasks(6);
 
 
-        builder.setBolt(SEMAPHORE_SENSOR_AUTH_CACHE_BOLT, new SemaphoreSensorAuthCacheBolt(SEMAPHORE_AUTHENTICATION_CACHE_NAME), 2)
+        builder.setBolt(SEMAPHORE_SENSOR_AUTH_CACHE_BOLT, new SemaphoreSensorAuthCacheBolt(SEMAPHORE_AUTHENTICATION_CACHE_NAME), 4)
                 .fieldsGrouping(VALIDATION_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM, new Fields(SEMAPHORE_ID))
                 .setNumTasks(4);
-        builder.setBolt(MOBILE_SENSOR_AUTH_CACHE_BOLT, new MobileSensorAuthCacheBolt(MOBILE_AUTHENTICATION_CACHE_NAME), 2)
+        builder.setBolt(MOBILE_SENSOR_AUTH_CACHE_BOLT, new MobileSensorAuthCacheBolt(MOBILE_AUTHENTICATION_CACHE_NAME), 4)
                 .fieldsGrouping(VALIDATION_DISPATCHER_BOLT, MOBILE_SENSOR_STREAM, new Fields(MOBILE_ID))
                 .setNumTasks(4);
 
@@ -53,11 +53,11 @@ public class ValidationTopology extends BaseTopology {
                 .setNumTasks(6);
 
 
-        builder.setBolt(SEMAPHORE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(SEMAPHORE_SENSOR_VALIDATED), 2)
+        builder.setBolt(SEMAPHORE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(SEMAPHORE_SENSOR_VALIDATED), 4)
                 .shuffleGrouping(SEMAPHORE_SENSOR_AUTH_CACHE_BOLT, CACHE_HIT_STREAM)
                 .shuffleGrouping(SEMAPHORE_AUTH_DB_BOLT)
                 .setNumTasks(4);
-        builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(MOBILE_SENSOR_VALIDATED), 2)
+        builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(MOBILE_SENSOR_VALIDATED), 4)
                 .shuffleGrouping(MOBILE_SENSOR_AUTH_CACHE_BOLT, CACHE_HIT_STREAM)
                 .shuffleGrouping(MOBILE_AUTH_DB_BOLT)
                 .setNumTasks(4);
