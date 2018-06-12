@@ -21,7 +21,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION
 
 public class MeanCalculatorBolt extends AbstractWindowedBolt {
 
-    private final Map<Long, MeanSpeedIntersection> handlerHashMap;
+    private final Map<Long, MeanSpeedIntersection> meanSpeedIntersectionQueue;
 
     public MeanCalculatorBolt(int windowSizeInSeconds) {
         this(windowSizeInSeconds, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
@@ -29,7 +29,7 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
 
     public MeanCalculatorBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
-        this.handlerHashMap = new HashMap<>();
+        this.meanSpeedIntersectionQueue = new HashMap<>();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
             RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR);
             Long intersectionId = richSemaphoreSensor.getIntersectionId();
 
-            handlerHashMap.remove(intersectionId);
+            meanSpeedIntersectionQueue.remove(intersectionId);
         });
 
         eventsWindow.getNewEventsWindow().forEach(t -> {
@@ -48,7 +48,7 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
 
             // Se la chiave è presente ritorna l'istanza dalla hashMap,
             // altrimenti aggiungi il valore nella hashMap e ritorna null
-            MeanSpeedIntersection intersectionFromHashMap = handlerHashMap.putIfAbsent(
+            MeanSpeedIntersection intersectionFromHashMap = meanSpeedIntersectionQueue.putIfAbsent(
                     intersectionId,
                     new MeanSpeedIntersection(intersectionId)
             );
@@ -58,7 +58,7 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
                 if (intersectionFromHashMap.isListReadyForComputation()) { // Controllo se sono arrivate tutte le tuple per computare la media
                     intersectionFromHashMap.computeIntersectionMeanSpeed();
                     if (intersectionFromHashMap.isMeanComputed()) {
-                        collector.emit(new Values(intersectionId, handlerHashMap.remove(intersectionId)));
+                        collector.emit(new Values(intersectionId, meanSpeedIntersectionQueue.remove(intersectionId)));
                     }
                 }
             }

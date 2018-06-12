@@ -57,6 +57,10 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
             this.rankings.updateWith(rankings);
         });
 
+        eventsWindow.getExpiredEventsWindow().forEach(t -> System.out.println("EXP: " + t.getValueByField(PARTIAL_RANKINGS_OBJECT)));
+        // TODO BUG: alcune tuple con rankings non scadono (forse quelle contenenti 1 solo valore)
+        // TODO BUG: la classifica viene stampata anche se è uguale
+
         if (!oldRankings.equals(rankings)) {
             collector.emit(new Values(rankings));
         }

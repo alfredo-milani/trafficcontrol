@@ -1,6 +1,5 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 
@@ -10,15 +9,13 @@ import java.util.List;
 
 public class Rankings implements Serializable {
 
-    private final static ObjectMapper mapper = new ObjectMapper();
-
-    private static final int DEFAULT_TOP_N = 10;
+    private static final int TOP_N_DEFAULT = 10;
 
     private final int maxSize;
     private final List<IRankable> rankedItems = Lists.newArrayList();
 
     public Rankings() {
-        this(DEFAULT_TOP_N);
+        this(TOP_N_DEFAULT);
     }
 
     public Rankings(int topN) {
@@ -61,8 +58,7 @@ public class Rankings implements Serializable {
     }
 
     public void removeIfExists(Rankings other) {
-        List<IRankable> rankables = other.getRankings();
-        rankables.forEach(this::removeIfExists);
+        other.getRankings().forEach(this::removeIfExists);
     }
 
     public void removeIfExists(IRankable r) {
@@ -100,24 +96,12 @@ public class Rankings implements Serializable {
         }
     }
 
-    public void pruneZeroCounts() {
-        int i = 0;
-        while (i < rankedItems.size()) {
-            if (rankedItems.get(i).getValue() == 0) {
-                rankedItems.remove(i);
-            } else {
-                ++i;
-            }
-        }
-    }
-
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(String.format("Rannking <%d - timestamp>\n", System.currentTimeMillis()));
         for (int i = 0; i < rankedItems.size(); ++i) {
             buffer.append(String.format("|%d >\t%s", i + 1, rankedItems.get(i)));
         }
-        buffer.append("\n");
 
         return buffer.toString();
     }
@@ -135,8 +119,39 @@ public class Rankings implements Serializable {
             return false;
         }
 
+        /*Rankings other = (Rankings) o;
+        return rankedItems.equals(other.getRankings());*/
+
         Rankings other = (Rankings) o;
-        return rankedItems.equals(other.getRankings());
+        if (this.size() == other.size()) {
+            List<IRankable> otherList = other.getRankings();
+            for (int i = 0; i < this.size(); ++i) {
+                if (!this.rankedItems.get(i).equals(otherList.get(i))) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    public static void main(String[] a) {
+        Rankings r1 = new Rankings(10);
+        Rankings r2 = new Rankings(10);
+
+        r1.updateWith(new MeanSpeedIntersectionRankable(12L, 23, 324351535L));
+        r1.updateWith(new MeanSpeedIntersectionRankable(14L, 44, 321234335L));
+
+        r2.updateWith(new MeanSpeedIntersectionRankable(12L, 23, 324351535L));
+        r2.updateWith(new MeanSpeedIntersectionRankable(15L, 44, 321234335L));
+
+        r1.getRankings().forEach(System.out::println);
+
+        r1.removeIfExists(r2);
+
+        r1.getRankings().forEach(System.out::println);
+
     }
 
 }
