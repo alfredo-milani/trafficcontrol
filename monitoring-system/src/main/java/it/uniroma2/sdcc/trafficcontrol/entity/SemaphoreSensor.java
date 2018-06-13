@@ -3,6 +3,9 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
 public class SemaphoreSensor implements ISensor {
@@ -114,9 +117,9 @@ public class SemaphoreSensor implements ISensor {
 
     public String toString() {
         return String.format(
-                "Semaphore %d - <timestamp - %d>\n",
+                "Semaphore %d - <timestamp - %s>\n",
                 semaphoreId,
-                semaphoreTimestampUTC
+                new SimpleDateFormat("HH:mm:ss:SSS").format(new Date(semaphoreTimestampUTC))
         ) +
                 String.format("Latitude: %1$,.2f\n", semaphoreLatitude) +
                 String.format("Longitude: %1$,.2f\n", semaphoreLongitude) +

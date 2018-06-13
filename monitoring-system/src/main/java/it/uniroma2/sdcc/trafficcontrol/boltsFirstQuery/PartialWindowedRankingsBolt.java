@@ -55,7 +55,7 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
                 .getNewEventsWindow()
                 .forEach(t -> rankings.updateWith(MeanSpeedIntersectionRankable.getInstanceFrom(t)));
 
-        if (!oldRankings.equals(rankings) && rankings.size() != 0) {
+        if (!oldRankings.equals(rankings) /* && rankings.size() != 0 */) {
             collector.emit(new Values(rankings));
             System.out.println(rankings.toString());
         }

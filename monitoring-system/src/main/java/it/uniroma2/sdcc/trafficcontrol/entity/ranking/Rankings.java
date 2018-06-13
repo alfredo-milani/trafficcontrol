@@ -4,7 +4,9 @@ import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class Rankings implements Serializable {
@@ -99,7 +101,10 @@ public class Rankings implements Serializable {
 
     public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(String.format("Rannking <%d - timestamp>\n", System.currentTimeMillis()));
+        buffer.append(String.format(
+                "Ranking <print timestamp - %s>\n",
+                new SimpleDateFormat("HH:mm:ss:SSS").format(new Date(System.currentTimeMillis()))
+        ));
         for (int i = 0; i < rankedItems.size(); ++i) {
             buffer.append(String.format("|%d >\t%s", i + 1, rankedItems.get(i)));
         }

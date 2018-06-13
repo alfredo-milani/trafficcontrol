@@ -5,6 +5,9 @@ import it.uniroma2.sdcc.trafficcontrol.entity.ISensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import org.apache.storm.tuple.Tuple;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static it.uniroma2.sdcc.trafficcontrol.constants.MeanIntersectionTuple.MEAN_INTERSECTION_SPEED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MeanIntersectionTuple.MEAN_INTERSECTION_SPEED_TIMESTAMP;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
@@ -109,10 +112,10 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
 
     public String toString() {
         return String.format(
-                "Mean speed: %d\t- Intersection %d\t<timestamp - %d>\n",
+                "Mean speed: %d\t- Intersection %d\t<timestamp - %s>\n",
                 meanIntersectionSpeed,
                 intersectionId,
-                timestamp
+                new SimpleDateFormat("HH:mm:ss:SSS").format(new Date(timestamp))
         );
     }
 
