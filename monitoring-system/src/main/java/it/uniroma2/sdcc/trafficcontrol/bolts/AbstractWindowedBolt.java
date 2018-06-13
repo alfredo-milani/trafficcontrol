@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.bolts;
 
+import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.Config;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -112,56 +113,88 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     public final void execute(Tuple tuple) {
         try {
             if (TupleUtils.isTick(tuple)) {
-                // Avanzamento head finestra temporale
-                upperBoundWindow += emitFrequencyInMillis;
+                updateWindow();
 
-                if (upperBoundWindow - lowerBoundWindow > windowSizeInMillis) {
-                    // La finestra dal tempo 0 è > windowSize
-                    // Avanzamento tail finestra temporale
-                    lowerBoundWindow += emitFrequencyInMillis;
-
-                    Iterator<Map.Entry<Long, Tuple>> iterator = eventsWindow.getCurrentEventsMap().entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<Long, Tuple> record = iterator.next();
-                        if (record.getKey() < lowerBoundWindow) {
-                            // Aggiunta dei valori eliminati in expiredEventMap
-                            eventsWindow.getExpiredEventsMap().put(record.getKey(), record.getValue());
-                            // Eliminazione eventi usciti dalla finestra temporale corrente
-                            iterator.remove();
-                        }
-                    }
-                }
-
-                // Aggiungo gli eventi occorsi nello sliding interval nella lista degli eventi correnti
-                eventsWindow.getCurrentEventsMap().putAll(eventsWindow.getNewEventsMap());
+                fillExpiredEventsAndRemoveFromCurrentEvents();
+                fillCurrentEvents();
 
                 onTick(collector, eventsWindow);
 
-                eventsWindow.getNewEventsMap().clear();
-                eventsWindow.getExpiredEventsMap().clear();
+                clearNewAndExpiredEvents();
             } else {
-                Long timestampToUse = System.currentTimeMillis();
-
-                Long timestampFromTuple = getTimestampFrom(tuple);
-                if (timestampFromTuple != null) {
-                    if (timestampFromTuple < lowerBoundWindow /* TODO non chiaro... || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis */) {
-                        return;
-                    }
-                    timestampToUse = timestampFromTuple;
-                }
-
-                eventsWindow.getNewEventsMap().put(timestampToUse, tuple);
+                fillNewEvents(getTimestampToUse(tuple), tuple);
 
                 onValidTupleReceived(tuple);
             }
+        } catch (BadTuple e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             collector.ack(tuple);
         }
     }
 
-    protected abstract void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow);
+    private void updateWindow() {
+        // Avanzamento head finestra temporale
+        upperBoundWindow += emitFrequencyInMillis;
 
-    protected abstract void onValidTupleReceived(Tuple tuple);
+        long deltaHeadTail = upperBoundWindow - lowerBoundWindow;
+        if (deltaHeadTail > windowSizeInMillis) {
+            // La finestra dal tempo 0 è > windowSize
+            // Avanzamento tail finestra temporale
+            lowerBoundWindow += deltaHeadTail - windowSizeInMillis;
+        }
+    }
+
+    private void fillNewEvents(Long timestampToUse, Tuple tuple) {
+        eventsWindow.getNewEventsMap().put(timestampToUse, tuple);
+    }
+
+    private void fillCurrentEvents() {
+        // Aggiungo gli eventi occorsi nello sliding interval nella lista degli eventi correnti
+        eventsWindow.getCurrentEventsMap().putAll(eventsWindow.getNewEventsMap());
+    }
+
+    private void fillExpiredEventsAndRemoveFromCurrentEvents() {
+        // TODO vedere se togliere l'if
+        /*if (upperBoundWindow - lowerBoundWindow > windowSizeInMillis) {
+            Iterator<Map.Entry<Long, Tuple>> iterator = eventsWindow.getCurrentEventsMap().entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Long, Tuple> record = iterator.next();
+                if (record.getKey() < lowerBoundWindow) {
+                    // Aggiunta dei valori eliminati in expiredEventMap
+                    eventsWindow.getExpiredEventsMap().put(record.getKey(), record.getValue());
+                    // Eliminazione eventi usciti dalla finestra temporale corrente
+                    iterator.remove();
+                }
+            }
+        }*/
+
+        Iterator<Map.Entry<Long, Tuple>> iterator = eventsWindow.getCurrentEventsMap().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Long, Tuple> record = iterator.next();
+            if (record.getKey() < lowerBoundWindow) {
+                // Aggiunta dei valori eliminati in expiredEventMap
+                eventsWindow.getExpiredEventsMap().put(record.getKey(), record.getValue());
+                // Eliminazione eventi usciti dalla finestra temporale corrente
+                iterator.remove();
+            }
+        }
+    }
+
+    private Long getTimestampToUse(Tuple tuple) throws BadTuple {
+        Long timestampToUse = System.currentTimeMillis();
+        Long timestampFromTuple = getTimestampFrom(tuple);
+        if (timestampFromTuple != null) {
+            if (timestampFromTuple < lowerBoundWindow /* TODO non chiaro... || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis */) {
+                throw new BadTuple(String.format("Timestamp not allowed: %d", timestampFromTuple));
+            }
+            timestampToUse = timestampFromTuple;
+        }
+
+        return timestampToUse;
+    }
 
     /**
      * Metodo opzionale che permette di utilizzare un eventuale timestamp contenuto all'interno della tupla.
@@ -174,6 +207,15 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     protected Long getTimestampFrom(Tuple tuple) {
         return null;
     }
+
+    private void clearNewAndExpiredEvents() {
+        eventsWindow.getNewEventsMap().clear();
+        eventsWindow.getExpiredEventsMap().clear();
+    }
+
+    protected abstract void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow);
+
+    protected abstract void onValidTupleReceived(Tuple tuple);
 
     @Override
     public final Map<String, Object> getComponentConfiguration() {

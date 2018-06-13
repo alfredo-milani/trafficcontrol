@@ -58,7 +58,8 @@ public class Rankings implements Serializable {
     }
 
     public void removeIfExists(Rankings other) {
-        other.getRankings().forEach(this::removeIfExists);
+        // other.getRankings().forEach(this::removeIfExists);
+        rankedItems.removeAll(other.getRankings());
     }
 
     public void removeIfExists(IRankable r) {
@@ -119,10 +120,10 @@ public class Rankings implements Serializable {
             return false;
         }
 
-        /*Rankings other = (Rankings) o;
-        return rankedItems.equals(other.getRankings());*/
-
         Rankings other = (Rankings) o;
+        return rankedItems.equals(other.getRankings());
+
+        /*Rankings other = (Rankings) o;
         if (this.size() == other.size()) {
             List<IRankable> otherList = other.getRankings();
             for (int i = 0; i < this.size(); ++i) {
@@ -133,25 +134,30 @@ public class Rankings implements Serializable {
         } else {
             return false;
         }
-        return true;
+        return true;*/
     }
 
     public static void main(String[] a) {
         Rankings r1 = new Rankings(10);
         Rankings r2 = new Rankings(10);
 
-        r1.updateWith(new MeanSpeedIntersectionRankable(12L, 23, 324351535L));
-        r1.updateWith(new MeanSpeedIntersectionRankable(14L, 44, 321234335L));
+        MeanSpeedIntersectionRankable m1 = new MeanSpeedIntersectionRankable(12L, 23, 324351535L);
+        MeanSpeedIntersectionRankable m2 = new MeanSpeedIntersectionRankable(14L, 44, 321234335L);
+        MeanSpeedIntersectionRankable m3 = new MeanSpeedIntersectionRankable(18L, 61, 324111535L);
+        MeanSpeedIntersectionRankable m4 = new MeanSpeedIntersectionRankable(12L, 23, 324351535L);
 
-        r2.updateWith(new MeanSpeedIntersectionRankable(12L, 23, 324351535L));
-        r2.updateWith(new MeanSpeedIntersectionRankable(15L, 44, 321234335L));
+        r1.updateWith(m1);
+        r1.updateWith(m2);
+
+        r2.updateWith(m3);
+        r2.updateWith(m4);
 
         r1.getRankings().forEach(System.out::println);
+        r2.getRankings().forEach(System.out::println);
 
         r1.removeIfExists(r2);
 
         r1.getRankings().forEach(System.out::println);
-
     }
 
 }

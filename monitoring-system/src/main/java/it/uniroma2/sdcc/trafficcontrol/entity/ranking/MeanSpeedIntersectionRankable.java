@@ -60,7 +60,7 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
 
         MeanSpeedIntersectionRankable other = (MeanSpeedIntersectionRankable) o;
         return intersectionId.equals(other.intersectionId) &&
-                meanIntersectionSpeed == other.meanIntersectionSpeed;
+                meanIntersectionSpeed.equals(other.meanIntersectionSpeed);
     }
 
     public Object getId() {

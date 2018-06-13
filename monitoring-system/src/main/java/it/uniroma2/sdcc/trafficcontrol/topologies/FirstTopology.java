@@ -34,11 +34,11 @@ public class FirstTopology extends BaseTopology {
                 .shuffleGrouping(KAFKA_SPOUT)
                 .setNumTasks(4);
 
-        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(18, 2), 4)
+        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(9, 9), 4)
                 .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
 
-        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialWindowedRankingsBolt(6, 2), 4)
+        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialWindowedRankingsBolt(6, 1), 4)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID))
                 .setNumTasks(4);
         builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalWindowedRankingsBolt(6, 2))
@@ -47,6 +47,10 @@ public class FirstTopology extends BaseTopology {
         builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new GlobalRankingsPublisherBolt(RANKINGS_PROCESSED), 2)
                 .shuffleGrouping(GLOBAL_WINDOWED_RANK_BOLT)
                 .setNumTasks(2);
+
+
+        /*builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalWindowedRankingsBolt(6, 2))
+                .globalGrouping(MEAN_SPEED_DISPATCHER_BOLT);*/
     }
 
     @Override

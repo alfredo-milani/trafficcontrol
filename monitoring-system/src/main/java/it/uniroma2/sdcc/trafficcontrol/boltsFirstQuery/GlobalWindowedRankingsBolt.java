@@ -49,15 +49,39 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
         Rankings oldRankings = rankings.copy();
 
         eventsWindow.getExpiredEventsWindow().forEach(t -> {
+            /*RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR);
+            Rankings rankings = new Rankings(10);
+            rankings.updateWith(new MeanSpeedIntersectionRankable(
+                    richSemaphoreSensor.getIntersectionId(),
+                    Integer.valueOf(richSemaphoreSensor.getAverageVehiclesSpeed()),
+                    richSemaphoreSensor.getSemaphoreTimestampUTC()
+            ));*/
+
             Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
             this.rankings.removeIfExists(rankings);
         });
         eventsWindow.getNewEventsWindow().forEach(t -> {
+            /*RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR);
+            Rankings rankings = new Rankings(10);
+            rankings.updateWith(new MeanSpeedIntersectionRankable(
+                    richSemaphoreSensor.getIntersectionId(),
+                    Integer.valueOf(richSemaphoreSensor.getAverageVehiclesSpeed()),
+                    richSemaphoreSensor.getSemaphoreTimestampUTC()
+            ));*/
+
             Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
             this.rankings.updateWith(rankings);
         });
 
-        eventsWindow.getExpiredEventsWindow().forEach(t -> System.out.println("EXP: " + t.getValueByField(PARTIAL_RANKINGS_OBJECT)));
+
+        /*eventsWindow.getExpiredEventsWindow().forEach(t -> {
+            Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
+            System.out.println("NEW: " + rankings.toString());
+        });*/
+        /*eventsWindow.getNewEventsWindow().forEach(t -> {
+            Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
+            System.out.println("NEW: " + rankings.toString());
+        });*/
         // TODO BUG: alcune tuple con rankings non scadono (forse quelle contenenti 1 solo valore)
         // TODO BUG: la classifica viene stampata anche se è uguale
 
