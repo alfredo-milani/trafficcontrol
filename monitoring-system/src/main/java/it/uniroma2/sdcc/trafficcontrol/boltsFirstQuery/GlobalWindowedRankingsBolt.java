@@ -61,13 +61,10 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
         // TODO BUG: la classifica viene stampata anche se è uguale
 
         if (!oldRankings.equals(rankings)) {
+            System.out.println("OLD: " + oldRankings.toString());
+            System.out.println("NEW: " + rankings.toString());
             collector.emit(new Values(rankings));
         }
-    }
-
-    @Override
-    protected void onValidTupleReceived(Tuple tuple) {
-
     }
 
     @Override

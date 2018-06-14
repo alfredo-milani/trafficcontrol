@@ -66,11 +66,6 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
     }
 
     @Override
-    protected void onValidTupleReceived(Tuple tuple) {
-
-    }
-
-    @Override
     protected Long getTimestampFrom(Tuple tuple) {
         RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) tuple.getValueByField(SEMAPHORE_SENSOR);
         return richSemaphoreSensor.getSemaphoreTimestampUTC();

@@ -47,10 +47,6 @@ public class FirstTopology extends BaseTopology {
         builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new GlobalRankingsPublisherBolt(RANKINGS_PROCESSED), 2)
                 .shuffleGrouping(GLOBAL_WINDOWED_RANK_BOLT)
                 .setNumTasks(2);
-
-
-        /*builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalWindowedRankingsBolt(6, 2))
-                .globalGrouping(MEAN_SPEED_DISPATCHER_BOLT);*/
     }
 
     @Override

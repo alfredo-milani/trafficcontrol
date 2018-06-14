@@ -29,7 +29,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     private long upperBoundWindow;
     private final EventsWindow eventsWindow;
 
-    private class EventsWindow implements IWindow<Tuple>, Serializable {
+    private final class EventsWindow implements IWindow<Tuple>, Serializable {
 
         private final Map<Long, Tuple> newEventMap;
         private final Map<Long, Tuple> currentEventMap;
@@ -42,17 +42,17 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         }
 
         @Override
-        public ArrayList<Tuple> getNewEventsWindow() {
+        public final ArrayList<Tuple> getNewEventsWindow() {
             return new ArrayList<>(newEventMap.values());
         }
 
         @Override
-        public ArrayList<Tuple> getCurrentEventsWindow() {
+        public final ArrayList<Tuple> getCurrentEventsWindow() {
             return new ArrayList<>(currentEventMap.values());
         }
 
         @Override
-        public ArrayList<Tuple> getExpiredEventsWindow() {
+        public final ArrayList<Tuple> getExpiredEventsWindow() {
             return new ArrayList<>(expiredEventMap.values());
         }
 
@@ -113,9 +113,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     public final void execute(Tuple tuple) {
         try {
             if (TupleUtils.isTick(tuple)) {
-                updateWindow();
-
-                fillExpiredEventsAndRemoveFromCurrentEvents();
+                if (updateWindow()) fillExpiredEventsAndRemoveFromCurrentEvents();
                 fillCurrentEvents();
 
                 onTick(collector, eventsWindow);
@@ -135,7 +133,13 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         }
     }
 
-    private void updateWindow() {
+    /**
+     * Aggiorna i valori {@link AbstractWindowedBolt#upperBoundWindow} e {@link AbstractWindowedBolt#lowerBoundWindow}
+     *
+     * @return {@code true} sse è stato aggiornato il valore {@link AbstractWindowedBolt#lowerBoundWindow}
+     * {@code false} altrimenti
+     */
+    private boolean updateWindow() {
         // Avanzamento head finestra temporale
         upperBoundWindow += emitFrequencyInMillis;
 
@@ -144,7 +148,10 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             // La finestra dal tempo 0 è > windowSize
             // Avanzamento tail finestra temporale
             lowerBoundWindow += deltaHeadTail - windowSizeInMillis;
+            return true;
         }
+
+        return false;
     }
 
     private void fillNewEvents(Long timestampToUse, Tuple tuple) {
@@ -157,19 +164,20 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     }
 
     private void fillExpiredEventsAndRemoveFromCurrentEvents() {
-        // TODO vedere se togliere l'if
-        /*if (upperBoundWindow - lowerBoundWindow > windowSizeInMillis) {
-            Iterator<Map.Entry<Long, Tuple>> iterator = eventsWindow.getCurrentEventsMap().entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<Long, Tuple> record = iterator.next();
-                if (record.getKey() < lowerBoundWindow) {
-                    // Aggiunta dei valori eliminati in expiredEventMap
-                    eventsWindow.getExpiredEventsMap().put(record.getKey(), record.getValue());
-                    // Eliminazione eventi usciti dalla finestra temporale corrente
-                    iterator.remove();
-                }
+        /*eventsWindow.getCurrentEventsMap().keySet().forEach(k -> {
+            if (k < lowerBoundWindow) {
+                eventsWindow.getExpiredEventsMap().put(k, eventsWindow.getCurrentEventsMap().get(k));
             }
-        }*/
+        });
+        eventsWindow.getCurrentEventsMap().keySet().removeIf(k -> k < lowerBoundWindow);
+
+        Necessarie le ConcurrentHashMap per l'uso seguente
+        currentEventMap.keySet().forEach(k -> {
+            if (k < lowerBoundWindow) {
+                expiredEventMap.put(k, currentEventMap.get(k));
+                currentEventMap.remove(k);
+            }
+        });*/
 
         Iterator<Map.Entry<Long, Tuple>> iterator = eventsWindow.getCurrentEventsMap().entrySet().iterator();
         while (iterator.hasNext()) {
@@ -191,8 +199,6 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             // se nella selezione degli expired faccio il controllo {
             // se lascio il minore e il maggiore e prendo il timestamp di default -> non elimina gli eventi
             //      e viene stampata più volte la stessa classifica anche se c'è l'equal
-            // se lascio il minore e il maggiore e prendo il timestamp della tupla -> la maggior parte delle tuple vengono scartate
-            // se lascio solo il maggiore e prendo il timestamp della tuple -> la maggior parte delle tuple vengono scartate
             // se lascio solo il maggiore e prendo il timestamp di default -> non elimina gli eventi
             //      e viene stampata più volte la stessa classifica anche se c'è l'equal
             // } altrimenti {
@@ -228,7 +234,9 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
     protected abstract void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow);
 
-    protected abstract void onValidTupleReceived(Tuple tuple);
+    protected void onValidTupleReceived(Tuple tuple) {
+
+    }
 
     @Override
     public final Map<String, Object> getComponentConfiguration() {

@@ -136,10 +136,10 @@ public class Rankings implements Serializable {
                     return false;
                 }
             }
+            return true;
         } else {
             return false;
-        }
-        return true;*/
+        }*/
     }
 
     public static void main(String[] a) {

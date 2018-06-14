@@ -7,6 +7,7 @@ import org.apache.storm.tuple.Tuple;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.MeanIntersectionTuple.MEAN_INTERSECTION_SPEED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MeanIntersectionTuple.MEAN_INTERSECTION_SPEED_TIMESTAMP;
@@ -103,11 +104,11 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
 
     @Override
     public int hashCode() {
-        int result = 17;
-        int countHash = (int) (meanIntersectionSpeed ^ ((long) meanIntersectionSpeed >>> 32));
-        result = 31 * result + countHash;
-        result = (int) (31 * result + intersectionId.hashCode() + timestamp);
-        return result;
+        return Objects.hash(
+                intersectionId,
+                meanIntersectionSpeed,
+                timestamp
+        );
     }
 
     public String toString() {
