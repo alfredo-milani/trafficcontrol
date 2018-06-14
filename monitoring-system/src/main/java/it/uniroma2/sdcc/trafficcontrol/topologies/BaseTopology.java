@@ -20,7 +20,9 @@ public abstract class BaseTopology {
         setTopology();
     }
 
-    protected abstract void setConfig();
+    protected void setConfig() {
+
+    }
 
     protected abstract void setTopology();
 

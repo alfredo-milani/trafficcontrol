@@ -23,7 +23,6 @@ public class FirstTopology extends BaseTopology {
         config.setNumWorkers(NUMBER_WORKERS_SELECTED);
         // Storm default: 1 for workers
         config.setNumAckers(NUMBER_WORKERS_SELECTED);
-        // config.setMessageTimeoutSecs(80); // 10 sec in più rispetto alla lunghezza di finestra + interval
     }
 
     @Override

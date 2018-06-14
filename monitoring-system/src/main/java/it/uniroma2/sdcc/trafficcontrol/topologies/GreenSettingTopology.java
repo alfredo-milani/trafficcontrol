@@ -19,11 +19,6 @@ public class GreenSettingTopology extends BaseTopology {
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected void setConfig() {
-
-    }
-
-    @Override
     protected void setTopology() {
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
 
