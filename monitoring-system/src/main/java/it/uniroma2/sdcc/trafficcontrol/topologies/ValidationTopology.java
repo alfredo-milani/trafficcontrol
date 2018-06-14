@@ -2,6 +2,8 @@ package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import it.uniroma2.sdcc.trafficcontrol.boltsValidation.*;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
+import org.apache.storm.Config;
+import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
 import java.util.logging.Logger;
@@ -20,12 +22,18 @@ public class ValidationTopology extends BaseTopology {
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected void setConfig() {
+    protected Config createConfig() {
+        Config config = new Config();
+
         config.setNumWorkers(NUMBER_WORKERS_SELECTED);
+
+        return config;
     }
 
     @Override
-    protected void setTopology() {
+    protected TopologyBuilder setTopology() {
+        TopologyBuilder builder = new TopologyBuilder();
+
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE), 6);
 
         builder.setBolt(VALIDATION_DISPATCHER_BOLT, new ValidationDispatcherBolt(), 6)
@@ -49,6 +57,8 @@ public class ValidationTopology extends BaseTopology {
         builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(MOBILE_SENSOR_VALIDATED), 4)
                 .shuffleGrouping(MOBILE_SENSOR_AUTH_CACHE_BOLT, CACHE_HIT_STREAM)
                 .shuffleGrouping(MOBILE_AUTH_DB_BOLT);
+
+        return builder;
     }
 
     @Override

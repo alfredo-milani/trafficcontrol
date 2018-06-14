@@ -4,6 +4,7 @@ import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.FilterBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenSetter;
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenTimingDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
+import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
 import java.util.logging.Logger;
@@ -19,7 +20,9 @@ public class GreenSettingTopology extends BaseTopology {
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected void setTopology() {
+    protected TopologyBuilder setTopology() {
+        TopologyBuilder builder = new TopologyBuilder();
+
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
 
         builder.setBolt(GREEN_TIMING_DISPATCHER_BOLT, new GreenTimingDispatcherBolt(), 2)
@@ -30,6 +33,8 @@ public class GreenSettingTopology extends BaseTopology {
 
         builder.setBolt(GREEN_SETTER, new GreenSetter(GREEN_TEMPORIZATION), 2)
                 .shuffleGrouping(FILTER_GREEN_BOLT);
+
+        return builder;
     }
 
     @Override

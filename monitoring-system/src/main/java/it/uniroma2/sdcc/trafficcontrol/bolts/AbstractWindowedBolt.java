@@ -194,10 +194,10 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
     private Long getTimestampToUse(Tuple tuple) throws BadTuple {
         Long lastTime, timestampToUse = System.currentTimeMillis();
-        do {
+        /*do {
             lastTime = LAST_TIME_MS.get();
             if (lastTime >= timestampToUse) timestampToUse = lastTime + 1;
-        } while (!LAST_TIME_MS.compareAndSet(lastTime, timestampToUse));
+        } while (!LAST_TIME_MS.compareAndSet(lastTime, timestampToUse));*/
 
         Long timestampFromTuple = getTimestampFrom(tuple);
         if (timestampFromTuple != null) {

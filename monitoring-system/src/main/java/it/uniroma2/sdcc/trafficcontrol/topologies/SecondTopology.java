@@ -1,8 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
-import java.util.logging.Logger;
+import org.apache.storm.topology.TopologyBuilder;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKERS_SELECTED;
+import java.util.logging.Logger;
 
 public class SecondTopology extends BaseTopology {
 
@@ -10,15 +10,9 @@ public class SecondTopology extends BaseTopology {
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected void setConfig() {
-        config.setNumWorkers(NUMBER_WORKERS_SELECTED);
-        // Storm default: 1 for workers
-        config.setNumAckers(NUMBER_WORKERS_SELECTED);
-        config.setMessageTimeoutSecs(80); // 10 sec in più rispetto alla lunghezza di finestra + interval
-    }
+    protected TopologyBuilder setTopology() {
+        TopologyBuilder builder = new TopologyBuilder();
 
-    @Override
-    protected void setTopology() {
         /*builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME))
                 .setNumTasks(4);
         builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt())
@@ -46,9 +40,9 @@ public class SecondTopology extends BaseTopology {
                 .allGrouping(UPDATE_GLOBAL_MEDIAN,UPDATE_GLOBAL_MEDIAN)
                 .allGrouping(REMOVE_GLOBAL_MEDIAN_ITEM,REMOVE_GLOBAL_MEDIAN_ITEM)
                 .allGrouping(VALUE_GLOBAL_MEDIAN,VALUE_GLOBAL_MEDIAN)
-                .setNumTasks(1);*/
+                .setNumTasks(1);
 
-      /*  builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialRankBolt(10))
+        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialRankBolt(10))
                 // .fieldsGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT, new Fields(SEMAPHORE_LIGHT_STATUS))
                 .shuffleGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT)
                 .setNumTasks(4);
@@ -58,6 +52,8 @@ public class SecondTopology extends BaseTopology {
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT, UPDATE_PARTIAL)
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT, REMOVE)
                 .setNumTasks(1);*/
+
+        return builder;
     }
 
     @Override

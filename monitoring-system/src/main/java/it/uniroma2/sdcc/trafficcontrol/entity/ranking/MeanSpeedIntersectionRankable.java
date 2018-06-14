@@ -54,25 +54,16 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
         return objectNode.toString();
     }
 
-    public boolean hasSameProperties(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MeanSpeedIntersectionRankable)) {
-            return false;
-        }
-
-        MeanSpeedIntersectionRankable other = (MeanSpeedIntersectionRankable) o;
-        return intersectionId.equals(other.intersectionId) &&
-                meanIntersectionSpeed.equals(other.meanIntersectionSpeed);
-    }
-
     public Object getId() {
         return intersectionId;
     }
 
     public Integer getValue() {
         return meanIntersectionSpeed;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
     }
 
     @Override
@@ -97,9 +88,12 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
         }
 
         MeanSpeedIntersectionRankable other = (MeanSpeedIntersectionRankable) o;
-        return intersectionId.equals(other.intersectionId) &&
+        /*return intersectionId.equals(other.intersectionId) &&
                 meanIntersectionSpeed.equals(other.meanIntersectionSpeed) &&
-                timestamp.equals(other.timestamp);
+                timestamp.equals(other.timestamp);*/
+        return intersectionId.equals(other.getId()) &&
+                meanIntersectionSpeed.equals(other.getValue()) &&
+                timestamp.equals(other.getTimestamp());
     }
 
     @Override

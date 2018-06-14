@@ -8,29 +8,25 @@ import java.util.logging.Logger;
 
 public abstract class BaseTopology {
 
-    protected final TopologyBuilder builder;
-    protected final Config config;
+    private final TopologyBuilder builder;
+    private final Config config;
 
     public BaseTopology() {
-        this.config = new Config();
-        this.builder = new TopologyBuilder();
-
-        // Template pattern
-        setConfig();
-        setTopology();
+        this.config = createConfig();
+        this.builder = setTopology();
     }
 
-    protected void setConfig() {
-
+    protected Config createConfig() {
+        return new Config();
     }
 
-    protected abstract void setTopology();
+    protected abstract TopologyBuilder setTopology();
 
-    public final StormTopology createTopology() {
+    public StormTopology createTopology() {
         return builder.createTopology();
     }
 
-    public final Config getConfig() {
+    public Config getConfig() {
         return config;
     }
 
