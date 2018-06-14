@@ -121,6 +121,12 @@ public class StatusSemaphoreSensor implements ISensor {
         return lightStatus;
     }
 
+    public boolean hasLampsFaulty() {
+        return !greenLightStatus.equals(SemaphoreStatus.WORKING) ||
+                !yellowLightStatus.equals(SemaphoreStatus.WORKING) ||
+                !redLightStatus.equals(SemaphoreStatus.WORKING);
+    }
+
     public Long getIntersectionId() {
         return intersectionId;
     }

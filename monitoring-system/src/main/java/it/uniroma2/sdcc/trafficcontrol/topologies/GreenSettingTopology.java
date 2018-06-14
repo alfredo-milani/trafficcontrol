@@ -25,20 +25,16 @@ public class GreenSettingTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 2)
-                .setNumTasks(4);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
 
         builder.setBolt(GREEN_TIMING_DISPATCHER_BOLT, new GreenTimingDispatcherBolt(), 2)
-                .shuffleGrouping(KAFKA_SPOUT)
-                .setNumTasks(2);
+                .shuffleGrouping(KAFKA_SPOUT);
 
-        builder.setBolt(FILTER_GREEN_BOLT, new FilterBolt())
-                .fieldsGrouping(GREEN_TIMING_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
-                .setNumTasks(4);
+        builder.setBolt(FILTER_GREEN_BOLT, new FilterBolt(), 2)
+                .fieldsGrouping(GREEN_TIMING_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
 
-        builder.setBolt(GREEN_SETTER, new GreenSetter(GREEN_TEMPORIZATION))
-                .shuffleGrouping(FILTER_GREEN_BOLT)
-                .setNumTasks(4);
+        builder.setBolt(GREEN_SETTER, new GreenSetter(GREEN_TEMPORIZATION), 2)
+                .shuffleGrouping(FILTER_GREEN_BOLT);
     }
 
     @Override

@@ -60,9 +60,10 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
         // TODO BUG: alcune tuple con rankings non scadono (forse quelle contenenti 1 solo valore)
         // TODO BUG: la classifica viene stampata anche se è uguale
 
+        // System.out.println("SIZE: " + rankings.size());
         if (!oldRankings.equals(rankings)) {
-            System.out.println("OLD: " + oldRankings.toString());
-            System.out.println("NEW: " + rankings.toString());
+            // System.out.println("OLD: " + oldRankings.toString());
+            // System.out.println("NEW: " + rankings.toString());
             collector.emit(new Values(rankings));
         }
     }

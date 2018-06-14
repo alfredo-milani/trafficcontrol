@@ -13,14 +13,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
-    private OutputCollector collector;
-
     protected static final int DEFAULT_EMIT_FREQUENCY_IN_SECONDS = 2;
     protected static final int DEFAULT_WINDOW_SIZE_IN_SECONDS = 10;
+    private static final AtomicLong LAST_TIME_MS = new AtomicLong();
 
+    private OutputCollector collector;
     private final int windowSizeInSeconds;
     private final long windowSizeInMillis;
     private final int emitFrequencyInSeconds;
@@ -113,7 +114,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     public final void execute(Tuple tuple) {
         try {
             if (TupleUtils.isTick(tuple)) {
-                if (updateWindow()) fillExpiredEventsAndRemoveFromCurrentEvents();
+                if (updateWindow()) fillExpiredEventsAndRemoveFromCurrent();
                 fillCurrentEvents();
 
                 onTick(collector, eventsWindow);
@@ -163,7 +164,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         eventsWindow.getCurrentEventsMap().putAll(eventsWindow.getNewEventsMap());
     }
 
-    private void fillExpiredEventsAndRemoveFromCurrentEvents() {
+    private void fillExpiredEventsAndRemoveFromCurrent() {
         /*eventsWindow.getCurrentEventsMap().keySet().forEach(k -> {
             if (k < lowerBoundWindow) {
                 eventsWindow.getExpiredEventsMap().put(k, eventsWindow.getCurrentEventsMap().get(k));
@@ -192,7 +193,12 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     }
 
     private Long getTimestampToUse(Tuple tuple) throws BadTuple {
-        Long timestampToUse = System.currentTimeMillis();
+        Long lastTime, timestampToUse = System.currentTimeMillis();
+        do {
+            lastTime = LAST_TIME_MS.get();
+            if (lastTime >= timestampToUse) timestampToUse = lastTime + 1;
+        } while (!LAST_TIME_MS.compareAndSet(lastTime, timestampToUse));
+
         Long timestampFromTuple = getTimestampFrom(tuple);
         if (timestampFromTuple != null) {
             // TODO

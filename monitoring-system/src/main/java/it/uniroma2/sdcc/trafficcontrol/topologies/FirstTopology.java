@@ -28,25 +28,20 @@ public class FirstTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 2)
-                .setNumTasks(4);
-        builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt(), 2)
-                .shuffleGrouping(KAFKA_SPOUT)
-                .setNumTasks(4);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
+        builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt(), 4)
+                .shuffleGrouping(KAFKA_SPOUT);
 
         builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(6, 6), 4)
-                .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID))
-                .setNumTasks(4);
+                .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
 
         builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialWindowedRankingsBolt(6, 1), 4)
-                .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID))
-                .setNumTasks(4);
+                .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID));
         builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalWindowedRankingsBolt(6, 2))
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT);
 
-        builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new GlobalRankingsPublisherBolt(RANKINGS_PROCESSED), 2)
-                .shuffleGrouping(GLOBAL_WINDOWED_RANK_BOLT)
-                .setNumTasks(2);
+        builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new GlobalRankingsPublisherBolt(RANKINGS_PROCESSED))
+                .shuffleGrouping(GLOBAL_WINDOWED_RANK_BOLT);
     }
 
     @Override

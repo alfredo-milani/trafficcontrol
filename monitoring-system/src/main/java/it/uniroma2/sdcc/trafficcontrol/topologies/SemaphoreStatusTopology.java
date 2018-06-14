@@ -22,16 +22,13 @@ public class SemaphoreStatusTopology extends BaseTopology {
 
     @Override
     protected void setTopology() {
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 2)
-                .setNumTasks(4);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
 
-        builder.setBolt(SEMAPHORE_STATUS_BOLT, new SemaphoreStatusBolt(), 2)
-                .shuffleGrouping(KAFKA_SPOUT)
-                .setNumTasks(4);
+        builder.setBolt(SEMAPHORE_STATUS_BOLT, new SemaphoreStatusBolt(), 4)
+                .shuffleGrouping(KAFKA_SPOUT);
 
-        builder.setBolt(SEMAPHORE_STATUS_PUBLISHER_BOLT, new SemaphoreStatusPublisher(SEMAPHORE_LIGHT_STATUS))
-                .shuffleGrouping(SEMAPHORE_STATUS_BOLT)
-                .setNumTasks(2);
+        builder.setBolt(SEMAPHORE_STATUS_PUBLISHER_BOLT, new SemaphoreStatusPublisher(SEMAPHORE_LIGHT_STATUS), 2)
+                .shuffleGrouping(SEMAPHORE_STATUS_BOLT);
     }
 
     @Override

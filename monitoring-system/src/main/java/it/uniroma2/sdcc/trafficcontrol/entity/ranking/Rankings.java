@@ -50,21 +50,35 @@ public class Rankings implements Serializable {
     }
 
     public void updateWith(Rankings other) {
+        /*synchronized (rankedItems) {
+            other.getRankings().forEach(this::updateWith);
+        }*/
         other.getRankings().forEach(this::updateWith);
     }
 
     public void updateWith(IRankable r) {
+        /*synchronized(rankedItems) {
+            addOrReplace(r);
+            rerank();
+            shrinkRankingsIfNeeded();
+        }*/
         addOrReplace(r);
         rerank();
         shrinkRankingsIfNeeded();
     }
 
     public void removeIfExists(Rankings other) {
+        /*synchronized (rankedItems) {
+            rankedItems.removeAll(other.getRankings());
+        }*/
         // other.getRankings().forEach(this::removeIfExists);
         rankedItems.removeAll(other.getRankings());
     }
 
     public void removeIfExists(IRankable r) {
+        /*synchronized (rankedItems) {
+            rankedItems.remove(r);
+        }*/
         rankedItems.remove(r);
     }
 
