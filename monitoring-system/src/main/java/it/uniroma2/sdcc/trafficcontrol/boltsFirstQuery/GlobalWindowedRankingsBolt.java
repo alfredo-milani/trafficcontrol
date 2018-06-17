@@ -59,7 +59,7 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
             this.rankings.updateWith(rankings);
         });
 
-        // TODO a volte stampa la stessa classifca (penso sia un errore di Java)
+        // TODO a volte stampa la stessa classifca anche se non è cambiata (penso sia un errore di Java)
         if (!rankings.equals(oldRankings)) {
             collector.emit(new Values(rankings));
         }
