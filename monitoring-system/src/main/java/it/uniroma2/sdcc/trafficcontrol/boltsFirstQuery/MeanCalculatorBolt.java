@@ -5,6 +5,7 @@ import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
 import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.exceptions.MeanIntersectoinSpeedNotReady;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
@@ -34,14 +35,11 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
 
     @Override
     protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
-        eventsWindow.getExpiredEventsWindow().forEach(t -> {
-            RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR);
-            Long intersectionId = richSemaphoreSensor.getIntersectionId();
+        eventsWindow.getExpiredEvents().forEach(t -> meanSpeedIntersectionQueue.remove(
+                ((RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR)).getIntersectionId()
+        ));
 
-            meanSpeedIntersectionQueue.remove(intersectionId);
-        });
-
-        eventsWindow.getNewEventsWindow().forEach(t -> {
+        eventsWindow.getNewEvents().forEach(t -> {
             RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR);
             Long intersectionId = richSemaphoreSensor.getIntersectionId();
             SemaphoreSensor semaphoreSensor = SemaphoreSensor.getInstanceFrom(richSemaphoreSensor);
@@ -50,16 +48,16 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
             // altrimenti aggiungi il valore nella hashMap e ritorna null
             MeanSpeedIntersection intersectionFromHashMap = meanSpeedIntersectionQueue.putIfAbsent(
                     intersectionId,
-                    new MeanSpeedIntersection(intersectionId)
+                    new MeanSpeedIntersection(intersectionId, semaphoreSensor)
             );
 
             if (intersectionFromHashMap != null) { // Intersezione da aggiornare
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
-                if (intersectionFromHashMap.isListReadyForComputation()) { // Controllo se sono arrivate tutte le tuple per computare la media
-                    intersectionFromHashMap.computeIntersectionMeanSpeed();
-                    if (intersectionFromHashMap.isMeanComputed()) {
-                        collector.emit(new Values(intersectionId, meanSpeedIntersectionQueue.remove(intersectionId)));
-                    }
+                try {
+                    intersectionFromHashMap.computeMeanIntersectionSpeed();
+                    collector.emit(new Values(intersectionId, meanSpeedIntersectionQueue.remove(intersectionId)));
+                } catch (MeanIntersectoinSpeedNotReady e) {
+                    // Non sono ancora arrivate tutte le tuple per computare la media
                 }
             }
         });
@@ -67,8 +65,7 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
 
     @Override
     protected Long getTimestampFrom(Tuple tuple) {
-        RichSemaphoreSensor richSemaphoreSensor = (RichSemaphoreSensor) tuple.getValueByField(SEMAPHORE_SENSOR);
-        return richSemaphoreSensor.getSemaphoreTimestampUTC();
+        return ((RichSemaphoreSensor) tuple.getValueByField(SEMAPHORE_SENSOR)).getSemaphoreTimestampUTC();
     }
 
     @Override

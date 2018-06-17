@@ -56,7 +56,6 @@ public class AdminRest {
 
     @RequestMapping(path = Routes.ADMIN.SIGN_IN, method = RequestMethod.POST)
     public ResponseEntity<Admin> logIn(@RequestBody Admin admin) {
-        // TODO PROVA JWT
         Admin adminLogged = adminController.login(admin);
         return new ResponseEntity<>(adminLogged, adminLogged == null ? HttpStatus.UNAUTHORIZED : HttpStatus.OK);
     }

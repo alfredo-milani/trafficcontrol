@@ -88,9 +88,6 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
         }
 
         MeanSpeedIntersectionRankable other = (MeanSpeedIntersectionRankable) o;
-        /*return intersectionId.equals(other.intersectionId) &&
-                meanIntersectionSpeed.equals(other.meanIntersectionSpeed) &&
-                timestamp.equals(other.timestamp);*/
         return intersectionId.equals(other.getId()) &&
                 meanIntersectionSpeed.equals(other.getValue()) &&
                 timestamp.equals(other.getTimestamp());

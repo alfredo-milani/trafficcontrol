@@ -43,17 +43,17 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         }
 
         @Override
-        public final ArrayList<Tuple> getNewEventsWindow() {
+        public final ArrayList<Tuple> getNewEvents() {
             return new ArrayList<>(newEventMap.values());
         }
 
         @Override
-        public final ArrayList<Tuple> getCurrentEventsWindow() {
+        public final ArrayList<Tuple> getCurrentEvents() {
             return new ArrayList<>(currentEventMap.values());
         }
 
         @Override
-        public final ArrayList<Tuple> getExpiredEventsWindow() {
+        public final ArrayList<Tuple> getExpiredEvents() {
             return new ArrayList<>(expiredEventMap.values());
         }
 
@@ -194,24 +194,17 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
     private Long getTimestampToUse(Tuple tuple) throws BadTuple {
         Long lastTime, timestampToUse = System.currentTimeMillis();
-        /*do {
+        /*
+        Per calcolare un timestamp unico condiviso tra più threads
+        do {
             lastTime = LAST_TIME_MS.get();
             if (lastTime >= timestampToUse) timestampToUse = lastTime + 1;
-        } while (!LAST_TIME_MS.compareAndSet(lastTime, timestampToUse));*/
+        } while (!LAST_TIME_MS.compareAndSet(lastTime, timestampToUse));
+        */
 
         Long timestampFromTuple = getTimestampFrom(tuple);
         if (timestampFromTuple != null) {
-            // TODO
-            // se nella selezione degli expired faccio il controllo {
-            // se lascio il minore e il maggiore e prendo il timestamp di default -> non elimina gli eventi
-            //      e viene stampata più volte la stessa classifica anche se c'è l'equal
-            // se lascio solo il maggiore e prendo il timestamp di default -> non elimina gli eventi
-            //      e viene stampata più volte la stessa classifica anche se c'è l'equal
-            // } altrimenti {
-            // se lascio maggiore e minore e uso timestmamp di default -> va bene (tranne il global che non fa scadere delle tuple)
-            // se lascio maggiore e minore e uso timestamp della tupla -> la maggior parte vengono scartate
-            // se lascio minore e uso timestamp tupla -> va bene (tranne il global che non fa scadere delle tuple)
-            // }
+            // TODO vedere se mettere anche l'upper bound per il timestamp delle tuple (e vedere se le tuple vengono accettate)
             if (timestampFromTuple < lowerBoundWindow /* || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis */) {
                 throw new BadTuple(String.format("Tuple rejected with timestamp <%d>", timestampFromTuple));
             }
@@ -249,6 +242,14 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         Map<String, Object> conf = new HashMap<>();
         conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, emitFrequencyInSeconds);
         return conf;
+    }
+
+    public long getLowerBoundWindow() {
+        return lowerBoundWindow;
+    }
+
+    public long getUpperBoundWindow() {
+        return upperBoundWindow;
     }
 
 }

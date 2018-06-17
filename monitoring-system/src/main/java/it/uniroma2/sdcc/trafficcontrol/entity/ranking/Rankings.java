@@ -83,6 +83,13 @@ public class Rankings implements Serializable {
         rankedItems.remove(r);
     }
 
+    public void removeAtIndex(int index) {
+        /*synchronized (rankedItems) {
+            rankedItems.remove(index);
+        }*/
+        rankedItems.remove(index);
+    }
+
     private void addOrReplace(IRankable r) {
         Integer rank = findRankOf(r);
         if (rank != null) {
@@ -131,6 +138,20 @@ public class Rankings implements Serializable {
         return new Rankings(this);
     }
 
+    public boolean sameAs(Object o) {
+        Rankings other = (Rankings) o;
+        if (this.size() == other.size()) {
+            List<IRankable> otherList = other.getRankings();
+            for (int i = 0; i < this.size(); ++i) {
+                if (!this.rankedItems.get(i).equals(otherList.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -155,6 +176,11 @@ public class Rankings implements Serializable {
         } else {
             return false;
         }*/
+    }
+
+    @Override
+    public int hashCode() {
+        return rankedItems.hashCode();
     }
 
     public static void main(String[] a) {

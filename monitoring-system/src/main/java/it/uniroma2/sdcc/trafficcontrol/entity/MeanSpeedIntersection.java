@@ -1,48 +1,60 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
+import it.uniroma2.sdcc.trafficcontrol.exceptions.BadIntersectionTopology;
+import it.uniroma2.sdcc.trafficcontrol.exceptions.MeanIntersectoinSpeedNotReady;
+
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED;
 
 public class MeanSpeedIntersection extends BaseIntersection {
 
-    private final static int ERROR_IN_INTERSECTION_TOPOLOGY = -2;
-    private final static int MEAN_SPEED_NOT_COMPUTED = -1;
-
-    private int meanIntersectionSpeed = MEAN_SPEED_NOT_COMPUTED;
+    private int meanIntersectionSpeed;
 
     public MeanSpeedIntersection(Long intersectionId) {
         super(intersectionId);
     }
 
-    private int computeIntersectionMeanSpeed(Short... values) {
-        int count = values.length;
-        if (count < SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED) {
-            return meanIntersectionSpeed = MEAN_SPEED_NOT_COMPUTED;
-        } else if (count > SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED) {
-            return meanIntersectionSpeed = ERROR_IN_INTERSECTION_TOPOLOGY;
+    public MeanSpeedIntersection(Long intersectionId, SemaphoreSensor semaphoreSensor) {
+        super(intersectionId);
+        if (semaphoreSensor == null) {
+            throw new IllegalArgumentException("semaphoreSensor can not be null");
         }
+        addSemaphoreSensor(semaphoreSensor);
+    }
 
+    private int meanOf(Short... values) {
         int sum = 0;
         for (int v : values) {
             sum += v;
         }
-        return meanIntersectionSpeed = sum / count;
+        return sum / values.length;
     }
 
-    public int computeIntersectionMeanSpeed() {
-        Short[] meanSpeed = new Short[semaphoreSensors.size()];
-        for (int i = 0; i < semaphoreSensors.size(); ++i) {
+    private Short[] getShortArrayOfSemaphore() {
+        int size = semaphoreSensors.size();
+        Short[] meanSpeed = new Short[size];
+        for (int i = 0; i < size; ++i) {
             meanSpeed[i] = semaphoreSensors.get(i).getAverageVehiclesSpeed();
         }
-
-        return computeIntersectionMeanSpeed(meanSpeed);
+        return meanSpeed;
     }
 
-    public boolean isMeanComputed() {
-        return meanIntersectionSpeed > 0;
-    }
+    public void computeMeanIntersectionSpeed() throws BadIntersectionTopology {
+        int semaphoreListSize = semaphoreSensors.size();
+        if (semaphoreListSize < SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED) {
+            throw new MeanIntersectoinSpeedNotReady(String.format(
+                    "Current semaphore list size: %d in intersection id %d",
+                    semaphoreListSize,
+                    intersectionId
+            ));
+        } else if (semaphoreListSize > SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED) {
+            throw new BadIntersectionTopology(String.format(
+                    "Semaphore list size: %d in intersection id %d. This software only manage intersection speed of 4 semaphores at time",
+                    semaphoreListSize,
+                    intersectionId
+            ));
+        }
 
-    public boolean isListReadyForComputation() {
-        return semaphoreSensors.size() == SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED;
+        meanIntersectionSpeed = meanOf(getShortArrayOfSemaphore());
     }
 
     public int getMeanIntersectionSpeed() {

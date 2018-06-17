@@ -39,12 +39,12 @@ public class FirstTopology extends BaseTopology {
         builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt(), 4)
                 .shuffleGrouping(KAFKA_SPOUT);
 
-        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(6, 6), 4)
+        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(12, 6), 4)
                 .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
 
-        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialWindowedRankingsBolt(6, 1), 4)
+        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialWindowedRankingsBolt(18, 1), 4)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID));
-        builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalWindowedRankingsBolt(6, 2))
+        builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalWindowedRankingsBolt(18, 2))
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT);
 
         builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new GlobalRankingsPublisherBolt(RANKINGS_PROCESSED))

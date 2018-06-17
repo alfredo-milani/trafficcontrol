@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
 
-public class SemaphoreSensorThread implements Runnable {
+public class SemaphoreSensorProducer implements Runnable {
 
     @JsonProperty(INTERSECTION_ID)
     private Long intersectionId;
@@ -36,11 +36,16 @@ public class SemaphoreSensorThread implements Runnable {
     @JsonProperty(AVERAGE_VEHICLES_SPEED)
     private Short averageVehiclesSpeed;
 
+    private final ObjectMapper mapper = new ObjectMapper();
     private final KafkaProducer<String, String> producer;
     private final String topicName;
     private final int waitTime;
 
-    public SemaphoreSensorThread(KafkaProducer<String, String> producer, String topicName, int waitTime) {
+    public SemaphoreSensorProducer(KafkaProducer<String, String> producer, String topicName) {
+        this(producer, topicName, 0);
+    }
+
+    public SemaphoreSensorProducer(KafkaProducer<String, String> producer, String topicName, int waitTime) {
         this.producer = producer;
         this.topicName = topicName;
         this.waitTime = waitTime;
@@ -49,32 +54,8 @@ public class SemaphoreSensorThread implements Runnable {
     @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
-        ObjectMapper mapper = new ObjectMapper();
-
         while (true) {
-            intersectionId = ThreadLocalRandom.current().nextLong(1, 30);
-            semaphoreId = ThreadLocalRandom.current().nextLong(1, 250);
-            semaphoreLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
-            semaphoreLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
-            semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
-            semaphoreTimestampUTC = System.currentTimeMillis();
-            greenLightDuration = (short) ThreadLocalRandom.current().nextInt(0, 300 + 1);
-            greenLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
-            yellowLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
-            redLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
-            /*greenLightStatus = Byte.MAX_VALUE;
-            yellowLightStatus = Byte.MAX_VALUE;
-            redLightStatus = Byte.MAX_VALUE;*/
-            vehiclesPerSecond = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
-            averageVehiclesSpeed = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
-
-            try {
-                String jsonStringLamp = mapper.writeValueAsString(this);
-                // StartProducer.getLOGGER().log(Level.INFO, jsonStringLamp);
-                producer.send(new ProducerRecord<>(topicName, jsonStringLamp));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            produce();
 
             try {
                 Thread.sleep(waitTime);
@@ -84,14 +65,42 @@ public class SemaphoreSensorThread implements Runnable {
         }
     }
 
-    public SemaphoreSensorThread(KafkaProducer<String, String> producer, String topicName,
-                                 int waitTime,
-                                 Long intersectionId, Long semaphoreId,
-                                 Double semaphoreLatitude, Double semaphoreLonditude,
-                                 Long semaphoreTimestampUTC, Short greenLightDuration,
-                                 Byte greenLightStatus, Byte yellowLightStatus,
-                                 Byte redLightStatus, Short vehiclesPerSecond,
-                                 Short averageVehiclesSpeed) {
+    public String produce() {
+        intersectionId = ThreadLocalRandom.current().nextLong(1, 30);
+        semaphoreId = ThreadLocalRandom.current().nextLong(1, 250);
+        semaphoreLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
+        semaphoreLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
+        semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
+        semaphoreTimestampUTC = System.currentTimeMillis();
+        greenLightDuration = (short) ThreadLocalRandom.current().nextInt(0, 300 + 1);
+        greenLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+        yellowLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+        redLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
+            /*greenLightStatus = Byte.MAX_VALUE;
+            yellowLightStatus = Byte.MAX_VALUE;
+            redLightStatus = Byte.MAX_VALUE;*/
+        vehiclesPerSecond = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
+        averageVehiclesSpeed = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
+
+        try {
+            String jsonStringLamp = mapper.writeValueAsString(this);
+            // StartProducer.getLOGGER().log(Level.INFO, jsonStringLamp);
+            producer.send(new ProducerRecord<>(topicName, jsonStringLamp));
+            return jsonStringLamp;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "Errore durante l'invio della tupla";
+        }
+    }
+
+    public SemaphoreSensorProducer(KafkaProducer<String, String> producer, String topicName,
+                                   int waitTime,
+                                   Long intersectionId, Long semaphoreId,
+                                   Double semaphoreLatitude, Double semaphoreLonditude,
+                                   Long semaphoreTimestampUTC, Short greenLightDuration,
+                                   Byte greenLightStatus, Byte yellowLightStatus,
+                                   Byte redLightStatus, Short vehiclesPerSecond,
+                                   Short averageVehiclesSpeed) {
         this.producer = producer;
         this.topicName = topicName;
         this.waitTime = waitTime;

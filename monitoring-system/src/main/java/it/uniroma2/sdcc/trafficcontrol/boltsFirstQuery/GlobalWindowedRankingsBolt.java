@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
+import it.uniroma2.sdcc.trafficcontrol.entity.ranking.MeanSpeedIntersectionRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -48,22 +49,18 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
     protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
         Rankings oldRankings = rankings.copy();
 
-        eventsWindow.getExpiredEventsWindow().forEach(t -> {
-            Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
-            this.rankings.removeIfExists(rankings);
+        rankings.getRankings().forEach(r -> {
+            if (((MeanSpeedIntersectionRankable) r).getTimestamp() < getLowerBoundWindow()) {
+                rankings.removeIfExists(r);
+            }
         });
-        eventsWindow.getNewEventsWindow().forEach(t -> {
+        eventsWindow.getNewEvents().forEach(t -> {
             Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
             this.rankings.updateWith(rankings);
         });
 
-        // TODO BUG: alcune tuple con rankings non scadono
-        // TODO BUG: la classifica viene stampata anche se è uguale
-
-        // System.out.println("SIZE: " + rankings.size());
-        if (!oldRankings.equals(rankings)) {
-            // System.out.println("OLD: " + oldRankings.toString());
-            // System.out.println("NEW: " + rankings.toString());
+        // TODO a volte stampa la stessa classifca (penso sia un errore di Java)
+        if (!rankings.equals(oldRankings)) {
             collector.emit(new Values(rankings));
         }
     }

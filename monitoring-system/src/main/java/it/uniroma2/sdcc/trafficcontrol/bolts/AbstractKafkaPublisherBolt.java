@@ -8,7 +8,7 @@ import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -49,6 +49,6 @@ public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
     }
 
     @NotNull
-    protected abstract ArrayList<V> computeValueToPublish(Tuple tuple) throws Exception;
+    protected abstract List<V> computeValueToPublish(Tuple tuple) throws Exception;
 
 }

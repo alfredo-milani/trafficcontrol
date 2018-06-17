@@ -3,6 +3,9 @@ package it.uniroma2.sdcc.sensorssimulator;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -18,20 +21,58 @@ public class StartProducer {
 
     private static int threads = 2;
     private static int waitingTimeMillis = 2 * 1000;
+    private static ProducerType producerType = ProducerType.AUTO;
+
+    private enum ProducerType {
+        KEY,
+        AUTO
+    }
 
     public static void main(String[] args) {
         parseArgs(args);
 
+        switch (producerType) {
+            case KEY:
+                SemaphoreSensorProducer semaphoreSensorProducer = new SemaphoreSensorProducer(
+                        new KafkaProducer<>(initProducerProperties()),
+                        GENERIC_TUPLE_TO_VALIDATE
+                );
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+                System.out.println(String.format(
+                        "Starting producer\nClicca invio per inviare una tupla sul topic <%s>",
+                        GENERIC_TUPLE_TO_VALIDATE
+                ));
+                while (true) {
+                    try {
+                        bufferedReader.readLine();
+                        System.out.println(String.format(
+                                "\t> Tupla inviata\t\t| %s |",
+                                semaphoreSensorProducer.produce()
+                        ));
+                    } catch (IOException e) {
+                        System.err.println("Errore durante l'invio della tupla");
+                    }
+                }
+
+            case AUTO:
+                for (int i = 0; i < threads; ++i) {
+                    new Thread(new SemaphoreSensorProducer(
+                            new KafkaProducer<>(initProducerProperties()),
+                            GENERIC_TUPLE_TO_VALIDATE,
+                            waitingTimeMillis)
+                    ).start();
+                }
+                break;
+        }
+    }
+
+    private static Properties initProducerProperties() {
         Properties producerProperties = new Properties();
         producerProperties.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         producerProperties.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 
-        KafkaProducer<String, String> producer = new KafkaProducer<>(producerProperties);
-
-        for (int i = 0; i < threads; ++i) {
-            new Thread(new SemaphoreSensorThread(producer, GENERIC_TUPLE_TO_VALIDATE, waitingTimeMillis)).start();
-        }
+        return producerProperties;
     }
 
     private static void parseArgs(String[] args) {
@@ -59,6 +100,17 @@ public class StartProducer {
         waitingTimeOption.setRequired(false);
         options.addOption(waitingTimeOption);
 
+        String producerType = "p";
+        String producerTypeLong = "producerType";
+        Option producerTypeOption = new Option(
+                producerType,
+                String.format("%s=", producerTypeLong),
+                true,
+                "Modalità emissione tuple (auto - con threads o key - su richiesta)"
+        );
+        producerTypeOption.setRequired(false);
+        options.addOption(producerTypeOption);
+
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd;
@@ -83,9 +135,12 @@ public class StartProducer {
                 threads : Integer.valueOf(cmd.getOptionValue(nThreads));
         waitingTimeMillis = cmd.getOptionValue(waitingTime) == null ?
                 waitingTimeMillis : Integer.valueOf(cmd.getOptionValue(waitingTime));
+        StartProducer.producerType = cmd.getOptionValue(producerType) == null ?
+                ProducerType.AUTO : ProducerType.valueOf(cmd.getOptionValue(producerType).toUpperCase());
     }
 
     public static Logger getLOGGER() {
         return LOGGER;
     }
+
 }
