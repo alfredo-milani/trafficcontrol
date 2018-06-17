@@ -244,11 +244,11 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         return conf;
     }
 
-    public long getLowerBoundWindow() {
+    protected long getLowerBoundWindow() {
         return lowerBoundWindow;
     }
 
-    public long getUpperBoundWindow() {
+    protected long getUpperBoundWindow() {
         return upperBoundWindow;
     }
 

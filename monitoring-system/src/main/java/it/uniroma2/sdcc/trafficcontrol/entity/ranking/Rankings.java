@@ -14,7 +14,7 @@ public class Rankings implements Serializable {
     private static final int TOP_N_DEFAULT = 10;
 
     private final int maxSize;
-    private final List<IRankable> rankedItems = Lists.newArrayList();
+    private final List<IRankable> rankedItems;
 
     public Rankings() {
         this(TOP_N_DEFAULT);
@@ -25,6 +25,7 @@ public class Rankings implements Serializable {
             throw new IllegalArgumentException("topN must be >= 1");
         }
 
+        this.rankedItems = Lists.newArrayList();
         this.maxSize = topN;
     }
 
@@ -50,44 +51,21 @@ public class Rankings implements Serializable {
     }
 
     public void updateWith(Rankings other) {
-        /*synchronized (rankedItems) {
-            other.getRankings().forEach(this::updateWith);
-        }*/
         other.getRankings().forEach(this::updateWith);
     }
 
     public void updateWith(IRankable r) {
-        /*synchronized (rankedItems) {
-            addOrReplace(r);
-            rerank();
-            shrinkRankingsIfNeeded();
-        }*/
         addOrReplace(r);
         rerank();
         shrinkRankingsIfNeeded();
     }
 
     public void removeIfExists(Rankings other) {
-        /*synchronized (rankedItems) {
-            // other.getRankings().forEach(this::removeIfExists);
-            rankedItems.removeAll(other.getRankings());
-        }*/
-        // other.getRankings().forEach(this::removeIfExists);
         rankedItems.removeAll(other.getRankings());
     }
 
     public void removeIfExists(IRankable r) {
-        /*synchronized (rankedItems) {
-            rankedItems.remove(r);
-        }*/
         rankedItems.remove(r);
-    }
-
-    public void removeAtIndex(int index) {
-        /*synchronized (rankedItems) {
-            rankedItems.remove(index);
-        }*/
-        rankedItems.remove(index);
     }
 
     private void addOrReplace(IRankable r) {
@@ -136,20 +114,6 @@ public class Rankings implements Serializable {
 
     public Rankings copy() {
         return new Rankings(this);
-    }
-
-    public boolean sameAs(Object o) {
-        Rankings other = (Rankings) o;
-        if (this.size() == other.size()) {
-            List<IRankable> otherList = other.getRankings();
-            for (int i = 0; i < this.size(); ++i) {
-                if (!this.rankedItems.get(i).equals(otherList.get(i))) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override
