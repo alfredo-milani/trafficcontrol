@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
 
 public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
@@ -26,9 +27,10 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     private final long windowSizeInMillis;
     private final int emitFrequencyInSeconds;
     private final long emitFrequencyInMillis;
+    private final EventsWindow eventsWindow;
+    private boolean isWindowSlidingTotally;
     private long lowerBoundWindow;
     private long upperBoundWindow;
-    private final EventsWindow eventsWindow;
 
     private final class EventsWindow implements IWindow<Tuple>, Serializable {
 
@@ -114,7 +116,8 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     public final void execute(Tuple tuple) {
         try {
             if (TupleUtils.isTick(tuple)) {
-                if (updateWindow()) fillExpiredEventsAndRemoveFromCurrent();
+                updateWindow();
+                if (isWindowSlidingTotally) fillExpiredEventsAndRemoveFromCurrent();
                 fillCurrentEvents();
 
                 onTick(collector, eventsWindow);
@@ -137,10 +140,10 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     /**
      * Aggiorna i valori {@link AbstractWindowedBolt#upperBoundWindow} e {@link AbstractWindowedBolt#lowerBoundWindow}
      *
-     * @return {@code true} sse è stato aggiornato il valore {@link AbstractWindowedBolt#lowerBoundWindow}
-     * {@code false} altrimenti
+     * Assegna {@code isWindowSlidingTotally = true} sse è stato aggiornato il valore {@link AbstractWindowedBolt#lowerBoundWindow}
+     * {@code isWindowSlidingTotally = false} altrimenti
      */
-    private boolean updateWindow() {
+    private void updateWindow() {
         // Avanzamento head finestra temporale
         upperBoundWindow += emitFrequencyInMillis;
 
@@ -149,10 +152,8 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             // La finestra dal tempo 0 è > windowSize
             // Avanzamento tail finestra temporale
             lowerBoundWindow += deltaHeadTail - windowSizeInMillis;
-            return true;
+            isWindowSlidingTotally = true;
         }
-
-        return false;
     }
 
     private void fillNewEvents(Long timestampToUse, Tuple tuple) {
@@ -206,7 +207,11 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         if (timestampFromTuple != null) {
             // TODO vedere se mettere anche l'upper bound per il timestamp delle tuple (e vedere se le tuple vengono accettate)
             if (timestampFromTuple < lowerBoundWindow /* || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis */) {
-                throw new BadTuple(String.format("Tuple rejected with timestamp <%d>", timestampFromTuple));
+                throw new BadTuple(String.format(
+                        "%s rejected tuple with timestamp <%d>",
+                        getClassName(),
+                        timestampFromTuple
+                ));
             }
             timestampToUse = timestampFromTuple;
         }
@@ -251,5 +256,13 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     protected long getUpperBoundWindow() {
         return upperBoundWindow;
     }
+
+    public boolean isWindowSlidingTotally() {
+        return isWindowSlidingTotally;
+    }
+
+    public abstract String getClassName();
+
+    public abstract Logger getLogger();
 
 }

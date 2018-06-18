@@ -14,6 +14,7 @@ import org.apache.storm.tuple.Values;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
@@ -21,6 +22,9 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION
 
 
 public class MeanCalculatorBolt extends AbstractWindowedBolt {
+
+    private final static String CLASS_NAME = MeanCalculatorBolt.class.getSimpleName();
+    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private final Map<Long, MeanSpeedIntersection> meanSpeedIntersectionQueue;
 
@@ -74,6 +78,16 @@ public class MeanCalculatorBolt extends AbstractWindowedBolt {
                 INTERSECTION_ID,
                 INTERSECTION_MEAN_SPEED_OBJECT
         ));
+    }
+
+    @Override
+    public String getClassName() {
+        return CLASS_NAME;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return LOGGER;
     }
 
 }
