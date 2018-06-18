@@ -83,6 +83,9 @@ public class MeanSpeedIntersectionRankable implements IRankable, ITupleObject {
 
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (this == o) {
             return true;
         }

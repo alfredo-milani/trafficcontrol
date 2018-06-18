@@ -29,7 +29,7 @@ public class MeanSpeedIntersection extends BaseIntersection {
         return sum / values.length;
     }
 
-    private Short[] getShortArrayOfSemaphore() {
+    private Short[] getShortArrayOfSemaphores() {
         int size = semaphoreSensors.size();
         Short[] meanSpeed = new Short[size];
         for (int i = 0; i < size; ++i) {
@@ -54,7 +54,7 @@ public class MeanSpeedIntersection extends BaseIntersection {
             ));
         }
 
-        meanIntersectionSpeed = meanOf(getShortArrayOfSemaphore());
+        meanIntersectionSpeed = meanOf(getShortArrayOfSemaphores());
     }
 
     public int getMeanIntersectionSpeed() {

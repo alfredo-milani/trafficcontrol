@@ -1,6 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.storm.shade.com.google.common.collect.ImmutableList;
+import org.apache.storm.shade.com.google.common.collect.Lists;
 import org.apache.storm.tuple.Tuple;
 
 import java.util.LinkedList;
@@ -10,7 +12,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INT
 
 public class BaseIntersection implements ITupleObject, ISensor {
 
-    private final static Long NOT_INITIALIZED = null;
+    private final static Long NOT_INITIALIZED = 0L;
 
     protected final Long intersectionId;
     protected List<SemaphoreSensor> semaphoreSensors;
@@ -31,19 +33,29 @@ public class BaseIntersection implements ITupleObject, ISensor {
     }
 
     public boolean addSemaphoreSensor(SemaphoreSensor semaphoreSensor) {
-        if (oldestSemaphoreTimestamp == NOT_INITIALIZED) {
+        List<SemaphoreSensor> semaphoreSensorsCopy = getSemaphoreSensors();
+        if (semaphoreSensorsCopy.size() > 0) {
+            // Controllo se esiste già un sensore con lo stesso id
+            for (SemaphoreSensor s : semaphoreSensorsCopy) {
+                if (s.getSemaphoreId().equals(semaphoreSensor.getSemaphoreId()) &&
+                        s.getSemaphoreTimestampUTC() < semaphoreSensor.getSemaphoreTimestampUTC()) {
+                    // Se esiste un sensore con stesso id e timestamp maggiore del precedente allora
+                    // probabilmente a breve mi saranno inviate anche le nuove tuple degli altri sensori
+                    // dei semafori dell'intersezione quindi rimuovo le vecchie informazioni
+                    semaphoreSensors.removeAll(semaphoreSensorsCopy);
+                    oldestSemaphoreTimestamp = NOT_INITIALIZED;
+                    return addSemaphoreSensor(semaphoreSensor);
+                }
+            }
+
+            if (semaphoreSensor.getSemaphoreTimestampUTC() < oldestSemaphoreTimestamp) {
+                oldestSemaphoreTimestamp = semaphoreSensor.getSemaphoreTimestampUTC();
+            }
+        } else {
             oldestSemaphoreTimestamp = semaphoreSensor.getSemaphoreTimestampUTC();
         }
 
         return semaphoreSensors.add(semaphoreSensor);
-    }
-
-    public List<SemaphoreSensor> getSemaphoreSensors() {
-        return semaphoreSensors;
-    }
-
-    public void setSemaphoreSensors(List<SemaphoreSensor> semaphoreSensors) {
-        this.semaphoreSensors = semaphoreSensors;
     }
 
     @Override
@@ -61,6 +73,12 @@ public class BaseIntersection implements ITupleObject, ISensor {
 
     public void setOldestSemaphoreTimestamp(Long oldestSemaphoreTimestamp) {
         this.oldestSemaphoreTimestamp = oldestSemaphoreTimestamp;
+    }
+
+    public List<SemaphoreSensor> getSemaphoreSensors() {
+        List<SemaphoreSensor> semaphoreSensors = Lists.newLinkedList();
+        semaphoreSensors.addAll(this.semaphoreSensors);
+        return ImmutableList.copyOf(semaphoreSensors);
     }
 
 }

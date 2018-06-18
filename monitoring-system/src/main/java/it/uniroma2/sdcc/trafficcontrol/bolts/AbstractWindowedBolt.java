@@ -208,7 +208,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             // TODO vedere se mettere anche l'upper bound per il timestamp delle tuple (e vedere se le tuple vengono accettate)
             if (timestampFromTuple < lowerBoundWindow /* || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis */) {
                 throw new BadTuple(String.format(
-                        "%s rejected tuple with timestamp <%d>",
+                        "%s rejects tuple with timestamp <%d>",
                         getClassName(),
                         timestampFromTuple
                 ));
