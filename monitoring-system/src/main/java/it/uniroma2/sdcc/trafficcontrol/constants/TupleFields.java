@@ -2,6 +2,8 @@ package it.uniroma2.sdcc.trafficcontrol.constants;
 
 public interface TupleFields {
 
+    // TODO TO DELETE
+
     String TIMESTAMP = "timestamp";
     String RAW_TUPLE = "rawTuple";
     String ID = "id_field";

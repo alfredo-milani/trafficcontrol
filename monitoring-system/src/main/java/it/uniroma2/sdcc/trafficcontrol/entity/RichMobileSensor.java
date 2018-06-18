@@ -9,7 +9,7 @@ import java.io.IOException;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.*;
 
-public class RichMobileSensor implements ISensor {
+public class RichMobileSensor implements ITupleObject, ISensor {
 
     private Long mobileId;
     private Long mobileTimestampUTC;

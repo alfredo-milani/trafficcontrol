@@ -20,8 +20,8 @@ public class GlobalRankingsPublisherBolt extends AbstractKafkaPublisherBolt<Stri
     @Override
     protected List<String> computeValueToPublish(Tuple tuple) {
         Rankings globalRankings = (Rankings) tuple.getValueByField(GLOBAL_RANKINGS_OBJECT);
-        return new ArrayList<>(Collections.singletonList(globalRankings.toString()));
-        // return new ArrayList<>(Collections.singletonList(globalRankings.getJsonStringFromInstance()));
+        // return new ArrayList<>(Collections.singletonList(globalRankings.toString()));
+        return new ArrayList<>(Collections.singletonList(globalRankings.getJsonStringFromInstance()));
     }
 
     @Override

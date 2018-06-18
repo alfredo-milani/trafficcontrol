@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.uniroma2.sdcc.trafficcontrol.entity.ISensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.ITupleObject;
 import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import org.apache.storm.tuple.Tuple;
 
@@ -14,7 +14,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.MeanIntersectionTuple.ME
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 
-public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
+public class MeanSpeedIntersectionRankable implements IRankable, ITupleObject {
 
     private final Long intersectionId;
     private final Integer meanIntersectionSpeed;
@@ -40,7 +40,7 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
         return new MeanSpeedIntersectionRankable(
                 meanSpeedIntersection.getIntersectionId(),
                 meanSpeedIntersection.getMeanIntersectionSpeed(),
-                meanSpeedIntersection.getOldestSemaphoreTimestam()
+                meanSpeedIntersection.getOldestSemaphoreTimestamp()
         );
     }
 
@@ -54,14 +54,17 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
         return objectNode.toString();
     }
 
+    @Override
     public Object getId() {
         return intersectionId;
     }
 
+    @Override
     public Integer getValue() {
         return meanIntersectionSpeed;
     }
 
+    @Override
     public Long getTimestamp() {
         return timestamp;
     }
@@ -102,6 +105,7 @@ public class MeanSpeedIntersectionRankable implements IRankable, ISensor {
         );
     }
 
+    @Override
     public String toString() {
         return String.format(
                 "Mean speed: %d\t- Intersection %d\t<timestamp - %s>\n",

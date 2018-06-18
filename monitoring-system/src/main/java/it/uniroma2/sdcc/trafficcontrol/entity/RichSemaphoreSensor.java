@@ -9,7 +9,7 @@ import java.io.IOException;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class RichSemaphoreSensor implements ISensor {
+public class RichSemaphoreSensor implements ITupleObject, ISensor {
 
     private Long intersectionId;
     private Long semaphoreId;

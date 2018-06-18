@@ -27,18 +27,6 @@ public interface KafkaParams {
     String ODD_SEMAPHORES = "odd_semaphores";
     String EVEN_SEMAPHORES = "even_semaphores";
 
-    String MONITORING_QUERY1 = "monitoring_query1";
-    String MONITORING_QUERY3_LAMP_HOURLY = "monitoring_query3_lamp_hourly";
-    String MONITORING_QUERY3_ROAD_HOURLY = "monitoring_query3_road_hourly";
-    String MONITORING_QUERY3_CITY_HOURLY = "monitoring_query3_city_hourly";
-    String MONITORING_QUERY3_LAMP_DAILY = "monitoring_query3_lamp_daily";
-    String MONITORING_QUERY3_ROAD_DAILY = "monitoring_query3_road_daily";
-    String MONITORING_QUERY3_CITY_DAILY = "monitoring_query3_city_daily";
-    String MONITORING_QUERY3_LAMP_WEEKLY = "monitoring_query3_lamp_weekly";
-    String MONITORING_QUERY3_ROAD_WEEKLY = "monitoring_query3_road_weekly";
-    String MONITORING_QUERY3_CITY_WEEKLY = "monitoring_query3_city_weekly";
-    String MONITORING_QUERY4 = "monitoring_query4";
-
     // Kafka's tuples informations
     String KAFKA_TIMESTAMP = "kafka_timestamp";
     String KAFKA_RAW_TUPLE = "kafka_raw_tuple";

@@ -10,7 +10,6 @@ public interface StormParams {
     String MOBILE_SENSOR_STREAM = "mobile_sensor_stream";
 
     // Validation bolts
-    String VALIDITY_CHECK_BOLT = "validityCheckBolt";
     String SEMAPHORE_SENSOR_AUTH_CACHE_BOLT = "semaphore_sensor_auth_cache_bolt";
     String MOBILE_SENSOR_AUTH_CACHE_BOLT = "mobile_sensor_auth_cache_bolt";
     String CACHE_HIT_STREAM = "cache_hit_stream";
@@ -23,8 +22,6 @@ public interface StormParams {
     // Semaphore status bolts
     String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
     String SEMAPHORE_STATUS_PUBLISHER_BOLT = "semaphore_status_publisher_bolt";
-    String REMOVE_STREAM = "remove_stream";
-    String UPDATE_STREAM = "update_stream";
 
     // Ranking Bolts
     String MEAN_SPEED_DISPATCHER_BOLT = "mean_speed_dispatcher_bolt";
@@ -49,9 +46,5 @@ public interface StormParams {
     String FILTER_GREEN_BOLT = "filter_green_bolt";
     String GREEN_SETTER = "green_setter";
     String GREEN_TEMPORIZATION_VALUE = "green_temporization_value";
-
-
-    String UPDATE_PARTIAL = "update";
-    String REMOVE = "remove";
 
 }

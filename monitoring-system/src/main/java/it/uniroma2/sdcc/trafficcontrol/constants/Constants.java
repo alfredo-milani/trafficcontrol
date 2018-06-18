@@ -3,6 +3,8 @@ package it.uniroma2.sdcc.trafficcontrol.constants;
 
 public interface Constants {
 
+    // TODO TO DELETE
+
     long MILL_IN_MIN = 1000 * 5;
     long MILL_IN_HOUR = MILL_IN_MIN * 60;//1000 * 60 * 60;
     long MILL_IN_DAY = MILL_IN_HOUR * 24;

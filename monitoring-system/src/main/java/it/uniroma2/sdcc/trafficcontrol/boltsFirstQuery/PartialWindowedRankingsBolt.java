@@ -69,7 +69,7 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
 
     @Override
     protected Long getTimestampFrom(Tuple tuple) {
-        return ((MeanSpeedIntersection) tuple.getValueByField(INTERSECTION_MEAN_SPEED_OBJECT)).getOldestSemaphoreTimestam();
+        return ((MeanSpeedIntersection) tuple.getValueByField(INTERSECTION_MEAN_SPEED_OBJECT)).getOldestSemaphoreTimestamp();
     }
 
     @Override

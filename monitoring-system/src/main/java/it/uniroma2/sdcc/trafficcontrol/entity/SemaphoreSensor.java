@@ -8,7 +8,7 @@ import java.util.Date;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class SemaphoreSensor implements ISensor {
+public class SemaphoreSensor implements ITupleObject, ISensor {
 
     private Long semaphoreId;
     private Double semaphoreLatitude;
@@ -115,6 +115,7 @@ public class SemaphoreSensor implements ISensor {
         return result;
     }
 
+    @Override
     public String toString() {
         return String.format(
                 "Semaphore %d - <timestamp - %s>\n",

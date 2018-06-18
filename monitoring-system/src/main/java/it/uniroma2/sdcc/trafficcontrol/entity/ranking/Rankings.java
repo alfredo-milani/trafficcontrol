@@ -1,15 +1,19 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import it.uniroma2.sdcc.trafficcontrol.entity.ITupleObject;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class Rankings implements Serializable {
+import static it.uniroma2.sdcc.trafficcontrol.constants.RankingJsonFields.*;
+
+public class Rankings implements ITupleObject {
 
     private static final int TOP_N_DEFAULT = 10;
 
@@ -32,6 +36,23 @@ public class Rankings implements Serializable {
     public Rankings(Rankings other) {
         this(other.maxSize());
         updateWith(other);
+    }
+
+    @Override
+    public String getJsonStringFromInstance() {
+        ObjectNode objectNode = mapper.createObjectNode();
+
+        objectNode.put(RANKING_PRINT_TIMESTAMP, System.currentTimeMillis());
+        ArrayNode rankingArrayNode = objectNode.putArray(RANKING);
+        rankedItems.forEach(r -> {
+            ObjectNode rankableNode = mapper.createObjectNode();
+            rankableNode.put(MEAN_INTERSECTION_SPEED, r.getValue());
+            rankableNode.put(INTERSECTION_ID, (Long) r.getId());
+            rankableNode.put(RANKABLE_TIMESTAMP, r.getTimestamp());
+            rankingArrayNode.add(rankableNode);
+        });
+
+        return objectNode.toString();
     }
 
     public int maxSize() {

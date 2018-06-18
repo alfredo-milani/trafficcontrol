@@ -1,19 +1,16 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-public class StatusSemaphoreSensor implements ISensor {
+public class StatusSemaphoreSensor implements ITupleObject, ISensor {
 
     public enum SemaphoreStatus {
         WORKING,
         AVERAGE,
         FAULTY
     }
-
-    private final static ObjectMapper mapper = new ObjectMapper();
 
     private Long intersectionId;
     private Long semaphoreId;
@@ -57,6 +54,7 @@ public class StatusSemaphoreSensor implements ISensor {
         );
     }
 
+    @Override
     public String getJsonStringFromInstance() {
         ObjectNode objectNode = mapper.createObjectNode();
 
