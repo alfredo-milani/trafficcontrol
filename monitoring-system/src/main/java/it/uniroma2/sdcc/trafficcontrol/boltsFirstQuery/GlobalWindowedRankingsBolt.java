@@ -2,7 +2,6 @@ package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
-import it.uniroma2.sdcc.trafficcontrol.entity.ranking.MeanSpeedIntersectionRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -56,9 +55,7 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
 
         if (isWindowSlidingTotally()) {
             rankings.getRankings().forEach(r -> {
-                if (((MeanSpeedIntersectionRankable) r).getTimestamp() < getLowerBoundWindow()) {
-                    rankings.removeIfExists(r);
-                }
+                if (r.getTimestamp() < getLowerBoundWindow()) rankings.removeIfExists(r);
             });
         }
         eventsWindow.getNewEvents().forEach(t -> {
