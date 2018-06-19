@@ -58,10 +58,9 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
                 if (r.getTimestamp() < getLowerBoundWindow()) rankings.removeIfExists(r);
             });
         }
-        eventsWindow.getNewEvents().forEach(t -> {
-            Rankings rankings = (Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT);
-            this.rankings.updateWith(rankings);
-        });
+        eventsWindow.getNewEvents().forEach(
+                t -> this.rankings.updateWith((Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT))
+        );
 
         // TODO a volte stampa la stessa classifca anche se non è cambiata (penso sia un errore di Java)
         if (!rankings.equals(oldRankings)) {

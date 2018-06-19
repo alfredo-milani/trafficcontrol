@@ -11,9 +11,9 @@ import java.util.List;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GLOBAL_RANKINGS_OBJECT;
 
-public class GlobalRankingsPublisherBolt extends AbstractKafkaPublisherBolt<String> {
+public class RankPublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
-    public GlobalRankingsPublisherBolt(String topic) {
+    public RankPublisherBolt(String topic) {
         super(topic);
     }
 

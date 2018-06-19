@@ -42,15 +42,15 @@ public class SecondTopology extends BaseTopology {
                 .allGrouping(VALUE_GLOBAL_MEDIAN,VALUE_GLOBAL_MEDIAN)
                 .setNumTasks(1);
 
-        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT, new PartialRankBolt(10))
+        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT_15_MIN, new PartialRankBolt(10))
                 // .fieldsGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT, new Fields(SEMAPHORE_LIGHT_STATUS))
                 .shuffleGrouping(FIELDS_SELECTION_FOR_RANKING_BOLT)
                 .setNumTasks(4);
-        builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT, new GlobalRankBolt(10), 1)
-                // .allGrouping(PARTIAL_WINDOWED_RANK_BOLT, UPDATE_PARTIAL)
-                // .allGrouping(PARTIAL_WINDOWED_RANK_BOLT, REMOVE)
-                .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT, UPDATE_PARTIAL)
-                .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT, REMOVE)
+        builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT_15_MIN, new GlobalRankBolt(10), 1)
+                // .allGrouping(PARTIAL_WINDOWED_RANK_BOLT_15_MIN, UPDATE_PARTIAL)
+                // .allGrouping(PARTIAL_WINDOWED_RANK_BOLT_15_MIN, REMOVE)
+                .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT_15_MIN, UPDATE_PARTIAL)
+                .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT_15_MIN, REMOVE)
                 .setNumTasks(1);*/
 
         return builder;

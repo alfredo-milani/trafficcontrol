@@ -23,15 +23,22 @@ public interface StormParams {
     String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
     String SEMAPHORE_STATUS_PUBLISHER_BOLT = "semaphore_status_publisher_bolt";
 
-    // Ranking Bolts
+    // Ranking Bolts - First query
     String MEAN_SPEED_DISPATCHER_BOLT = "mean_speed_dispatcher_bolt";
     String VALIDATION_DISPATCHER_BOLT = "validation_dispatcher_bolt";
     String MEAN_CALCULATOR_BOLT = "mean_calculator_bolt";
     String INTERSECTION_MEAN_SPEED_OBJECT = "intersection_mean_speed_object";
     String PARTIAL_RANKINGS_OBJECT = "partial_rankable_object";
     String GLOBAL_RANKINGS_OBJECT = "global_rankable_object";
-    String PARTIAL_WINDOWED_RANK_BOLT = "partial_windowed_rank_bolt";
-    String GLOBAL_WINDOWED_RANK_BOLT = "global_windowed_rank_bolt";
+    String PARTIAL_WINDOWED_RANK_BOLT_15_MIN = "partial_windowed_rank_bolt_15_min";
+    String GLOBAL_WINDOWED_RANK_BOLT_15_MIN = "global_windowed_rank_bolt_15_min";
+    String PARTIAL_WINDOWED_RANK_BOLT_1_H = "partial_windowed_rank_bolt_1_h";
+    String GLOBAL_WINDOWED_RANK_BOLT_1_H = "global_windowed_rank_bolt_1_h";
+    String PARTIAL_WINDOWED_RANK_BOLT_24_H = "partial_windowed_rank_bolt_24_h";
+    String GLOBAL_WINDOWED_RANK_BOLT_24_H = "global_windowed_rank_bolt_24_h";
+    String RANK_PUBLISHER_BOLT_15_MIN = "rank_publisher_bolt_15_min";
+    String RANK_PUBLISHER_BOLT_1_H = "rank_publisher_bolt_1_h";
+    String RANK_PUBLISHER_BOLT_24_H = "rank_publisher_bolt_24_h";
 
     // per seconda query
     String INTERSECTION_AND_GLOBAL_MEDIAN = "intersection_and_global_median";
