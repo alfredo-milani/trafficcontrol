@@ -6,12 +6,12 @@ import org.apache.storm.topology.TopologyBuilder;
 
 import java.util.logging.Logger;
 
-public abstract class BaseTopology {
+public abstract class Topology {
 
     private final TopologyBuilder builder;
     private final Config config;
 
-    public BaseTopology() {
+    public Topology() {
         this.config = createConfig();
         this.builder = setTopology();
     }

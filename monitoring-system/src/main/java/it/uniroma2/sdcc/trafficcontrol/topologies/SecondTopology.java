@@ -4,7 +4,7 @@ import org.apache.storm.topology.TopologyBuilder;
 
 import java.util.logging.Logger;
 
-public class SecondTopology extends BaseTopology {
+public class SecondTopology extends Topology {
 
     private final static String CLASS_NAME = SecondTopology.class.getSimpleName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);

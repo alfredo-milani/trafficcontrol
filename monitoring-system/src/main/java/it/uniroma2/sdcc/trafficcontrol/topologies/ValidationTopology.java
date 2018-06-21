@@ -16,7 +16,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.MOBILE
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
-public class ValidationTopology extends BaseTopology {
+public class ValidationTopology extends Topology {
 
     private final static String CLASS_NAME = ValidationTopology.class.getSimpleName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);

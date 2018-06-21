@@ -11,7 +11,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SEMAPHORE_LI
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SEMAPHORE_SENSOR_VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
-public class SemaphoreStatusTopology extends BaseTopology {
+public class SemaphoreStatusTopology extends Topology {
 
     private final static String CLASS_NAME = SemaphoreStatusTopology.class.getSimpleName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);

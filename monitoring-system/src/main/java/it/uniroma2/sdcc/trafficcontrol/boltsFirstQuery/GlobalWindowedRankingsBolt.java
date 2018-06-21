@@ -53,16 +53,15 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
     protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
         Rankings oldRankings = rankings.copy();
 
-        if (isWindowSlidingTotally()) {
-            rankings.getRankings().forEach(r -> {
-                if (r.getTimestamp() < getLowerBoundWindow()) rankings.removeIfExists(r);
-            });
-        }
+        rankings.getRankings().forEach(r -> {
+            if (r.getTimestamp() < getLowerBoundWindow()) rankings.removeIfExists(r);
+        });
         eventsWindow.getNewEvents().forEach(
                 t -> this.rankings.updateWith((Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT))
         );
 
         // TODO a volte stampa la stessa classifca anche se non è cambiata (penso sia un errore di Java)
+        // TODO vedi se mettere workaround per non stampare ranks uguali
         if (!rankings.equals(oldRankings)) {
             collector.emit(new Values(rankings));
         }

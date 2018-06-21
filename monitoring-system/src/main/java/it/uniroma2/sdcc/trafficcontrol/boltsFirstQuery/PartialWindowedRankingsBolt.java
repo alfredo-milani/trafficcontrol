@@ -2,7 +2,6 @@ package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
-import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.MeanSpeedIntersectionRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import org.apache.storm.task.OutputCollector;
@@ -13,7 +12,6 @@ import org.apache.storm.tuple.Values;
 
 import java.util.logging.Logger;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.PARTIAL_RANKINGS_OBJECT;
 
 public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
@@ -67,10 +65,10 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
         }
     }
 
-    @Override
+    /*@Override
     protected Long getTimestampFrom(Tuple tuple) {
         return ((MeanSpeedIntersection) tuple.getValueByField(INTERSECTION_MEAN_SPEED_OBJECT)).getOldestSemaphoreTimestamp();
-    }
+    }*/
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

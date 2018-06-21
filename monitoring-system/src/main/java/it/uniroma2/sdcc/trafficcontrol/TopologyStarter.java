@@ -1,8 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
-import it.uniroma2.sdcc.trafficcontrol.topologies.BaseTopology;
 import it.uniroma2.sdcc.trafficcontrol.topologies.FirstTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.Topology;
 import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
 import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
@@ -31,7 +31,7 @@ public class TopologyStarter {
             System.exit(EXIT_FAILURE);
         }
 
-        ArrayList<BaseTopology> topologies = new ArrayList<>();
+        ArrayList<Topology> topologies = new ArrayList<>();
         topologies.add(new ValidationTopology());
         // topologies.add(new SemaphoreStatusTopology());
         topologies.add(new FirstTopology());

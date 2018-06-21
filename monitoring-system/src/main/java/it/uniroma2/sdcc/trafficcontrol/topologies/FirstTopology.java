@@ -14,7 +14,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INT
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
 
-public class FirstTopology extends BaseTopology {
+public class FirstTopology extends Topology {
 
     private final static String CLASS_NAME = FirstTopology.class.getSimpleName();
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);

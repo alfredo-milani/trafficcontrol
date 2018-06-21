@@ -12,16 +12,13 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INT
 
 public class BaseIntersection implements ITupleObject, ISensor {
 
-    private final static Long NOT_INITIALIZED = 0L;
-
     protected final Long intersectionId;
     protected List<SemaphoreSensor> semaphoreSensors;
-    private Long oldestSemaphoreTimestamp;
+    protected Long oldestSemaphoreTimestamp;
 
     public BaseIntersection(Long intersectionId) {
         this.intersectionId = intersectionId;
         this.semaphoreSensors = new LinkedList<>();
-        this.oldestSemaphoreTimestamp = NOT_INITIALIZED;
     }
 
     public static Long getIntersectionIdFrom(Tuple tuple) throws ClassCastException, IllegalArgumentException {
@@ -43,7 +40,6 @@ public class BaseIntersection implements ITupleObject, ISensor {
                     // probabilmente a breve mi saranno inviate anche le nuove tuple degli altri sensori
                     // dei semafori dell'intersezione quindi rimuovo le vecchie informazioni
                     semaphoreSensors.removeAll(semaphoreSensorsCopy);
-                    oldestSemaphoreTimestamp = NOT_INITIALIZED;
                     return addSemaphoreSensor(semaphoreSensor);
                 }
             }
@@ -69,10 +65,6 @@ public class BaseIntersection implements ITupleObject, ISensor {
 
     public Long getOldestSemaphoreTimestamp() {
         return oldestSemaphoreTimestamp;
-    }
-
-    public void setOldestSemaphoreTimestamp(Long oldestSemaphoreTimestamp) {
-        this.oldestSemaphoreTimestamp = oldestSemaphoreTimestamp;
     }
 
     public List<SemaphoreSensor> getSemaphoreSensors() {
