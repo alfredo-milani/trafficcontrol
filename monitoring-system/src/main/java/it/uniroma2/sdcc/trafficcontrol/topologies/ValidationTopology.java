@@ -31,7 +31,7 @@ public class ValidationTopology extends Topology {
     }
 
     @Override
-    protected TopologyBuilder setTopology() {
+    protected TopologyBuilder setTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE), 6);

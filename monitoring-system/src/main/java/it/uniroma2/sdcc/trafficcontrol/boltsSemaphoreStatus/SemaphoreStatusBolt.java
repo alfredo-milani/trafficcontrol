@@ -28,7 +28,7 @@ public class SemaphoreStatusBolt extends BaseRichBolt {
         RichSemaphoreSensor semaphoreSensor = RichSemaphoreSensor.getInstanceFrom(tuple);
         if (semaphoreSensor != null) {
             StatusSemaphoreSensor semaphoreSensorStatus = StatusSemaphoreSensor.getInstanceFrom(semaphoreSensor);
-            if (semaphoreSensorStatus.hasLampsFaulty()) {
+            if (semaphoreSensorStatus.hasFaultyLamps()) {
                 collector.emit(new Values(semaphoreSensorStatus));
             }
         } else {

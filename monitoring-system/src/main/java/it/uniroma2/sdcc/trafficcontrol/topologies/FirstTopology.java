@@ -31,7 +31,7 @@ public class FirstTopology extends Topology {
     }
 
     @Override
-    protected TopologyBuilder setTopology() {
+    protected TopologyBuilder setTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);

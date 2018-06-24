@@ -10,7 +10,7 @@ public class SecondTopology extends Topology {
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected TopologyBuilder setTopology() {
+    protected TopologyBuilder setTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         /*builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME))

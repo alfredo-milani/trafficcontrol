@@ -11,7 +11,7 @@ public abstract class Topology {
     private final TopologyBuilder builder;
     private final Config config;
 
-    public Topology() {
+    public Topology() throws IllegalArgumentException {
         this.config = createConfig();
         this.builder = setTopology();
     }

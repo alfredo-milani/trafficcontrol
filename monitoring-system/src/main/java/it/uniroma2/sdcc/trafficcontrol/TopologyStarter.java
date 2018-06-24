@@ -26,47 +26,46 @@ public class TopologyStarter {
     public static void main(String[] args) {
         try {
             parseArgs(args);
-        } catch (WrongCommandLineArgument wrongCommandLineArgument) {
-            wrongCommandLineArgument.printStackTrace();
-            System.exit(EXIT_FAILURE);
-        }
 
-        ArrayList<Topology> topologies = new ArrayList<>();
-        topologies.add(new ValidationTopology());
-        // topologies.add(new SemaphoreStatusTopology());
-        topologies.add(new FirstTopology());
-        // topologies.add(new SecondTopology());
-        // topologies.add(new ThirdTopology());
-        // topologies.add(new GreenSettingTopology());
+            ArrayList<Topology> topologies = new ArrayList<>();
+            topologies.add(new ValidationTopology());
+            // topologies.add(new SemaphoreStatusTopology());
+            topologies.add(new FirstTopology());
+            // topologies.add(new SecondTopology());
+            // topologies.add(new ThirdTopology());
+            // topologies.add(new GreenSettingTopology());
 
-        switch (MODE_SELECTED) {
-            case MODE_LOCAL:
-                LocalCluster cluster = new LocalCluster();
+            switch (MODE_SELECTED) {
+                case MODE_LOCAL:
+                    LocalCluster cluster = new LocalCluster();
 
-                topologies.forEach(t -> cluster.submitTopology(
-                        t.getClassName(),
-                        t.getConfig(),
-                        t.createTopology()
-                ));
-                break;
+                    topologies.forEach(t -> cluster.submitTopology(
+                            t.getClassName(),
+                            t.getConfig(),
+                            t.createTopology()
+                    ));
+                    break;
 
-            case MODE_CLUSTER:
-                topologies.forEach(t -> {
-                    try {
-                        StormSubmitter.submitTopology(
-                                t.getClassName(),
-                                t.getConfig(),
-                                t.createTopology()
-                        );
-                    } catch (AlreadyAliveException | AuthorizationException | InvalidTopologyException e) {
-                        e.printStackTrace();
-                    }
-                });
-                break;
+                case MODE_CLUSTER:
+                    topologies.forEach(t -> {
+                        try {
+                            StormSubmitter.submitTopology(
+                                    t.getClassName(),
+                                    t.getConfig(),
+                                    t.createTopology()
+                            );
+                        } catch (AlreadyAliveException | AuthorizationException | InvalidTopologyException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    break;
 
-            default:
-                LOGGER.log(Level.SEVERE, "Errore sconosciuto");
-                System.exit(EXIT_FAILURE);
+                default:
+                    LOGGER.log(Level.SEVERE, "Errore sconosciuto");
+                    System.exit(EXIT_FAILURE);
+            }
+        } catch (WrongCommandLineArgument | IllegalArgumentException e) {
+            e.printStackTrace();
         }
     }
 

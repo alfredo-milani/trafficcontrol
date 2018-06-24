@@ -77,7 +77,7 @@ public class StatusSemaphoreSensor implements ITupleObject, ISensor {
      * @param yellowLightStatus Stato lampada gialla
      * @param redLightStatus    Stato lampada rossa
      * @return Array di {@link SemaphoreStatus} contenente lo stato delle luci di un semaforo,
-     * rispettivamente del verde (posizione 0), gialla (posizione 1) e rossa (posizoine 2)
+     * rispettivamente del verde (posizione 0), gialla (posizione 1) e rossa (posizione 2)
      */
     private static SemaphoreStatus[] getStatusFromByte(Byte greenLightStatus, Byte yellowLightStatus, Byte redLightStatus) {
         SemaphoreStatus[] lightStatus = {
@@ -119,7 +119,7 @@ public class StatusSemaphoreSensor implements ITupleObject, ISensor {
         return lightStatus;
     }
 
-    public boolean hasLampsFaulty() {
+    public boolean hasFaultyLamps() {
         return !greenLightStatus.equals(SemaphoreStatus.WORKING) ||
                 !yellowLightStatus.equals(SemaphoreStatus.WORKING) ||
                 !redLightStatus.equals(SemaphoreStatus.WORKING);
