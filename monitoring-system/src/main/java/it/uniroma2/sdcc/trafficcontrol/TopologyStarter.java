@@ -1,9 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
-import it.uniroma2.sdcc.trafficcontrol.topologies.FirstTopology;
-import it.uniroma2.sdcc.trafficcontrol.topologies.Topology;
-import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.*;
 import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
@@ -27,13 +25,14 @@ public class TopologyStarter {
         try {
             parseArgs(args);
 
-            ArrayList<Topology> topologies = new ArrayList<>();
-            topologies.add(new ValidationTopology());
-            // topologies.add(new SemaphoreStatusTopology());
-            topologies.add(new FirstTopology());
-            // topologies.add(new SecondTopology());
-            // topologies.add(new ThirdTopology());
-            // topologies.add(new GreenSettingTopology());
+            ArrayList<Topology> topologies = new ArrayList<Topology>() {{
+                add(new ValidationTopology());
+                add(new SemaphoreStatusTopology());
+                add(new FirstTopology());
+                add(new SecondTopology());
+                // add(new ThirdTopology());
+                add(new GreenSettingTopology());
+            }};
 
             switch (MODE_SELECTED) {
                 case MODE_LOCAL:
