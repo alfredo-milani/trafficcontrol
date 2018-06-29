@@ -22,49 +22,45 @@ public class TopologyStarter {
     private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public static void main(String[] args) {
-        try {
-            parseArgs(args);
+        parseArgs(args);
 
-            ArrayList<Topology> topologies = new ArrayList<Topology>() {{
-                add(new ValidationTopology());
-                add(new SemaphoreStatusTopology());
-                add(new FirstTopology());
-                add(new SecondTopology());
-                // add(new ThirdTopology());
-                add(new GreenSettingTopology());
-            }};
+        ArrayList<Topology> topologies = new ArrayList<Topology>() {{
+            add(new ValidationTopology());
+            add(new SemaphoreStatusTopology());
+            add(new FirstTopology());
+            add(new SecondTopology());
+            // add(new ThirdTopology());
+            add(new GreenSettingTopology());
+        }};
 
-            switch (MODE_SELECTED) {
-                case MODE_LOCAL:
-                    LocalCluster cluster = new LocalCluster();
+        switch (MODE_SELECTED) {
+            case MODE_LOCAL:
+                LocalCluster cluster = new LocalCluster();
 
-                    topologies.forEach(t -> cluster.submitTopology(
-                            t.getClassName(),
-                            t.getConfig(),
-                            t.createTopology()
-                    ));
-                    break;
+                topologies.forEach(t -> cluster.submitTopology(
+                        t.getClassName(),
+                        t.getConfig(),
+                        t.createTopology()
+                ));
+                break;
 
-                case MODE_CLUSTER:
-                    topologies.forEach(t -> {
-                        try {
-                            StormSubmitter.submitTopology(
-                                    t.getClassName(),
-                                    t.getConfig(),
-                                    t.createTopology()
-                            );
-                        } catch (AlreadyAliveException | AuthorizationException | InvalidTopologyException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    break;
+            case MODE_CLUSTER:
+                topologies.forEach(t -> {
+                    try {
+                        StormSubmitter.submitTopology(
+                                t.getClassName(),
+                                t.getConfig(),
+                                t.createTopology()
+                        );
+                    } catch (AlreadyAliveException | AuthorizationException | InvalidTopologyException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
 
-                default:
-                    LOGGER.log(Level.SEVERE, "Errore sconosciuto");
-                    System.exit(EXIT_FAILURE);
-            }
-        } catch (WrongCommandLineArgument | IllegalArgumentException e) {
-            e.printStackTrace();
+            default:
+                LOGGER.log(Level.SEVERE, "Errore sconosciuto");
+                System.exit(EXIT_FAILURE);
         }
     }
 
