@@ -8,8 +8,9 @@ import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
 import org.apache.storm.generated.AuthorizationException;
 import org.apache.storm.generated.InvalidTopologyException;
+import org.apache.storm.shade.com.google.common.collect.Lists;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,14 +25,14 @@ public class TopologyStarter {
     public static void main(String[] args) {
         parseArgs(args);
 
-        ArrayList<Topology> topologies = new ArrayList<Topology>() {{
-            add(new ValidationTopology());
-            add(new SemaphoreStatusTopology());
-            add(new FirstTopology());
-            add(new SecondTopology());
-            // add(new ThirdTopology());
-            add(new GreenSettingTopology());
-        }};
+        List<Topology> topologies = Lists.newArrayList(
+                new ValidationTopology(),
+                new SemaphoreStatusTopology(),
+                new FirstTopology(),
+                new SecondTopology(),
+                // new ThirdTopology()
+                new GreenSettingTopology()
+        );
 
         switch (MODE_SELECTED) {
             case MODE_LOCAL:
