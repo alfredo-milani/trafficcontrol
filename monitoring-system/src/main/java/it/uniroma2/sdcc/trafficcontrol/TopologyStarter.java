@@ -36,7 +36,7 @@ public class TopologyStarter {
 
         switch (MODE_SELECTED) {
             case MODE_LOCAL:
-                LocalCluster cluster = new LocalCluster();
+                final LocalCluster cluster = new LocalCluster();
 
                 topologies.forEach(t -> cluster.submitTopology(
                         t.getClassName(),
