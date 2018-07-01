@@ -9,15 +9,10 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.util.logging.Logger;
-
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GLOBAL_RANKINGS_OBJECT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.PARTIAL_RANKINGS_OBJECT;
 
 public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
-
-    private final static String CLASS_NAME = GlobalWindowedRankingsBolt.class.getSimpleName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private final static int TOP_N_DEFAULT = 10;
 
@@ -68,16 +63,6 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields(GLOBAL_RANKINGS_OBJECT));
-    }
-
-    @Override
-    public String getClassName() {
-        return CLASS_NAME;
-    }
-
-    @Override
-    public Logger getLogger() {
-        return LOGGER;
     }
 
 }

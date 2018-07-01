@@ -84,7 +84,6 @@ public class SemaphoreSensorProducer implements Runnable {
 
         try {
             String jsonStringLamp = mapper.writeValueAsString(this);
-            // StartProducer.getLOGGER().log(Level.INFO, jsonStringLamp);
             producer.send(new ProducerRecord<>(topicName, jsonStringLamp));
             return jsonStringLamp;
         } catch (JsonProcessingException e) {

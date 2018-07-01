@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
 import it.uniroma2.sdcc.trafficcontrol.topologies.*;
+import lombok.extern.java.Log;
 import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
@@ -12,15 +13,12 @@ import org.apache.storm.shade.com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.*;
 
 
+@Log
 public class TopologyStarter {
-
-    private final static String CLASS_NAME = TopologyStarter.class.getName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public static void main(String[] args) {
         parseArgs(args);
@@ -60,7 +58,7 @@ public class TopologyStarter {
                 break;
 
             default:
-                LOGGER.log(Level.SEVERE, "Errore sconosciuto");
+                log.log(Level.SEVERE, "Errore sconosciuto");
                 System.exit(EXIT_FAILURE);
         }
     }
@@ -111,7 +109,7 @@ public class TopologyStarter {
         try {
             cmd = parser.parse(options, args);
         } catch (ParseException e) {
-            LOGGER.log(Level.CONFIG, e.getMessage());
+            log.log(Level.CONFIG, e.getMessage());
             formatter.printHelp(
                     String.format(
                             "<%s> -%s [local | cluster] -%s [IP address] -%s [port number] -%s [num of workers]",
@@ -171,10 +169,6 @@ public class TopologyStarter {
                 KAFKA_IP_SELECTED,
                 KAFKA_PORT_SELECTED
         );
-    }
-
-    public Logger getLOGGER() {
-        return LOGGER;
     }
 
 }

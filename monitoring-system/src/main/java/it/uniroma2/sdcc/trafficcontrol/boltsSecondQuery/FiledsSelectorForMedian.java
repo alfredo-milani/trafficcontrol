@@ -40,8 +40,6 @@ public class FiledsSelectorForMedian extends BaseRichBolt {
                 numberOfVehicle
         );
 
-        // FirstTopology.getLOGGER().log(Level.INFO, values.toString());
-
         collector.emit(values);
 
         collector.ack(tuple);

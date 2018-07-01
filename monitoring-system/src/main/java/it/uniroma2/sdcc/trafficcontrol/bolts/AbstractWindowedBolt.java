@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
@@ -262,7 +261,5 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     }
 
     public abstract String getClassName();
-
-    public abstract Logger getLogger();
 
 }

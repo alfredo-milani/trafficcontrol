@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.EXIT_FAILURE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
@@ -15,9 +14,6 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 
 
 public class StartProducer {
-
-    private final static String CLASS_NAME = StartProducer.class.getSimpleName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     private static int threads = 2;
     private static int waitingTimeMillis = 2 * 1000;
@@ -137,10 +133,6 @@ public class StartProducer {
                 waitingTimeMillis : Integer.valueOf(cmd.getOptionValue(waitingTime));
         StartProducer.producerType = cmd.getOptionValue(producerType) == null ?
                 ProducerType.AUTO : ProducerType.valueOf(cmd.getOptionValue(producerType).toUpperCase());
-    }
-
-    public static Logger getLOGGER() {
-        return LOGGER;
     }
 
 }
