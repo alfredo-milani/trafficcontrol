@@ -6,8 +6,6 @@ import org.apache.storm.Config;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
-import java.util.logging.Logger;
-
 import static it.uniroma2.sdcc.trafficcontrol.constants.CacheParams.MOBILE_AUTHENTICATION_CACHE_NAME;
 import static it.uniroma2.sdcc.trafficcontrol.constants.CacheParams.SEMAPHORE_AUTHENTICATION_CACHE_NAME;
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKERS_SELECTED;
@@ -19,10 +17,9 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 public class ValidationTopology extends Topology {
 
     private final static String CLASS_NAME = ValidationTopology.class.getSimpleName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected Config createConfig() {
+    protected Config defineConfig() {
         Config config = new Config();
 
         config.setNumWorkers(NUMBER_WORKERS_SELECTED);
@@ -31,7 +28,7 @@ public class ValidationTopology extends Topology {
     }
 
     @Override
-    protected TopologyBuilder setTopology() throws IllegalArgumentException {
+    protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE), 6);
@@ -62,13 +59,8 @@ public class ValidationTopology extends Topology {
     }
 
     @Override
-    public String getClassName() {
+    public String defineTopologyName() {
         return CLASS_NAME;
-    }
-
-    @Override
-    public Logger getLOGGER() {
-        return LOGGER;
     }
 
 }

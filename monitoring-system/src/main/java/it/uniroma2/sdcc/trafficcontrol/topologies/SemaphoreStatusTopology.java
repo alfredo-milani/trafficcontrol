@@ -5,8 +5,6 @@ import it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus.SemaphoreStatusPubli
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.TopologyBuilder;
 
-import java.util.logging.Logger;
-
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SEMAPHORE_LIGHT_STATUS;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SEMAPHORE_SENSOR_VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
@@ -14,10 +12,9 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 public class SemaphoreStatusTopology extends Topology {
 
     private final static String CLASS_NAME = SemaphoreStatusTopology.class.getSimpleName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected TopologyBuilder setTopology() throws IllegalArgumentException {
+    protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
@@ -32,13 +29,8 @@ public class SemaphoreStatusTopology extends Topology {
     }
 
     @Override
-    public String getClassName() {
+    public String defineTopologyName() {
         return CLASS_NAME;
-    }
-
-    @Override
-    public Logger getLOGGER() {
-        return LOGGER;
     }
 
 }

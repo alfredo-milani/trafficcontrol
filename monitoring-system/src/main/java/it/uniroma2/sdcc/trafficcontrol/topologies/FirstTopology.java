@@ -6,8 +6,6 @@ import org.apache.storm.Config;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
-import java.util.logging.Logger;
-
 import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKERS_SELECTED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
@@ -17,10 +15,9 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 public class FirstTopology extends Topology {
 
     private final static String CLASS_NAME = FirstTopology.class.getSimpleName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected Config createConfig() {
+    protected Config defineConfig() {
         Config config = new Config();
 
         config.setNumWorkers(NUMBER_WORKERS_SELECTED);
@@ -31,7 +28,7 @@ public class FirstTopology extends Topology {
     }
 
     @Override
-    protected TopologyBuilder setTopology() throws IllegalArgumentException {
+    protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
@@ -72,13 +69,8 @@ public class FirstTopology extends Topology {
     }
 
     @Override
-    public String getClassName() {
+    public String defineTopologyName() {
         return CLASS_NAME;
-    }
-
-    @Override
-    public Logger getLOGGER() {
-        return LOGGER;
     }
 
 }

@@ -4,34 +4,39 @@ import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.topology.TopologyBuilder;
 
-import java.util.logging.Logger;
+import javax.validation.constraints.NotNull;
+
 
 public abstract class Topology {
 
     private final TopologyBuilder builder;
     private final Config config;
+    private final String topologyName;
 
     public Topology() {
-        this.config = createConfig();
-        this.builder = setTopology();
+        this.config = defineConfig();
+        this.builder = defineTopology();
+        this.topologyName = defineTopologyName();
     }
 
-    protected Config createConfig() {
-        return new Config();
-    }
-
-    protected abstract TopologyBuilder setTopology() throws IllegalArgumentException;
-
-    public StormTopology createTopology() {
-        return builder.createTopology();
-    }
-
-    public Config getConfig() {
+    public final Config createConfig() {
         return config;
     }
 
-    public abstract String getClassName();
+    protected @NotNull Config defineConfig() {
+        return new Config();
+    }
 
-    public abstract Logger getLOGGER();
+    public final StormTopology createTopology() {
+        return builder.createTopology();
+    }
+
+    protected abstract @NotNull TopologyBuilder defineTopology() throws IllegalArgumentException;
+
+    public final String createTopologyName() {
+        return topologyName.replaceAll("\\p{Z}", "");
+    }
+
+    protected abstract @NotNull String defineTopologyName();
 
 }

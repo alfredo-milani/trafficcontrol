@@ -7,8 +7,6 @@ import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
-import java.util.logging.Logger;
-
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.GREEN_TEMPORIZATION;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SEMAPHORE_SENSOR_VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
@@ -17,10 +15,9 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 public class GreenSettingTopology extends Topology {
 
     private final static String CLASS_NAME = GreenSettingTopology.class.getSimpleName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected TopologyBuilder setTopology() throws IllegalArgumentException {
+    protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
@@ -38,13 +35,8 @@ public class GreenSettingTopology extends Topology {
     }
 
     @Override
-    public String getClassName() {
+    public String defineTopologyName() {
         return CLASS_NAME;
-    }
-
-    @Override
-    public Logger getLOGGER() {
-        return LOGGER;
     }
 
 }

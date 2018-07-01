@@ -1,9 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
-import it.uniroma2.sdcc.trafficcontrol.topologies.FirstTopology;
-import it.uniroma2.sdcc.trafficcontrol.topologies.Topology;
-import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.*;
 import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
@@ -29,11 +27,11 @@ public class TopologyStarter {
 
         List<Topology> topologies = Lists.newArrayList(
                 new ValidationTopology(),
-                // new SemaphoreStatusTopology(),
-                new FirstTopology()
-                // new SecondTopology(),
+                new SemaphoreStatusTopology(),
+                new FirstTopology(),
+                new SecondTopology(),
                 // new ThirdTopology(),
-                // new GreenSettingTopology()
+                new GreenSettingTopology()
         );
 
         switch (MODE_SELECTED) {
@@ -41,8 +39,8 @@ public class TopologyStarter {
                 final LocalCluster cluster = new LocalCluster();
 
                 topologies.forEach(t -> cluster.submitTopology(
-                        t.getClassName(),
-                        t.getConfig(),
+                        t.createTopologyName(),
+                        t.createConfig(),
                         t.createTopology()
                 ));
                 break;
@@ -51,8 +49,8 @@ public class TopologyStarter {
                 topologies.forEach(t -> {
                     try {
                         StormSubmitter.submitTopology(
-                                t.getClassName(),
-                                t.getConfig(),
+                                t.createTopologyName(),
+                                t.createConfig(),
                                 t.createTopology()
                         );
                     } catch (AlreadyAliveException | AuthorizationException | InvalidTopologyException e) {

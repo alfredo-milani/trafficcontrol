@@ -2,15 +2,12 @@ package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import org.apache.storm.topology.TopologyBuilder;
 
-import java.util.logging.Logger;
-
 public class SecondTopology extends Topology {
 
     private final static String CLASS_NAME = SecondTopology.class.getSimpleName();
-    private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     @Override
-    protected TopologyBuilder setTopology() throws IllegalArgumentException {
+    protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         /*builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME))
@@ -57,13 +54,8 @@ public class SecondTopology extends Topology {
     }
 
     @Override
-    public String getClassName() {
+    public String defineTopologyName() {
         return CLASS_NAME;
-    }
-
-    @Override
-    public Logger getLOGGER() {
-        return LOGGER;
     }
 
 }
