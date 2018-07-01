@@ -208,7 +208,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             if (timestampFromTuple < lowerBoundWindow /* || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis */) {
                 throw new BadTuple(String.format(
                         "%s rejects tuple with timestamp <%d>",
-                        getClassName(),
+                        this.getClass().getSimpleName(),
                         timestampFromTuple
                 ));
             }
@@ -259,7 +259,5 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     public boolean isWindowSlidingTotally() {
         return isWindowSlidingTotally;
     }
-
-    public abstract String getClassName();
 
 }
