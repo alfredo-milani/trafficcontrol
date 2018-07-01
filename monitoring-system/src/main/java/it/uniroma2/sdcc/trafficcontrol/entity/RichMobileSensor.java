@@ -2,6 +2,8 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.storm.tuple.Tuple;
 
 import java.io.IOException;
@@ -9,6 +11,8 @@ import java.io.IOException;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.*;
 
+@Getter
+@Setter
 public class RichMobileSensor implements ITupleObject, ISensor {
 
     private Long mobileId;
@@ -61,46 +65,6 @@ public class RichMobileSensor implements ITupleObject, ISensor {
         objectNode.put(MOBILE_SPEED, mobileSpeed);
 
         return objectNode.toString();
-    }
-
-    public Long getMobileId() {
-        return mobileId;
-    }
-
-    public void setMobileId(Long mobileId) {
-        this.mobileId = mobileId;
-    }
-
-    public Long getMobileTimestampUTC() {
-        return mobileTimestampUTC;
-    }
-
-    public void setMobileTimestampUTC(Long mobileTimestampUTC) {
-        this.mobileTimestampUTC = mobileTimestampUTC;
-    }
-
-    public Double getMobileLatitude() {
-        return mobileLatitude;
-    }
-
-    public void setMobileLatitude(Double mobileLatitude) {
-        this.mobileLatitude = mobileLatitude;
-    }
-
-    public Double getMobileLongitude() {
-        return mobileLongitude;
-    }
-
-    public void setMobileLongitude(Double mobileLongitude) {
-        this.mobileLongitude = mobileLongitude;
-    }
-
-    public Short getMobileSpeed() {
-        return mobileSpeed;
-    }
-
-    public void setMobileSpeed(Short mobileSpeed) {
-        this.mobileSpeed = mobileSpeed;
     }
 
 }

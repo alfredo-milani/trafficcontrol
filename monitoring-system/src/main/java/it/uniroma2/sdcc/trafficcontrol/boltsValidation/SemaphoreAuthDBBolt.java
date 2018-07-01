@@ -24,7 +24,7 @@ public class SemaphoreAuthDBBolt extends AbstractAuthenticationBolt {
         synchronized (cacheManager.getCacheManager()) {
             // Double checked lock
             if (!(semaphoreInSystem = cacheManager.isKeyInCache(semaphoreSensor.getSemaphoreId()))) {
-                if (semaphoreInSystem = RESTfulAPI.semaphoreSensorExist(semaphoreSensor.getSemaphoreId())) {
+                if (semaphoreInSystem = RESTfulAPI.semaphoreSensorExists(semaphoreSensor.getSemaphoreId())) {
                     cacheManager.put(semaphoreSensor.getSemaphoreId(), semaphoreSensor.getSemaphoreId());
                 }
             }

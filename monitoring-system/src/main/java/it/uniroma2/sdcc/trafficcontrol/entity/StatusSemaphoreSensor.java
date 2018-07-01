@@ -1,9 +1,13 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
+import lombok.Setter;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
+@Getter
+@Setter
 public class StatusSemaphoreSensor implements ITupleObject, ISensor {
 
     public enum SemaphoreStatus {
@@ -123,70 +127,6 @@ public class StatusSemaphoreSensor implements ITupleObject, ISensor {
         return !greenLightStatus.equals(SemaphoreStatus.WORKING) ||
                 !yellowLightStatus.equals(SemaphoreStatus.WORKING) ||
                 !redLightStatus.equals(SemaphoreStatus.WORKING);
-    }
-
-    public Long getIntersectionId() {
-        return intersectionId;
-    }
-
-    public void setIntersectionId(Long intersectionId) {
-        this.intersectionId = intersectionId;
-    }
-
-    public Long getSemaphoreId() {
-        return semaphoreId;
-    }
-
-    public void setSemaphoreId(Long semaphoreId) {
-        this.semaphoreId = semaphoreId;
-    }
-
-    public Double getSemaphoreLatitude() {
-        return semaphoreLatitude;
-    }
-
-    public void setSemaphoreLatitude(Double semaphoreLatitude) {
-        this.semaphoreLatitude = semaphoreLatitude;
-    }
-
-    public Double getSemaphoreLongitude() {
-        return semaphoreLongitude;
-    }
-
-    public void setSemaphoreLongitude(Double semaphoreLongitude) {
-        this.semaphoreLongitude = semaphoreLongitude;
-    }
-
-    public Long getSemaphoreTimestampUTC() {
-        return semaphoreTimestampUTC;
-    }
-
-    public void setSemaphoreTimestampUTC(Long semaphoreTimestampUTC) {
-        this.semaphoreTimestampUTC = semaphoreTimestampUTC;
-    }
-
-    public SemaphoreStatus getGreenLightStatus() {
-        return greenLightStatus;
-    }
-
-    public void setGreenLightStatus(SemaphoreStatus greenLightStatus) {
-        this.greenLightStatus = greenLightStatus;
-    }
-
-    public SemaphoreStatus getYellowLightStatus() {
-        return yellowLightStatus;
-    }
-
-    public void setYellowLightStatus(SemaphoreStatus yellowLightStatus) {
-        this.yellowLightStatus = yellowLightStatus;
-    }
-
-    public SemaphoreStatus getRedLightStatus() {
-        return redLightStatus;
-    }
-
-    public void setRedLightStatus(SemaphoreStatus redLightStatus) {
-        this.redLightStatus = redLightStatus;
     }
 
 }

@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 import org.apache.storm.tuple.Tuple;
@@ -12,8 +13,10 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INT
 
 public class BaseIntersection implements ITupleObject, ISensor {
 
+    @Getter
     protected final Long intersectionId;
     protected List<SemaphoreSensor> semaphoreSensors;
+    @Getter
     protected Long oldestSemaphoreTimestamp;
 
     public BaseIntersection(Long intersectionId) {
@@ -23,10 +26,6 @@ public class BaseIntersection implements ITupleObject, ISensor {
 
     public static Long getIntersectionIdFrom(Tuple tuple) throws ClassCastException, IllegalArgumentException {
         return tuple.getLongByField(INTERSECTION_ID);
-    }
-
-    public Long getIntersectionId() {
-        return intersectionId;
     }
 
     public boolean addSemaphoreSensor(SemaphoreSensor semaphoreSensor) {
@@ -61,10 +60,6 @@ public class BaseIntersection implements ITupleObject, ISensor {
         objectNode.put(INTERSECTION_ID, intersectionId);
 
         return objectNode.toString();
-    }
-
-    public Long getOldestSemaphoreTimestamp() {
-        return oldestSemaphoreTimestamp;
     }
 
     public List<SemaphoreSensor> getSemaphoreSensors() {

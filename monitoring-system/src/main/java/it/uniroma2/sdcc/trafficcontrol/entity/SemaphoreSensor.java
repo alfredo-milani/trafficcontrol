@@ -2,19 +2,27 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
+@Getter
+@Setter
+@EqualsAndHashCode
 public class SemaphoreSensor implements ITupleObject, ISensor {
 
     private Long semaphoreId;
     private Double semaphoreLatitude;
     private Double semaphoreLongitude;
     private Long semaphoreTimestampUTC;
+    @EqualsAndHashCode.Exclude
     private Short averageVehiclesSpeed;
+    @EqualsAndHashCode.Exclude
     private Short vehiclesNumber;
 
     public SemaphoreSensor(Long semaphoreId, Double semaphoreLatitude,
@@ -52,69 +60,6 @@ public class SemaphoreSensor implements ITupleObject, ISensor {
         return objectNode.toString();
     }
 
-    public Long getSemaphoreId() {
-        return semaphoreId;
-    }
-
-    public void setSemaphoreId(Long semaphoreId) {
-        this.semaphoreId = semaphoreId;
-    }
-
-    public Double getSemaphoreLatitude() {
-        return semaphoreLatitude;
-    }
-
-    public void setSemaphoreLatitude(Double semaphoreLatitude) {
-        this.semaphoreLatitude = semaphoreLatitude;
-    }
-
-    public Double getSemaphoreLongitude() {
-        return semaphoreLongitude;
-    }
-
-    public void setSemaphoreLongitude(Double semaphoreLongitude) {
-        this.semaphoreLongitude = semaphoreLongitude;
-    }
-
-    public Long getSemaphoreTimestampUTC() {
-        return semaphoreTimestampUTC;
-    }
-
-    public void setSemaphoreTimestampUTC(Long semaphoreTimestampUTC) {
-        this.semaphoreTimestampUTC = semaphoreTimestampUTC;
-    }
-
-    public Short getAverageVehiclesSpeed() {
-        return averageVehiclesSpeed;
-    }
-
-    public void setAverageVehiclesSpeed(Short averageVehiclesSpeed) {
-        this.averageVehiclesSpeed = averageVehiclesSpeed;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof SemaphoreSensor)) {
-            return false;
-        }
-
-        SemaphoreSensor other = (SemaphoreSensor) o;
-        return semaphoreId.equals(other.semaphoreId) &&
-                semaphoreTimestampUTC.equals(other.semaphoreTimestampUTC);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 17;
-        int countHash = (averageVehiclesSpeed ^ (averageVehiclesSpeed >>> 32));
-        result = 31 * result + countHash;
-        result = (int) (31 * result + semaphoreId.hashCode() + semaphoreTimestampUTC);
-        return result;
-    }
-
     @Override
     public String toString() {
         return String.format(
@@ -139,10 +84,6 @@ public class SemaphoreSensor implements ITupleObject, ISensor {
                 averageVehiclesSpeed,
                 vehiclesNumber
         );
-    }
-
-    public Short getVehiclesNumber() {
-        return vehiclesNumber;
     }
 
 }

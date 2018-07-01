@@ -2,9 +2,11 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadIntersectionTopology;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MeanIntersectoinSpeedNotReady;
+import lombok.Getter;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED;
 
+@Getter
 public class MeanSpeedIntersection extends BaseIntersection {
 
     private int meanIntersectionSpeed;
@@ -55,10 +57,6 @@ public class MeanSpeedIntersection extends BaseIntersection {
         }
 
         meanIntersectionSpeed = meanOf(getShortArrayOfSemaphores());
-    }
-
-    public int getMeanIntersectionSpeed() {
-        return meanIntersectionSpeed;
     }
 
 }

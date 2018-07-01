@@ -59,7 +59,7 @@ public class AuthenticationDBBolt extends BaseRichBolt {
             synchronized (cacheManager.getCacheManager()) {
                 // Double checked lock
                 if (!(semaphoreInSystem = cacheManager.isKeyInCache(semaphoreId))) {
-                    if (semaphoreInSystem = RESTfulAPI.semaphoreSensorExist(semaphoreId)) {
+                    if (semaphoreInSystem = RESTfulAPI.semaphoreSensorExists(semaphoreId)) {
                         cacheManager.put(semaphoreId, tuple.getSourceStreamId());
                     }
                 }

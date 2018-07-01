@@ -139,59 +139,41 @@ public class Rankings implements ITupleObject {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Rankings)) {
-            return false;
-        }
+        if (o == null) return false;
+        if (this == o) return true;
+        if (!(o instanceof Rankings)) return false;
 
         Rankings other = (Rankings) o;
-        return rankedItems.equals(other.getRankings());
-
-        /*Rankings other = (Rankings) o;
         if (this.size() == other.size()) {
-            List<IRankable> otherList = other.getRankings();
-            for (int i = 0; i < this.size(); ++i) {
-                if (!this.rankedItems.get(i).equals(otherList.get(i))) {
-                    return false;
+            if (this.size() == 0) return true;
+
+            List<IRankable> l1 = this.getRankings();
+            List<IRankable> l2 = other.getRankings();
+            int i = 0;
+            do {
+                if (!l1.get(i).equals(l2.get(i))) {
+                    try {
+                        if (!(l1.get(i).equals(l2.get(i + 1)) &&
+                                l1.get(i + 1).equals(l2.get(i)))) {
+                            return false;
+                        } else {
+                            ++i;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        return false;
+                    }
                 }
-            }
+                ++i;
+            } while (i < this.size());
             return true;
         } else {
             return false;
-        }*/
+        }
     }
 
     @Override
     public int hashCode() {
         return rankedItems.hashCode();
-    }
-
-    public static void main(String[] a) {
-        Rankings r1 = new Rankings(10);
-        Rankings r2 = new Rankings(10);
-
-        MeanSpeedIntersectionRankable m1 = new MeanSpeedIntersectionRankable(12L, 23, 324351535L);
-        MeanSpeedIntersectionRankable m2 = new MeanSpeedIntersectionRankable(14L, 44, 321234335L);
-        MeanSpeedIntersectionRankable m3 = new MeanSpeedIntersectionRankable(18L, 61, 324111535L);
-        MeanSpeedIntersectionRankable m4 = new MeanSpeedIntersectionRankable(12L, 23, 324351535L);
-
-        r1.updateWith(m1);
-        r1.updateWith(m2);
-
-        r2.updateWith(m3);
-        r2.updateWith(m4);
-
-        r1.getRankings().forEach(System.out::println);
-        r2.getRankings().forEach(System.out::println);
-
-        r1.removeIfExists(r2);
-
-        r1.getRankings().forEach(System.out::println);
     }
 
 }

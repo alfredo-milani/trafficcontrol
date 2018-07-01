@@ -60,8 +60,6 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
                 t -> rankings.updateWith((Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT))
         );
 
-        // TODO a volte stampa la stessa classifca anche se non è cambiata (penso sia un errore di Java)
-        // TODO vedi se mettere workaround per non stampare ranks uguali
         if (!rankings.equals(oldRankings)) {
             collector.emit(new Values(rankings));
         }

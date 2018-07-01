@@ -24,7 +24,7 @@ public class MobileAuthDBBolt extends AbstractAuthenticationBolt {
         synchronized (cacheManager.getCacheManager()) {
             // Double checked lock
             if (!(mobileInSystem = cacheManager.isKeyInCache(mobileSensor.getMobileId()))) {
-                if (mobileInSystem = RESTfulAPI.mobileSensorExist(mobileSensor.getMobileId())) {
+                if (mobileInSystem = RESTfulAPI.mobileSensorExists(mobileSensor.getMobileId())) {
                     cacheManager.put(mobileSensor.getMobileId(), mobileSensor.getMobileId());
                 }
             }

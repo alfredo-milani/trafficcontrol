@@ -3,17 +3,22 @@ package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.uniroma2.sdcc.trafficcontrol.entity.ITupleObject;
 import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.storm.tuple.Tuple;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.MeanIntersectionTuple.MEAN_INTERSECTION_SPEED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MeanIntersectionTuple.MEAN_INTERSECTION_SPEED_TIMESTAMP;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 
+@Getter
+@Setter
+@EqualsAndHashCode
 public class MeanSpeedIntersectionRankable implements IRankable, ITupleObject {
 
     private final Long intersectionId;
@@ -56,17 +61,12 @@ public class MeanSpeedIntersectionRankable implements IRankable, ITupleObject {
 
     @Override
     public Object getId() {
-        return intersectionId;
+        return getIntersectionId();
     }
 
     @Override
     public Integer getValue() {
-        return meanIntersectionSpeed;
-    }
-
-    @Override
-    public Long getTimestamp() {
-        return timestamp;
+        return getMeanIntersectionSpeed();
     }
 
     @Override
@@ -79,33 +79,6 @@ public class MeanSpeedIntersectionRankable implements IRankable, ITupleObject {
         } else {
             return 0;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MeanSpeedIntersectionRankable)) {
-            return false;
-        }
-
-        MeanSpeedIntersectionRankable other = (MeanSpeedIntersectionRankable) o;
-        return intersectionId.equals(other.getId()) &&
-                meanIntersectionSpeed.equals(other.getValue()) &&
-                timestamp.equals(other.getTimestamp());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                intersectionId,
-                meanIntersectionSpeed,
-                timestamp
-        );
     }
 
     @Override
