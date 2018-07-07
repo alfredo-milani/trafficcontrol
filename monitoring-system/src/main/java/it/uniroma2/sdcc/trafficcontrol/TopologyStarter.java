@@ -1,9 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
-import it.uniroma2.sdcc.trafficcontrol.exceptions.WrongCommandLineArgument;
 import it.uniroma2.sdcc.trafficcontrol.topologies.*;
+import lombok.Cleanup;
 import lombok.extern.java.Log;
-import org.apache.commons.cli.*;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
@@ -11,17 +10,21 @@ import org.apache.storm.generated.AuthorizationException;
 import org.apache.storm.generated.InvalidTopologyException;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.EXIT_FAILURE;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.*;
 
 
 @Log
 public class TopologyStarter {
 
-    public static void main(String[] args) {
-        parseArgs(args);
+    public static void main(String[] args) throws IOException {
+        fillProperties();
 
         List<Topology> topologies = Lists.newArrayList(
                 new ValidationTopology(),
@@ -32,7 +35,7 @@ public class TopologyStarter {
                 new GreenSettingTopology()
         );
 
-        switch (MODE_SELECTED) {
+        switch (MODE) {
             case MODE_LOCAL:
                 final LocalCluster cluster = new LocalCluster();
 
@@ -63,112 +66,29 @@ public class TopologyStarter {
         }
     }
 
-    private static void parseArgs(String[] args) throws WrongCommandLineArgument {
-        Options options = new Options();
+    private static void fillProperties()
+            throws IOException {
+        Properties properties = new Properties();
 
-        Option mode = new Option(
-                MODE,
-                String.format("%s=", MODE_LONG),
-                true,
-                "Tipologia deploy: local o cluster (default: local)"
-        );
-        mode.setRequired(false);
-        options.addOption(mode);
+        @Cleanup InputStream input = TopologyStarter.class
+                .getClassLoader()
+                .getResourceAsStream(PROPERTIES_FILENAME);
 
-        Option kafkaIp = new Option(
-                KAFKA_IP,
-                String.format("%s=", KAFKA_IP_LONG),
-                true,
-                "Hostname del server su cui è presente un'istanza di Kafka"
-        );
-        kafkaIp.setRequired(true);
-        options.addOption(kafkaIp);
-
-        Option kafkaPort = new Option(
-                KAFKA_PORT,
-                String.format("%s=", KAFKA_PORT_LONG),
-                true,
-                String.format("Porta su cui è in ascolto l'istanza di Kafka (default: %s)", KAFKA_PORT_SELECTED)
-        );
-        kafkaPort.setRequired(false);
-        options.addOption(kafkaPort);
-
-        Option numberWorkers = new Option(
-                NUMBER_WORKERS,
-                String.format("%s=", NUMBER_WORKERS_LONG),
-                true,
-                String.format("Numero di workers nella topologia (default: %d)", NUMBER_WORKERS_SELECTED)
-        );
-        numberWorkers.setRequired(false);
-        options.addOption(numberWorkers);
-
-        CommandLineParser parser = new DefaultParser();
-        HelpFormatter formatter = new HelpFormatter();
-        CommandLine cmd;
-
-        try {
-            cmd = parser.parse(options, args);
-        } catch (ParseException e) {
-            log.log(Level.CONFIG, e.getMessage());
-            formatter.printHelp(
-                    String.format(
-                            "<%s> -%s [local | cluster] -%s [IP address] -%s [port number] -%s [num of workers]",
-                            APP_NAME,
-                            MODE,
-                            KAFKA_IP,
-                            KAFKA_PORT,
-                            NUMBER_WORKERS
-                    ),
-                    options
-            );
-
-            System.exit(EXIT_FAILURE);
+        if (input == null) {
+            System.out.println("Sorry, unable to find " + PROPERTIES_FILENAME);
             return;
         }
 
-        // Validità argomenti
-        String modeResult = cmd.getOptionValue(MODE) == null ?
-                MODE_SELECTED : cmd.getOptionValue(MODE);
-        if (!modeResult.equals(MODE_LOCAL) && !modeResult.equals(MODE_CLUSTER)) {
-            throw new WrongCommandLineArgument(String.format(
-                    "Argument '%s' must be '%s' or '%s'. Current value: '%s'.",
-                    MODE,
-                    MODE_LOCAL,
-                    MODE_CLUSTER,
-                    modeResult
-            ));
-        }
-        MODE_SELECTED = modeResult;
+        properties.load(input);
 
-        try {
-            KAFKA_PORT_SELECTED = cmd.getOptionValue(KAFKA_PORT) == null ?
-                    KAFKA_PORT_SELECTED : Integer.valueOf(cmd.getOptionValue(KAFKA_PORT));
-        } catch (NumberFormatException e) {
-            throw new WrongCommandLineArgument(String.format(
-                    "Argument '%s' must be integer. Current value: '%s'.",
-                    KAFKA_PORT,
-                    cmd.getOptionValue(KAFKA_PORT)
-            ));
-        }
-
-        try {
-            NUMBER_WORKERS_SELECTED = cmd.getOptionValue(NUMBER_WORKERS) == null ?
-                    NUMBER_WORKERS_SELECTED : Integer.valueOf(cmd.getOptionValue(NUMBER_WORKERS));
-        } catch (NumberFormatException e) {
-            throw new WrongCommandLineArgument(String.format(
-                    "Argument '%s' must be integer. Current value: '%s'.",
-                    NUMBER_WORKERS,
-                    cmd.getOptionValue(NUMBER_WORKERS)
-            ));
-        }
-
-        KAFKA_IP_SELECTED = cmd.getOptionValue(KAFKA_IP);
-
-        KAFKA_IP_PORT = String.format(
-                "%s:%d",
-                KAFKA_IP_SELECTED,
-                KAFKA_PORT_SELECTED
-        );
+        KAFKA_IP = properties.getProperty(P_KAFKA_IP);
+        KAFKA_PORT = properties.getProperty(P_KAFKA_PORT) == null
+                ? KAFKA_PORT_DEFAULT
+                : Integer.valueOf(properties.getProperty(P_KAFKA_PORT));
+        KAFKA_IP_PORT = String.format("%s:%d", KAFKA_IP, KAFKA_PORT);
+        NUMBER_OF_WORKERS = properties.getProperty(P_NUMBER_OF_WORKERS) == null
+                ? NUMBER_WORKERS_DEFAULT
+                : Integer.valueOf(properties.getProperty(P_NUMBER_OF_WORKERS));
     }
 
 }

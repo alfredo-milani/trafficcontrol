@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.EXIT_FAILURE;
-import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.EXIT_FAILURE;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.KAFKA_IP_PORT;
 
 
 public class StartProducer {
@@ -64,6 +64,10 @@ public class StartProducer {
 
     private static Properties initProducerProperties() {
         Properties producerProperties = new Properties();
+        /**
+         *  KAFKA_IP_PORT proprietà collegata ad un altro modulo ->
+         *  prendere questa informazione dallo stesso file proprietà
+         */
         producerProperties.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         producerProperties.put(VALUE_SERIALIZER, SERIALIZER_VALUE);

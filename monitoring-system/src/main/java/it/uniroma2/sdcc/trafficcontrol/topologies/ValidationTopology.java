@@ -8,9 +8,9 @@ import org.apache.storm.tuple.Fields;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.CacheParams.MOBILE_AUTHENTICATION_CACHE_NAME;
 import static it.uniroma2.sdcc.trafficcontrol.constants.CacheParams.SEMAPHORE_AUTHENTICATION_CACHE_NAME;
-import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKERS_SELECTED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.MOBILE_ID;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.NUMBER_OF_WORKERS;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
@@ -22,7 +22,7 @@ public class ValidationTopology extends Topology {
     protected Config defineConfig() {
         Config config = new Config();
 
-        config.setNumWorkers(NUMBER_WORKERS_SELECTED);
+        config.setNumWorkers(NUMBER_OF_WORKERS);
 
         return config;
     }

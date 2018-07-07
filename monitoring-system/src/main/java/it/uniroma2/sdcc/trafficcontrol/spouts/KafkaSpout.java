@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.APP_NAME;
-import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.KAFKA_IP_PORT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.APP_NAME;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.KAFKA_IP_PORT;
 
 
 public class KafkaSpout extends BaseRichSpout {

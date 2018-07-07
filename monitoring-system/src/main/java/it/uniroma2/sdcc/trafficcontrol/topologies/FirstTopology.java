@@ -6,8 +6,8 @@ import org.apache.storm.Config;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.InputParams.NUMBER_WORKERS_SELECTED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.NUMBER_OF_WORKERS;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
@@ -20,7 +20,7 @@ public class FirstTopology extends Topology {
     protected Config defineConfig() {
         Config config = new Config();
 
-        config.setNumWorkers(NUMBER_WORKERS_SELECTED);
+        config.setNumWorkers(NUMBER_OF_WORKERS);
         // Storm default: 1 for workers
         // config.setNumAckers(NUMBER_WORKERS_SELECTED);
 

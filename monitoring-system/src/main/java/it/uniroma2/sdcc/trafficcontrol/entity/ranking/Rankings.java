@@ -147,6 +147,7 @@ public class Rankings implements ITupleObject {
         if (this.size() == other.size()) {
             if (this.size() == 0) return true;
 
+            // TODO modificare per tenere conto di più valori uguali (non solo 2)
             List<IRankable> l1 = this.getRankings();
             List<IRankable> l2 = other.getRankings();
             int i = 0;

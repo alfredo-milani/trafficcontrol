@@ -5,6 +5,7 @@ import org.apache.storm.generated.StormTopology;
 import org.apache.storm.topology.TopologyBuilder;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 
 public abstract class Topology {
@@ -37,6 +38,8 @@ public abstract class Topology {
         return topologyName.replaceAll("\\p{Z}", "");
     }
 
-    protected abstract @NotNull String defineTopologyName();
+    protected @NotNull String defineTopologyName() {
+        return UUID.randomUUID().toString();
+    }
 
 }
