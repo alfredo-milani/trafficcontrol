@@ -1,0 +1,89 @@
+<md-dialog aria-label="Details ticket">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools" style="background-color: #1d2124">
+                <h2>Details ticket</h2>
+                <span flex></span>
+                <md-button ng-click="cancel()" class="fa fa-close" style="color: white" >
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content style="width:800px;max-height:810px; ">
+            <md-tabs md-dynamic-height  md-border-bottom>
+                <md-tab label="Details">
+                    <md-content class="md-padding">
+                        <form name="TLForm" style="color: #1d2124">
+
+
+                            <div layout="row">
+                                <md-input-container flex="50">
+                                    <label style="font-size: large">Title</label>
+                                    <input ng-required="true" name="title" ng-model="title" minlength="3">
+                                    <div ng-messages="tickForm.title.$error">
+                                        <div ng-message="required">You must specify a title.</div>
+                                        <div ng-message="minlength">You must specify a title (min 3 char).</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container flex="50">
+                                    <label style="font-size: large">Category</label>
+                                    <input ng-required="true" name="category" ng-model="category" minlength="3">
+                                    <div ng-messages="tickForm.category.$error">
+                                        <div ng-message="required">You must specify a category.</div>
+                                        <div ng-message="minlength">You must specify a category (min 3 char).</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+                            <div layout="row">
+
+                                <md-input-container class="md-block" flex="50">
+                                    <label style="font-size: large">Target</label>
+                                    <md-select name="target" ng-model="target" ng-required="true">
+                                        <md-option ng-repeat="tr in targ" ng-value="tr.id" >{{tr.id}} - {{tr.name}}</md-option>
+
+                                    </md-select>
+                                    <div ng-messages="tickForm.target.$error">
+                                        <div ng-message="required">You must specify a target.</div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex="50">
+                                    <label style="font-size: large; color: dimgray">Priority</label>
+                                    <md-select name="priority" ng-model="customerPriority" >
+                                        <md-option  ng-repeat="p in priority" ng-value="p" >{{p}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+
+                            </div>
+
+                            <md-input-container class="md-block">
+                                <label style="font-size: large">Description</label>
+                                <textarea md-no-autogrow="true" ng-minlength="10" cols="40" rows="3" ng-maxlength="255" ng-required="true" name="description" ng-model="description"></textarea>
+
+                                <div ng-messages="tickForm.description.$error" role="alert">
+                                    <div ng-message-exp="['required', 'minlength','maxlength']">
+                                        You must specify a short description (min 10 digits and max 255 digits) for your compliant.
+                                    </div>
+                                </div>
+                            </md-input-container>
+                        </form>
+
+                    </md-content>
+                </md-tab>
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+
+            <md-button >
+
+            </md-button>
+
+            <span flex></span>
+
+            <md-button ng-click="answer('not useful')" style="margin-right:20px;" >
+                Close
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

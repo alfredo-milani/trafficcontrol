@@ -1,0 +1,54 @@
+
+<md-dialog aria-label="Details ticket">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools" style="background-color: #1d2124">
+                <h2>Details ticket</h2>
+                <span flex></span>
+                <md-button ng-click="cancel()" class="fa fa-close" style="color: white" >
+                    <!--<md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>-->
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content style="width:800px;max-height:810px; ">
+            <md-tabs md-dynamic-height  md-border-bottom>
+                <md-tab label="Details">
+                    <md-content class="md-padding">
+                       <table class="table table-light">
+                         <tr> <td>ID</td>
+                                <td> {{trafficLight.id}} </td>
+                            </tr>
+                            <tr> <td>Latitudine</td>
+                                <td> {{trafficLight.latitudine}} </td>
+                            </tr>
+                            <tr> <td>Longitudine</td>
+                                <td> {{trafficLight.longitudine}} </td>
+                            </tr>
+                            <tr> <td>Description</td>
+                                <td><md-input-container>
+                                    <textarea cols="50" class="autogrow" readonly>{{ticket.description}}
+                                    </textarea>
+                                </md-input-container></td>
+                            </tr>
+
+                        </table>
+                    </md-content>
+                </md-tab>
+
+            </md-tabs>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+
+            <md-button >
+
+            </md-button>
+
+            <span flex></span>
+
+            <md-button ng-click="answer('not useful')" style="margin-right:20px;" >
+                Close
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

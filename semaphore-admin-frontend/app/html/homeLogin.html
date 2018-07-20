@@ -1,0 +1,46 @@
+
+<div ng-controller="ctrlLogin" style="padding-left:20%;padding-top: 3%">
+<div class="jumbotron" style="background-color:white ;opacity: 0.90;width: 75%;height: 15%; padding-left: 20%">
+
+
+    <md-content layout-padding style="background-color: white" >
+        <form name="loginForm" style="color: #1d2124" >
+
+
+            <div layout="row">
+                <md-input-container >
+                    <label style="font-size: large">Username</label>
+                    <input ng-required="true" ng-minlength="3" style="width: 400px" name="username" ng-model="username">
+                    <div ng-messages="loginForm.username.$error">
+                        <div ng-message="required">You must specify your username</div>
+                    </div>
+                </md-input-container>
+
+            </div>
+
+            <div layout="row">
+                <md-input-container>
+                    <label style="font-size: large">Password</label>
+                    <input ng-required="true" style="width: 400px" type="password" name="psw" ng-model="password" minlength="6">
+                    <div ng-messages="loginForm.psw.$error">
+                        <div ng-message="required">You must specify your password</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+
+
+
+            <div style=" padding-left: 20%; padding-top: 5%">
+                <button style="width: 150px" ng-disabled="loginForm.$invalid" ng-click="login()" type="button" class="btn btn-dark" style="text-align: center">Submit</button>
+            </div>
+
+
+        </form>
+    </md-content>
+
+</div>
+</div>
+
+
+

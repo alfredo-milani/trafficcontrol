@@ -1,0 +1,22 @@
+
+<div ng-controller="ctrlCust" ng-show="user" ng-cloak>
+
+    <ng-include src="'html/sidenav.html'"></ng-include>
+
+    <div class="jumbotron" style="opacity:0.7">
+
+        <h1 class="display-4">Welcome {{user.username}}!</h1>
+        <div >
+        <p class="lead">From your admin profile you can manage the map</p>
+        <hr class="my-4">
+        <p>Want to change the map asset? Insert a new traffic light installation
+        </p>
+        </div>
+
+        <div >
+        <a class="btn btn-dark" ng-click="newTrafficLight()" role="button" style="color: white">Add Traffic Light</a>
+        </div>
+
+    </div>
+
+</div>

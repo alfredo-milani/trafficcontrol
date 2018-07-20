@@ -25,12 +25,6 @@ public class AdminRest {
     }
 
 
-    @RequestMapping(path = Routes.ADMIN.SIGN_UP, method = RequestMethod.POST)
-    public ResponseEntity<Admin> signUp(@RequestBody Admin admin) {
-        Admin createdAdmin = adminController.createAdmin(admin);
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-    }
-
     @RequestMapping(path = Routes.ADMIN.GET_ADMINS, method = RequestMethod.GET)
     public ResponseEntity<List<Admin>> getAdmins() {
         List<Admin> persone = adminController.getAdmins();

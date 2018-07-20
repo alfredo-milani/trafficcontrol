@@ -1,0 +1,55 @@
+
+<ng-include src="'html/sidenav.html'"></ng-include>
+
+<div ng-controller="ctrlModifyUser" style="padding-left:20%;padding-top: 3%">
+
+    <div class="jumbotron" style="background-color:white ;opacity: 0.95;width: 75%;height: 15%">
+        <md-content layout-padding style="background-color: white;padding-left: 100px">
+        <form name="modifyUserForm">
+      <div style="padding-left: 130px;color:black">
+
+        <h1>Modify account</h1>
+      </div>
+
+            <div layout-gt-xs="row">
+                <md-input-container  flex-gt-sm>
+                    <label style="font-size: large">Name</label>
+                    <input  style="width: 500px" ng-minlength="3" ng-required="true" name="name" ng-model="name">
+                    <div ng-messages="modifyUserForm.name.$error">
+                        <div ng-message="required">You must insert a name</div>
+                        <div ng-message="minlength">You must insert a name (min 3 char)</div>
+                    </div>
+
+                </md-input-container>
+            </div>
+
+            <div layout-gt-xs="row">
+                <md-input-container  flex-gt-sm>
+                    <label style="font-size: large">Surname</label>
+                    <input style="width: 500px" ng-minlength="3" ng-required="true" name="surname" ng-model="surname">
+                    <div ng-messages="modifyUserForm.surname.$error">
+                        <div ng-message="required">You must insert a surname</div>
+                        <div ng-message="minlength">You must insert a surname (min 3 char)</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div layout-gt-xs="row">
+               <md-input-container class="md-block" flex-gt-sm>
+                <label style="font-size: large">Password</label>
+                <input style="width: 500px" placeholder="min 6 char" ng-minlength="6" name="password" ng-required="true" type="password" ng-model="password">
+                <div ng-messages="regForm.password.$error">
+                    <div ng-message="required">You must insert a password</div>
+                    <div ng-message="minlength">You must insert a password (min 6 char)</div>
+
+                </div>
+            </md-input-container>
+            </div>
+
+            <div style="padding-left: 200px;padding-top:30px">
+                <button ng-disabled="modifyUserForm.$invalid" ng-click="modifyUser()" type="button" class="btn btn-dark" style="width: 150px">Submit</button>
+            </div>
+
+</form>
+    </div>
+</div>

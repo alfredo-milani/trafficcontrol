@@ -1,0 +1,90 @@
+<md-dialog aria-label="Your Planning">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools" style="background-color: #1d2124">
+                <h2>Your Planning</h2>
+                <span flex></span>
+                <md-button ng-click="cancel()" class="fa fa-close" style="color: white" >
+                    <!--<md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>-->
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content style="width:800px">
+            <md-tabs md-dynamic-height  md-border-bottom>
+            <md-tab label="Gantt">
+                <md-content class="md-padding" >
+
+                    <form name="planningForm">
+
+                        <table style="border-collapse: separate;padding-left: 30% ">
+                            <tr>
+                                <td><h5>Select a team:</h5></td>
+                                <td> <md-select placeholder="Choose one of your team" ng-model="team" md-on-open="getTeam()" style="min-width: 200px;">
+                                    <md-option ng-value="tm" ng-repeat="tm in myTeams">{{tm.teamName}}</md-option>
+                                </md-select>
+
+                                    <!--<p style="color: darkred" ng-hide="result" ng-model="result">You haven't a team</p>--></td>
+                            </tr>
+                            <tr>
+                                <td><h5>Select a ticket:</h5></td>
+                                <td> <md-select placeholder="Choose a pending ticket" ng-model="ticket" md-on-open="getPendingTicket()" style="min-width: 200px;">
+                                    <md-option ng-value="t.id" ng-repeat="t in penTicket ">{{t.title}} --> RANK:{{t.rank}}</md-option>
+                                </md-select>
+
+                                    <!--<p style="color: darkred" ng-hide="result" ng-model="result">You haven't a team</p>--></td>
+                            </tr>
+
+                            <tr></tr>
+                            <tr>
+                                <td><h5>Choose Date </h5></td>
+                                <td>  <md-datepicker ng-model="date" md-current-view="year" md-placeholder="Enter date"></md-datepicker></td>
+                            </tr>
+
+                            <tr></tr>
+
+                            <tr >
+                                <td style="padding-top: 30px"><h5>Duration</h5></td>
+                                <td style="padding-top: 35px">
+
+                                    <md-input-container class="md-block"  >
+
+                                        <input name="duration" require ng-pattern="/^[0-9]{1,3}$/" ng-model="duration" placeholder="integer number max 3 digits"  maxlength="3">
+
+                                        <span ng-show="planningForm.duration.$error.pattern"  >
+                                <div style="color: #9f3500; font-size: smaller">You must supply a valid duration</div>
+
+
+                            </span>
+
+                                    </md-input-container>
+                                </td>
+
+                            </tr>
+
+
+                        </table>
+
+
+                    </form>
+                </md-content>
+            </md-tab>
+            </md-tabs>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+
+            <md-button >
+
+            </md-button>
+
+            <span flex></span>
+
+            <md-button ng-click="answer('not useful')" style="margin-right:20px;" >
+                Close
+            </md-button>
+            <md-button ng-click="sendPlanning()" style="margin-right:20px;" >
+                Show Gantt
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

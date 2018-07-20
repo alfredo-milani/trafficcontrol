@@ -14,7 +14,7 @@ public interface Routes {
         String ADMIN_BASE_ROUTE = Entities.ADMIN;
 
         // Routes
-        String SIGN_UP = "sign_up";
+
         String SIGN_IN = "sign_in";
         String GET_ADMINS = "all";
         String GET_ADMIN = "{id}";

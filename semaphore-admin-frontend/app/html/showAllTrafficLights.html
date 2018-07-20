@@ -1,0 +1,57 @@
+<body>
+
+
+<form name="showAllTlForm">
+    <div layout="column" style="text-align: center;color:black;padding-top: 3%;padding-left: 3%;padding-right: 3%"  >
+
+
+        <div >
+        <table class="table table-light" style="width: 100%">
+            <thead style="display: table; width: calc(100% - 17px)">
+                <tr style="text-align: center; display: table ; width: 100%">
+                    <th ></th>
+                    <th ></th>
+                    <th ><h2 style="color:black">All Traffic Lights</h2></th>
+                    <th ></th>
+                    <th ></th>
+
+                </tr>
+                <tr style="text-align: center; display: table ; width: 100%">
+                    <th style="width:20%"> ID </th>
+                    <th style="width:20%"> Latitudine</th>
+                    <th style="width:20%"> Longitudine/th>
+                    <th></th>
+                    <th style="width:20%"> </th>
+                </tr>
+            </thead>
+            <tbody style="display: block; overflow-y: scroll; max-height: 400px">
+            <tr ng-repeat = "x in records" style="text-align: center; display: table ; width: 100%">
+           <!-- <tr  style="text-align: center; display: table ; width: 100%">-->
+                    <td style="width:20%"> Pippo </td>
+                    <td style="width:20%"> Pluto </td>
+                    <td style="width:20%"> Paperino</td>
+                    <td></td>
+
+
+                    <td style="width:20%">
+
+                        <button  class="btn btn-light"  ><i ng-click="showDetails(2,x.id)" class="material-icons" style="padding-top: 10%">search</i></button>
+                        <button  class="btn btn-light"  ><i ng-click="deleteTrafficLight(x.id)" class="material-icons" style="padding-top: 10%">delete</i></button>
+                        <button  class="btn btn-light"  ><i ng-click="showDetails(1,x.id)" class="material-icons" style="padding-top: 10%">build</i></button>
+
+                    </td>
+
+
+
+
+
+                </tr>
+            </tbody>
+
+        </table>
+
+        </div>
+    </div>
+</form>
+
+</body>
