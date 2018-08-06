@@ -48,10 +48,15 @@ public interface StormParams {
     String UPDATE_GLOBAL_MEDIAN = "update_global_median";
     String VALUE_GLOBAL_MEDIAN = "value_global_median";
 
-    //Green Setting bolts
+    // Green Setting bolts
     String GREEN_TIMING_DISPATCHER_BOLT = "green_timing_dispatcher_bolt";
     String FILTER_GREEN_BOLT = "filter_green_bolt";
     String GREEN_SETTER = "green_setter";
     String GREEN_TEMPORIZATION_VALUE = "green_temporization_value";
+
+    // Sequence Bolts - Third query
+    String CONGESTED_SEQUENCE_CALCULATOR_BOLT = "congested_sequence_calculator_bolt";
+    String DIRECTION_DISPATCHER_BOLT = "direction_dispatcher_bolt";
+    String SEQUENCE_PUBLISHER_BOLT = "sequence_publisher_bolt";
 
 }

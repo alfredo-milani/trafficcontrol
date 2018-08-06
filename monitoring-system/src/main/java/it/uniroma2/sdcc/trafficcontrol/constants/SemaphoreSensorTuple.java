@@ -43,4 +43,5 @@ public interface SemaphoreSensorTuple {
         put(LAMP_CODE_AVERAGE, LAMP_STATUS_AVERAGE);
         put(LAMP_CODE_OK, LAMP_STATUS_OK);
     }};
+
 }
