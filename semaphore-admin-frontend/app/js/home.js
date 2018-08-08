@@ -3,8 +3,8 @@ app.controller('ctrlCust', function($scope,$http,$location,$rootScope,myService,
     $scope.makeVisible=false;
 
 
-    $scope.newTicket = function() {
-        $location.path('/createTicket');
+    $scope.newTrafficLight = function() {
+        $location.path('/createTrafficLight');
     };
 
 

@@ -10,9 +10,9 @@
             <div layout="row">
                 <md-input-container >
                     <label style="font-size: large">Username</label>
-                    <input ng-required="true" ng-minlength="3" style="width: 400px" name="username" ng-model="username">
+                    <input ng-required="true"  ng-minlength="3" style="width: 400px" name="username" ng-model="username">
                     <div ng-messages="loginForm.username.$error">
-                        <div ng-message="required">You must specify your username</div>
+                        <div ng-message="required">You must specify your correct username</div>
                     </div>
                 </md-input-container>
 
@@ -21,7 +21,7 @@
             <div layout="row">
                 <md-input-container>
                     <label style="font-size: large">Password</label>
-                    <input ng-required="true" style="width: 400px" type="password" name="psw" ng-model="password" minlength="6">
+                    <input ng-required="true" style="width: 400px" type="password" name="psw" ng-model="password" minlength="4">
                     <div ng-messages="loginForm.psw.$error">
                         <div ng-message="required">You must specify your password</div>
                     </div>
@@ -32,7 +32,7 @@
 
 
             <div style=" padding-left: 20%; padding-top: 5%">
-                <button style="width: 150px" ng-disabled="loginForm.$invalid" ng-click="login()" type="button" class="btn btn-dark" style="text-align: center">Submit</button>
+                <button style="width: 150px" ng-disabled="loginForm.$invalid" ng-click="loginAdmin()" type="button" class="btn btn-dark" style="text-align: center">Submit</button>
             </div>
 
 

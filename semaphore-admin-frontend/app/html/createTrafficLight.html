@@ -1,0 +1,71 @@
+
+<div n layout="column" ng-cloak style="padding-left: 25%; padding-top: 1.5%">
+    <div class="jumbotron" style="background-color:white ;opacity: 0.95;width: 75% ; height: 7% ">
+
+        <h1 style="text-align: center">Add a traffic light </h1>
+
+    <md-content style="background-color: white; padding-top: 1.5%">
+        <form name="TLForm" style="color: #1d2124">
+
+
+            <div layout="row">
+                <md-input-container flex="50">
+                    <label style="font-size: large">Intersection ID </label>
+                    <input ng-required="true" name="intersectionId" ng-model="intersectionId" >
+                    <div ng-messages="TLForm.intersectionId.$error">
+                        <div ng-message="required">You must specify an intersection id.</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container flex="50">
+                    <label style="font-size: large">Semaphore ID</label>
+                    <input ng-required="true" name="semaphoreId" ng-model="semaphoreId">
+                    <div ng-messages="TLForm.semaphoreId.$error">
+                        <div ng-message="required">You must specify a semaphore id.</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <div layout="row">
+
+            <md-input-container class="md-block" flex="50">
+                <label style="font-size: large">Longitude</label>
+                <input name="longitude" ng-model="longitude" ng-required="true">
+                <div ng-messages="TLForm.longitude.$error">
+                    <div ng-message="required">You must specify longitude.</div>
+                </div>
+            </md-input-container>
+
+                <md-input-container class="md-block" flex="50">
+                    <label style="font-size: large">Latitude</label>
+                    <input name="latitude" ng-model="latitude" ng-required="true">
+                    <div ng-messages="TLForm.latitude.$error">
+                        <div ng-message="required">You must specify latitude.</div>
+                    </div>
+                </md-input-container>
+
+            </div>
+
+            <md-input-container class="md-block">
+                <label style="font-size: large">Green light duration</label>
+                <input name="greenDuration" ng-model="greenDuration" ng-required="true">
+                <div ng-messages="TLForm.greenDuration.$error">
+                    <div ng-message="required">You must specify green light duration.</div>
+                </div>
+            </md-input-container>
+
+
+
+            <div align="center">
+                <button style="width:150px" ng-disabled="TLForm.$invalid" ng-click="createTrafficLight()" type="button" class="btn btn-dark" style="text-align: center">Submit</button>
+            </div>
+
+
+        </form>
+    </md-content>
+
+    </div>
+</div>
+
+
+

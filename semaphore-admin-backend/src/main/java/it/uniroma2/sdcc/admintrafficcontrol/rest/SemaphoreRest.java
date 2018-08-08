@@ -1,49 +1,72 @@
 package it.uniroma2.sdcc.admintrafficcontrol.rest;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import it.uniroma2.sdcc.admintrafficcontrol.constants.Routes;
+import it.uniroma2.sdcc.admintrafficcontrol.controller.SemaphoreController;
+import it.uniroma2.sdcc.admintrafficcontrol.entity.Admin;
+import it.uniroma2.sdcc.admintrafficcontrol.entity.Semaphore;
+import it.uniroma2.sdcc.admintrafficcontrol.exceptions.EntityNotFound;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.xml.ws.Response;
+import java.util.List;
 
 @RestController
+@RequestMapping(path = Routes.SEMAPHORE.SEMAPHORE_BASE_ROUTE)
 @CrossOrigin
 public class SemaphoreRest {
 
-    /*
-    private final AdminController adminController;
+
+    private final SemaphoreController semaphoreController;
 
     @Autowired
-    public SemaphoreRest(AdminController adminController) {
-        this.adminController = adminController;
+    public SemaphoreRest(SemaphoreController semaphoreController) {
+        this.semaphoreController = semaphoreController;
     }
 
 
-    @RequestMapping(path = "/signin", method = RequestMethod.POST)
-    public Admin saveUser(@RequestBody Admin admin) {
-        return adminController.signUp(admin);
+    @RequestMapping(path = Routes.SEMAPHORE.CREATE, method = RequestMethod.POST)
+    public ResponseEntity<Semaphore> getSemaphore(@RequestBody Semaphore semaphore, @PathVariable Long intersectionId,
+                                                  @PathVariable Long semaphoreId) {
+        Semaphore newSemaphore=null;
+        Semaphore semaphoreAlreadyExist = semaphoreController.getSemaphoreByIntersectionAndSemaphoreId(intersectionId,semaphoreId);
+        if(semaphoreAlreadyExist == null){
+            newSemaphore = semaphoreController.createSemaphore(semaphore);
+        }
+        return new ResponseEntity<>(newSemaphore, semaphore== null ? HttpStatus.FOUND : HttpStatus.CREATED);
     }
 
-    @RequestMapping(path = "/user/", method = RequestMethod.GET)
-    public List<Admin> getadmins() {
-        return adminController.getAdmins();
+    @RequestMapping(path = Routes.SEMAPHORE.GET_SEMAPHORES, method = RequestMethod.GET)
+    public ResponseEntity<List<Semaphore>> getSemaphores() {
+        List<Semaphore> semaphores = semaphoreController.findAllSemaphore();
+        return new ResponseEntity<>(semaphores, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/user/update/{ID}", method = RequestMethod.PUT)
-    public Admin updateUser(@PathVariable Long id, @RequestBody Admin admin) {
-        return adminController.updateAdmin(id, admin);
+
+    @RequestMapping(path = Routes.SEMAPHORE.GET_SEMAPHORE, method = RequestMethod.GET)
+    public ResponseEntity<Semaphore> getSemaphore(@PathVariable Long id) {
+        Semaphore semaphore = semaphoreController.getSemaphore(id);
+        return new ResponseEntity<>(semaphore, semaphore == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/user/get/{ID}", method = RequestMethod.GET)
-    public Admin getUser(@PathVariable Long id) {
-        return adminController.getAdmin(id);
+    @RequestMapping(path = Routes.SEMAPHORE.DELETE_SEMAPHORE, method = RequestMethod.DELETE)
+    public ResponseEntity<Semaphore> deleteSemaphore(@PathVariable Long id) {
+        if(!semaphoreController.deleteSemaphore(id))
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/logIn/{username}", method = RequestMethod.GET)
-    public Admin verifyUser(@PathVariable String username) {
-        return adminController.logIn(username);
+    @RequestMapping(path = Routes.SEMAPHORE.UPDATE_SEMAPHORE, method = RequestMethod.PUT)
+    public ResponseEntity<Semaphore> updateSemaphore(@PathVariable Long id, @RequestBody Semaphore semaphore) {
+        Semaphore semaphoreUpdated;
+        try {
+            semaphoreUpdated = semaphoreController.updateSemaphore(id, semaphore);
+        } catch (EntityNotFound e) {
+            return new ResponseEntity<>(semaphore, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(semaphoreUpdated, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/user/{ID}", method = RequestMethod.DELETE)
-    public void deleteUser(@PathVariable Long id) {
-        adminController.removeAdmin(id);
-    }
-    */
 }

@@ -16,12 +16,12 @@ app.config(function($routeProvider,$mdThemingProvider) {
         })
         .when("/homeCustomer", {
             templateUrl: "html/homeCustomer.html",
-            controller: "ctrlCust"
-            //requiresAuthentication: true
+            controller: "ctrlCust",
+            requiresAuthentication: true
 
         })
         .when("/createTrafficLight", {
-           templateUrl: "html/CreateTrafficLight.html",
+           templateUrl: "html/createTrafficLight.html",
            controller: "ctrlTrafficLights",
             requiresAuthentication: true
         })

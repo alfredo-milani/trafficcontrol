@@ -62,16 +62,11 @@
   <script src="js/auth_service.js"></script>
   <script src="js/homeLogin.js"></script>
   <script src="js/home.js"></script>
-  <script src="js/target.js"></script>
   <script src="js/trafficLight.js"></script>
   <script src="js/modifyUser.js"></script>
-  <script src="js/relation.js"></script>
-  <script src="js/ticketUser.js"></script>
   <script src="js/permissions.js"></script>
   <script src="js/dialog1.tmpl.js"></script>
   <script src="js/planning.js"></script>
-  <script src="js/modalTeam.js"></script>
-  <script src="js/modalTarget.js"></script>
 
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
@@ -86,8 +81,8 @@
 
       <div class="navbar-header">
         <a class="navbar-brand"  ng-if="Auth.currentUser==null" href="#!/"> TCS</a>
-        <a class="navbar-brand" href="#!/"  ng-if="Auth.currentUser!=null">
-          <i ng-if="Auth.currentUser==null" class="material-icons" style="padding-top: 10%">home</i>
+        <a class="navbar-brand" href="#!/homeCustomer"  ng-if="Auth.currentUser!=null">
+          <i class="material-icons" style="padding-top: 10%">home</i>
         </a>
 
       </div>
@@ -99,8 +94,8 @@
       <div class="dropdown">
         <md-button ><img src="img/tl.png" height="30px" width="30px"/></md-button>
         <div class="dropdown-content">
-          <a href="#!/CreateTrafficLight">New</a>
-          <a href="#!/ShowAllTrafficLights">Show All</a>
+          <a href="#!/createTrafficLight">New</a>
+          <a href="#!/showAllTrafficLights">Show All</a>
         </div>
       </div>
 

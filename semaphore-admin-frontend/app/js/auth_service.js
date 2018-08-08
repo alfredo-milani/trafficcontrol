@@ -20,9 +20,13 @@ angular.module('AuthServices', ['ngResource', 'ngStorage'])
         };
 
         auth.login = function(username, password){
+            var BASE_PATH = "http://localhost:8200/sdcc-admin";
+            var ADMIN = "admin";
+            var SIGN_IN = "sign_in";
 
 
-            var url = "http://localhost:8200/admin/sign_in";
+           // var url = BASE_PATH + "/"+ ADMIN +"/" + SIGN_IN;
+            var url = "http://localhost:8200/sdcc-admin/admin/sign_in";
 
             Profile = $resource(url , {}, {
                 login: {
@@ -39,7 +43,7 @@ angular.module('AuthServices', ['ngResource', 'ngStorage'])
                         resolve();
                     }, function(response) {
                         //password wrong
-                        if (response.status === 302) {
+                        if (response.status === 401) {
                             reject();
 
                             $mdDialog.show(
@@ -47,22 +51,7 @@ angular.module('AuthServices', ['ngResource', 'ngStorage'])
                                     .parent(angular.element(document.querySelector('#popupContainer')))
                                     .clickOutsideToClose(true)
                                     .title('Operation failed')
-                                    .textContent("Password wrong")
-                                    .ariaLabel('Alert Dialog Demo')
-                                    .ok('Ok')
-                                    .targetEvent()
-                            );
-                        }
-                        //username wrong
-                        else if (response.status === 404) {
-                            reject();
-
-                            $mdDialog.show(
-                                $mdDialog.alert()
-                                    .parent(angular.element(document.querySelector('#popupContainer')))
-                                    .clickOutsideToClose(true)
-                                    .title('Operation failed')
-                                    .textContent("Username wrong")
+                                    .textContent("Unathorized")
                                     .ariaLabel('Alert Dialog Demo')
                                     .ok('Ok')
                                     .targetEvent()
@@ -98,6 +87,8 @@ angular.module('AuthServices', ['ngResource', 'ngStorage'])
             }
 
             return userHasPermissionForView(view);
+
+
         };
 
 

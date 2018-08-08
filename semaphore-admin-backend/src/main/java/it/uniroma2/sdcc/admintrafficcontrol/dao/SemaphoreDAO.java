@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SemaphoreDAO extends JpaRepository<Semaphore, Long> {
 
+    public Semaphore getByIntersectionIdAndSemaphoreId(Long intersectionId, Long semaphoreId);
+
 }

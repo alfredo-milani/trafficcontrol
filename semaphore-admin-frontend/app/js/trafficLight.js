@@ -37,20 +37,24 @@ app.controller('ctrlTrafficLights',['$scope','myService','$sessionStorage','$loc
 
 
 
-    $scope.createTrafficLight=function (par) {
+    $scope.createTrafficLight=function () {
 
 
 
         var init = function () {
             var param = {
-                id:par
+                intersectionId: $scope.intersectionId,
+                semaphoreId : $scope.semaphoreId,
+                semaphoreLatitude : $scope.latitude,
+                semaphoreLongitude : $scope.longitude,
+                greenLightDuration : $scope.greenDuration
 
             };
             myAjax.insertTrafficLight(param).then(function (response) {
 
                 //$scope.items = data;
                 if (response.status === 201)
-                    $route.reload();
+                    $location.path("/showAllTrafficLights");
 
             }, function () {
 
@@ -80,15 +84,16 @@ app.controller('ctrlTrafficLights',['$scope','myService','$sessionStorage','$loc
 
         var init = function () {
             var param = {
-               id:par
-
+                id: par
             };
-            myAjax.removeTrafficLight(param).then(function (response) {
+            myAjax.removeTrafficLight(param, par).then(function (response) {
 
                 //$scope.items = data;
-                if (response.status === 201)
+                if (response.status === 200) {
+                    console.log("sono nella delete");
                     $route.reload();
 
+                }
             }, function () {
 
 

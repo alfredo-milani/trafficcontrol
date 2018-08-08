@@ -7,6 +7,11 @@ public interface Routes {
         String SEMAPHORE_BASE_ROUTE = Entities.SEMAPHORE;
 
         // Routes
+        String CREATE = "create/{intersectionId}/{semaphoreId}";
+        String GET_SEMAPHORES = "all";
+        String GET_SEMAPHORE = "{id}";
+        String DELETE_SEMAPHORE= "delete/{id}";
+        String UPDATE_SEMAPHORE = "update/{id}";
     }
 
     interface ADMIN {

@@ -8,7 +8,12 @@ public interface Tables {
         String SEMAPHORE = Entities.SEMAPHORE;
 
         // Semaphore columns
-        String C_ID = "semaphore_id";
+        String ID = "id";
+        String SEMAPHORE_ID = "semaphore_id";
+        String INTERSECTION_ID = "intersection_id";
+        String LATITUDE = "latitude";
+        String LONGITUDE = "longitude";
+        String GREEN_DURATION = "green_duration";
     }
 
     // Admin table

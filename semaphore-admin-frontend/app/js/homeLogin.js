@@ -5,10 +5,11 @@ app.controller('ctrlLogin', function($scope, $location, Auth) {
     $scope.password = "";
     $scope.failed = false;
 
-    $scope.login = function() {
+    $scope.loginAdmin = function() {
+        console.log("sono in loginAdmin");
         Auth.login($scope.username, $scope.password)
             .then(function() {
-                $location.path("/home");
+                $location.path("/homeCustomer");
             }, function() {
                 $scope.failed = true;
             });

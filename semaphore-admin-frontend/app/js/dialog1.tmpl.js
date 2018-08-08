@@ -34,9 +34,14 @@ app.controller('DialogController',['$scope','myService','$mdDialog','myAjax','$r
 
     init();
 
-    var modifyTrafficLight = function () {
-        var param = {};
-        myAjax.modifyTrafficLight(param, $scope.idTrafLight.id).then(function (response) {
+    $scope.modifyTL = function () {
+        var param = {
+            id : $scope.idTrafLight.id,
+            intersectionId: $scope.intersectionId,
+            semaphoreId : $scope.semaphoreId,
+            greenLightDuration : $scope.greenDuration
+        };
+        myAjax.modifyTrafficLight(param).then(function (response) {
 
             if (response.status === 200) {
                 $scope.trafficLight= response.data;

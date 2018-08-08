@@ -56,7 +56,7 @@ public class AdminController {
     }
 
     public Admin login(Admin admin) {
-        Admin adminDB = adminDAO.findByEmail(admin.getEmail());
+        Admin adminDB = adminDAO.findByUsername(admin.getUsername());
 
         if (adminDB != null) {
             if (adminDB.getPassword().equals(admin.getPassword())) {
