@@ -20,26 +20,30 @@ public abstract class Topology {
         this.topologyName = defineTopologyName();
     }
 
-    public final Config createConfig() {
-        return config;
-    }
-
+    // Template method
     protected @NotNull Config defineConfig() {
         return new Config();
+    }
+
+    protected abstract @NotNull TopologyBuilder defineTopology() throws IllegalArgumentException;
+
+    protected @NotNull String defineTopologyName() {
+        return UUID.randomUUID().toString();
+    }
+    // End - Template method
+
+    // Interfaccia pubblica
+    public final Config createConfig() {
+        return config;
     }
 
     public final StormTopology createTopology() {
         return builder.createTopology();
     }
 
-    protected abstract @NotNull TopologyBuilder defineTopology() throws IllegalArgumentException;
-
     public final String createTopologyName() {
         return topologyName.replaceAll("\\p{Z}", "");
     }
-
-    protected @NotNull String defineTopologyName() {
-        return UUID.randomUUID().toString();
-    }
+    // End - Interfaccia pubblica
 
 }
