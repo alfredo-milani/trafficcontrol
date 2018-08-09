@@ -13,6 +13,12 @@ public interface SemaphoreSensorTuple {
     // Numero di semafori da attendere prima di computare la media
     Short SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED = 4;
 
+    // Numero di semafori da attendere prima di computare la mediana
+    Short SEMAPHORE_NUMBER_TO_COMPUTE_MEDIAN = 4;
+
+    // Numero di semafori da attendere prima di computare la mediana globale
+    Short SEMAPHORE_NUMBER_TO_COMPUTE_GLOBAL_MEDIAN = 200;
+
     // Chiavi per la tupla inviata dai sensori associati ai semafori
     String INTERSECTION_ID = "intersection_id";
     String SEMAPHORE_ID = "semaphore_id";

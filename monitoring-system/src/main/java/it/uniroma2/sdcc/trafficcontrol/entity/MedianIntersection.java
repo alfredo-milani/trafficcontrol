@@ -2,14 +2,8 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.tdunning.math.stats.TDigest;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadIntersectionTopology;
-import it.uniroma2.sdcc.trafficcontrol.exceptions.MeanIntersectoinSpeedNotReady;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MedianIntersectionNotReady;
-import it.uniroma2.sdcc.trafficcontrol.utils.IntersectionItem;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED;
 
 public class MedianIntersection extends BaseIntersection{
     private double compression = 100;
@@ -40,15 +34,15 @@ public class MedianIntersection extends BaseIntersection{
         return tDigestIntesection.quantile(quantile);
     }
 
-    public void computeMedianVehiclesIntersection() throws BadIntersectionTopology {
+    public void computeMedianVehiclesIntersection(int semaphoreNumber) throws BadIntersectionTopology {
         int semaphoreListSize = semaphoreSensors.size();
-        if (semaphoreListSize < SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED) {
+        if (semaphoreListSize < semaphoreNumber) {
             throw new MedianIntersectionNotReady(String.format(
                     "Current semaphore list size: %d in intersection id %d",
                     semaphoreListSize,
                     intersectionId
             ));
-        } else if (semaphoreListSize > SEMAPHORE_NUMBER_TO_COMPUTE_MEAN_SPEED) {
+        } else if (semaphoreListSize > semaphoreNumber) {
             throw new BadIntersectionTopology(String.format(
                     "Semaphore list size: %d in intersection id %d. This software only manage intersection speed of 4 semaphores at time",
                     semaphoreListSize,

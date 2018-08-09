@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_NUMBER_TO_COMPUTE_MEDIAN;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEDIAN_VEHICLES_OBJECT;
@@ -58,7 +59,7 @@ public class MedianCalculatorBolt extends AbstractWindowedBolt {
             if (intersectionFromHashMap != null) { // Intersezione da aggiornare
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
                 try {
-                    intersectionFromHashMap.computeMedianVehiclesIntersection();
+                    intersectionFromHashMap.computeMedianVehiclesIntersection(SEMAPHORE_NUMBER_TO_COMPUTE_MEDIAN);
                     System.out.println( intersectionId + " MEDIANA-----> "+ medianIntersectionQueue.get(intersectionId).toString() );
                     collector.emit(new Values(intersectionId, medianIntersectionQueue.remove(intersectionId)));
                 } catch (MedianIntersectionNotReady e) {

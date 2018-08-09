@@ -7,6 +7,7 @@ import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporization;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,14 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPOR
 
 public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
 
+    //portata di saturazione per larghezze di carreggiata inferiori a 5.5 metri
+    //1850 per carreggiate di 3.05 metri(ovvero le strade urbane)
     private int s=1850;
-    private int ip = 5;
+    private int ip = 5;  //intevallo di cambio
     private int greenValueEven= 0;
     private int greenValueOdd= 0;
     private int cycleDuration = 200;
-    private int L = 4;
+    private int L = 4; //tempo perso
 
     public GreenSetter(String topic) {
         super(topic);
@@ -37,42 +40,56 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
 
         List<SemaphoreSensor> evenSensors =  greenTemporizationManager.getSemaphoreSensorsEven();
         List<SemaphoreSensor> oddSensors =  greenTemporizationManager.getSemaphoreSensorsOdd();
-        int q0,q1,q2,q3;
+        float q0,q1,q2,q3;
 
         ObjectMapper mapper = new ObjectMapper();
         if(evenSensors.size()==2){
-            q0 = evenSensors.get(0).getVehiclesNumber()/SEMAPHORE_EMIT_FREQUENCY;
-            q1 = evenSensors.get(1).getVehiclesNumber()/SEMAPHORE_EMIT_FREQUENCY;
+            q0 = (float)evenSensors.get(0).getVehiclesNumber()/(float)SEMAPHORE_EMIT_FREQUENCY;
+            q1 = (float)evenSensors.get(1).getVehiclesNumber()/(float)SEMAPHORE_EMIT_FREQUENCY;
+            System.out.println("qo e q1  "+  q0 +"-"+ q1);
 
-            int maxQ = Math.max(q0,q1);
+            float maxQ = Math.max(q0,q1);
 
-            int greenEffective = (int) ((((float)maxQ/(float)s)*( (float)cycleDuration- (float)2*L))/((float) q0/ (float)s + (float)q1/ (float)s));
+            int greenEffective = (int) (((maxQ/(float)s)*( (float)cycleDuration- (float)2*L))/( q0/ (float)s + q1/ (float)s));
+
+            System.out.println("GREEN EFFECTIVE  EVEN "+  greenEffective);
 
             greenValueEven = greenEffective + L - ip;
+
+            //caso di un sensore relativo ad un semaforo senza veicoli in transito
+            //il verde viene impostato ad un valore di default
+            if(greenValueEven<=0)
+                greenValueEven = 100;
 
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put(INTERSECTION_ID, greenTemporizationManager.getIntersectionId());
             objectNode.put(EVEN_SEMAPHORES,"even");
             objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueEven);
 
+            System.out.println("GREEN DURATION  EVEN "+  objectNode.toString() );
             strings.add(objectNode.toString());
         }
 
         if(oddSensors.size()==2){
-            q2 = oddSensors.get(0).getVehiclesNumber()/SEMAPHORE_EMIT_FREQUENCY;
-            q3 = oddSensors.get(1).getVehiclesNumber()/SEMAPHORE_EMIT_FREQUENCY;
+            q2 = (float)oddSensors.get(0).getVehiclesNumber()/(float)SEMAPHORE_EMIT_FREQUENCY;
+            q3 = (float)oddSensors.get(1).getVehiclesNumber()/(float)SEMAPHORE_EMIT_FREQUENCY;
 
-            int maxQ = Math.max(q2,q3);
+            float maxQ = Math.max(q2,q3);
 
-            int greenEffective = (int) ((((float)maxQ/(float)s)*( (float)cycleDuration- (float)2*L))/((float) q2/ (float)s + (float)q3/ (float)s));
+            int greenEffective = (int) (((maxQ/(float)s)*( (float)cycleDuration- (float)2*L))/( q2/ (float)s + q3/ (float)s));
 
+            System.out.println("GREEN EFFECTIVE ODD "+  greenEffective);
             greenValueOdd = greenEffective + L - ip;
+
+            if(greenValueOdd<=0)
+                greenValueOdd = 100;
 
             ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put(INTERSECTION_ID, greenTemporizationManager.getIntersectionId());
             objectNode.put(ODD_SEMAPHORES,"odd");
             objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueOdd);
 
+            System.out.println("GREEN DURATION  ODD "+  objectNode.toString() );
             strings.add(objectNode.toString());
         }
 
