@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
+package it.uniroma2.sdcc.trafficcontrol.boltsSecondQueryVECCHIA;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;

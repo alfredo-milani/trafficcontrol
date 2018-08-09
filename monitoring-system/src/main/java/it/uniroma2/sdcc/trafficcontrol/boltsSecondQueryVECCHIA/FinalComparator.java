@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
+package it.uniroma2.sdcc.trafficcontrol.boltsSecondQueryVECCHIA;
 
 import it.uniroma2.sdcc.trafficcontrol.utils.IntersectionItem;
 import it.uniroma2.sdcc.trafficcontrol.utils.Ranking;

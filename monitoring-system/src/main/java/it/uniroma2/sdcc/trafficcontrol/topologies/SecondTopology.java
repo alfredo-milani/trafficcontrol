@@ -1,6 +1,14 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
+import it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery.MedianCalculatorBolt;
+import it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery.MedianDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.TopologyBuilder;
+import org.apache.storm.tuple.Fields;
+
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SEMAPHORE_SENSOR_VALIDATED;
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
 public class SecondTopology extends Topology {
 
@@ -9,6 +17,17 @@ public class SecondTopology extends Topology {
     @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
+
+
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME))
+                .setNumTasks(4);
+        builder.setBolt(MEDIAN_VEHICLES_DISPATCHER_BOLT, new MedianDispatcherBolt(), 4)
+                .shuffleGrouping(KAFKA_SPOUT);
+
+        // Bolt che calcola la velocità media di ogni intersezione
+        builder.setBolt(MEDIAN_CALCULATOR_BOLT, new MedianCalculatorBolt(60, 4), 4)
+                .fieldsGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
+
 
         /*builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME))
                 .setNumTasks(4);

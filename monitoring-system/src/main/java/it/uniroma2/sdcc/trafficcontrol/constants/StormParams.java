@@ -40,13 +40,19 @@ public interface StormParams {
     String RANK_PUBLISHER_BOLT_1_H = "rank_publisher_bolt_1_h";
     String RANK_PUBLISHER_BOLT_24_H = "rank_publisher_bolt_24_h";
 
-    // per seconda query
+    // per seconda query vecchio
     String INTERSECTION_AND_GLOBAL_MEDIAN = "intersection_and_global_median";
     String FINAL_COMPARATOR = "final_comparator";
     String FIELDS_SELECTION_FOR_MEDIAN = "fields_selector_for_median";
     String REMOVE_GLOBAL_MEDIAN_ITEM = "remove_global_median_item";
     String UPDATE_GLOBAL_MEDIAN = "update_global_median";
     String VALUE_GLOBAL_MEDIAN = "value_global_median";
+
+
+    //per la seconda query
+    String INTERSECTION_MEDIAN_VEHICLES_OBJECT = "intersection_median_vehicles_object";
+    String MEDIAN_VEHICLES_DISPATCHER_BOLT = "median_vehicles_dispatcher_bolt";
+    String MEDIAN_CALCULATOR_BOLT = "median_calculator_bolt";
 
     // Green Setting bolts
     String GREEN_TIMING_DISPATCHER_BOLT = "green_timing_dispatcher_bolt";
