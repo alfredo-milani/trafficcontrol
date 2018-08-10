@@ -28,11 +28,11 @@ public class TopologyStarter {
 
         List<Topology> topologies = Lists.newArrayList(
                 new ValidationTopology(),
-                new SemaphoreStatusTopology(),
+                //new SemaphoreStatusTopology(),
                 //new FirstTopology()
-                //new SecondTopology()
+                new SecondTopology()
                 //new ThirdTopology()
-                new GreenSettingTopology()
+                //new GreenSettingTopology()
         );
 
         switch (MODE) {

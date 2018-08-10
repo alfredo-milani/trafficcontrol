@@ -45,11 +45,19 @@ public class SemaphoreRest {
     }
 
 
+    @RequestMapping(path = Routes.SEMAPHORE.EXIST_SEMAPHORE, method = RequestMethod.GET)
+    public ResponseEntity<Boolean> existSemaphore(@PathVariable Long id) {
+        Boolean b = semaphoreController.existSemaphore(id);
+        return new ResponseEntity<>(b, !b ? HttpStatus.NOT_FOUND : HttpStatus.OK);
+    }
+
     @RequestMapping(path = Routes.SEMAPHORE.GET_SEMAPHORE, method = RequestMethod.GET)
     public ResponseEntity<Semaphore> getSemaphore(@PathVariable Long id) {
         Semaphore semaphore = semaphoreController.getSemaphore(id);
         return new ResponseEntity<>(semaphore, semaphore == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
+
+
 
     @RequestMapping(path = Routes.SEMAPHORE.DELETE_SEMAPHORE, method = RequestMethod.DELETE)
     public ResponseEntity<Semaphore> deleteSemaphore(@PathVariable Long id) {

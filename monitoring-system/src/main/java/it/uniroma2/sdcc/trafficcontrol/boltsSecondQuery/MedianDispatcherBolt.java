@@ -12,6 +12,8 @@ import java.util.Map;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GLOBAL_MEDIAN_CALCULATOR_STREAM;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.MEDIAN_CALCULATOR_STREAM;
 
 public class MedianDispatcherBolt extends AbstractDispatcherBolt {
 
@@ -23,14 +25,17 @@ public class MedianDispatcherBolt extends AbstractDispatcherBolt {
         }
 
         return new HashMap<String, Values>() {{
-            put(DEFAULT_STREAM, new Values(richSemaphoreSensor.getSemaphoreId(), richSemaphoreSensor));
+            put(MEDIAN_CALCULATOR_STREAM , new Values(richSemaphoreSensor.getSemaphoreId(), richSemaphoreSensor));
+            put(GLOBAL_MEDIAN_CALCULATOR_STREAM , new Values(richSemaphoreSensor.getSemaphoreId(), richSemaphoreSensor));
+
         }};
     }
 
     @Override
     protected Map<String, Fields> declareStreamField() {
         return new HashMap<String, Fields>() {{
-            put(DEFAULT_STREAM, new Fields(INTERSECTION_ID, SEMAPHORE_SENSOR));
+            put(MEDIAN_CALCULATOR_STREAM, new Fields(INTERSECTION_ID, SEMAPHORE_SENSOR));
+            put(GLOBAL_MEDIAN_CALCULATOR_STREAM, new Fields(SEMAPHORE_SENSOR));
         }};
     }
     

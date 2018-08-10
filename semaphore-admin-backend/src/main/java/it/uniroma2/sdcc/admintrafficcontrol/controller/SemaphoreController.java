@@ -61,4 +61,8 @@ public class SemaphoreController {
     public List<Semaphore> findAllSemaphore(){
         return semaphoreDAO.findAll();
     }
+
+    public Boolean existSemaphore(Long id) {
+        return semaphoreDAO.existsById(id);
+    }
 }

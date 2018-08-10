@@ -52,7 +52,15 @@ public interface StormParams {
     //per la seconda query
     String INTERSECTION_MEDIAN_VEHICLES_OBJECT = "intersection_median_vehicles_object";
     String MEDIAN_VEHICLES_DISPATCHER_BOLT = "median_vehicles_dispatcher_bolt";
-    String MEDIAN_CALCULATOR_BOLT = "median_calculator_bolt";
+    String MEDIAN_CALCULATOR_BOLT_15_MIN = "median_calculator_bolt_15_min";
+    String MEDIAN_CALCULATOR_STREAM = "median_calculator_stream";
+    String GLOBAL_MEDIAN_CALCULATOR_STREAM = "global_median_calculator_stream";
+    String GLOBAL_MEDIAN_CALCULATOR_BOLT_15_MIN = "global_median_calculator_bolt_15_min";
+    String MEDIAN_INTERSECTION_VALUE_STREAM = "median_intersection_value_stream";
+    String CONGESTED_INTERSECTIONS = "congested_intersections";
+    String CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_15_MIN = "congested_intersections_publisher_bolt_15_min";
+
+
 
     // Green Setting bolts
     String GREEN_TIMING_DISPATCHER_BOLT = "green_timing_dispatcher_bolt";

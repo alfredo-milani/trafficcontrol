@@ -7,7 +7,6 @@ import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporization;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +41,8 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
         List<SemaphoreSensor> oddSensors =  greenTemporizationManager.getSemaphoreSensorsOdd();
         float q0,q1,q2,q3;
 
+
+        //TODO controllare che la somma dei due verdi (odd e even) sia al massimo pari alla durata del ciclo totale
         ObjectMapper mapper = new ObjectMapper();
         if(evenSensors.size()==2){
             q0 = (float)evenSensors.get(0).getVehiclesNumber()/(float)SEMAPHORE_EMIT_FREQUENCY;
@@ -52,7 +53,6 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
 
             int greenEffective = (int) (((maxQ/(float)s)*( (float)cycleDuration- (float)2*L))/( q0/ (float)s + q1/ (float)s));
 
-            System.out.println("GREEN EFFECTIVE  EVEN "+  greenEffective);
 
             greenValueEven = greenEffective + L - ip;
 
@@ -66,7 +66,6 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
             objectNode.put(EVEN_SEMAPHORES,"even");
             objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueEven);
 
-            System.out.println("GREEN DURATION  EVEN "+  objectNode.toString() );
             strings.add(objectNode.toString());
         }
 
@@ -78,7 +77,6 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
 
             int greenEffective = (int) (((maxQ/(float)s)*( (float)cycleDuration- (float)2*L))/( q2/ (float)s + q3/ (float)s));
 
-            System.out.println("GREEN EFFECTIVE ODD "+  greenEffective);
             greenValueOdd = greenEffective + L - ip;
 
             if(greenValueOdd<=0)
@@ -89,7 +87,6 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
             objectNode.put(ODD_SEMAPHORES,"odd");
             objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueOdd);
 
-            System.out.println("GREEN DURATION  ODD "+  objectNode.toString() );
             strings.add(objectNode.toString());
         }
 

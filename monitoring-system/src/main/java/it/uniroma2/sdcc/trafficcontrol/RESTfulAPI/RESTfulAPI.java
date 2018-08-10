@@ -23,7 +23,7 @@ public class RESTfulAPI {
 
     public static boolean semaphoreSensorExists(Long id) {
         // TODO A SCOPO DI TEST / SE IL DB è SPENTO
-        if (id >= 0)
+       if (id >= 0)
             return true;
         // TODO END TEST
 

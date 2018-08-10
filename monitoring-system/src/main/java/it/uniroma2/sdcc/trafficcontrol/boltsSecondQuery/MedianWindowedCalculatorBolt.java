@@ -2,11 +2,9 @@ package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
-import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
-import it.uniroma2.sdcc.trafficcontrol.exceptions.MeanIntersectoinSpeedNotReady;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MedianIntersectionNotReady;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -20,20 +18,20 @@ import java.util.Map;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_NUMBER_TO_COMPUTE_MEDIAN;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEDIAN_VEHICLES_OBJECT;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.MEDIAN_INTERSECTION_VALUE_STREAM;
 
-public class MedianCalculatorBolt extends AbstractWindowedBolt {
+public class MedianWindowedCalculatorBolt extends AbstractWindowedBolt {
 
 
 
     private final Map<Long, MedianIntersection> medianIntersectionQueue;
 
-    public MedianCalculatorBolt(int windowSizeInSeconds) {
+    public MedianWindowedCalculatorBolt(int windowSizeInSeconds) {
         this(windowSizeInSeconds, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
     }
 
-    public MedianCalculatorBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public MedianWindowedCalculatorBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
         this.medianIntersectionQueue = new HashMap<>();
     }
@@ -60,7 +58,6 @@ public class MedianCalculatorBolt extends AbstractWindowedBolt {
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
                 try {
                     intersectionFromHashMap.computeMedianVehiclesIntersection(SEMAPHORE_NUMBER_TO_COMPUTE_MEDIAN);
-                    System.out.println( intersectionId + " MEDIANA-----> "+ medianIntersectionQueue.get(intersectionId).toString() );
                     collector.emit(new Values(intersectionId, medianIntersectionQueue.remove(intersectionId)));
                 } catch (MedianIntersectionNotReady e) {
                     // Non sono ancora arrivate tutte le tuple per computare la mediana
@@ -77,7 +74,7 @@ public class MedianCalculatorBolt extends AbstractWindowedBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields(
+        declarer.declareStream(MEDIAN_INTERSECTION_VALUE_STREAM, new Fields(
                 INTERSECTION_ID,
                 INTERSECTION_MEDIAN_VEHICLES_OBJECT
         ));

@@ -28,6 +28,11 @@ public interface KafkaParams {
     String RANKING_1_H = "ranking_1_h";
     String RANKING_24_H = "ranking_24_h";
 
+    String CONGESTED_INTERSECTIONS_15_MIN = "congested_intersections_15_min";
+    String CONGESTED_INTERSECTIONS_1_H= "congested_intersections_1_h";
+    String CONGESTED_INTERSECTIONS_24_H = "congested_intersections_24_h";
+
+
     String GREEN_TEMPORIZATION = "green_temporization";
     String ODD_SEMAPHORES = "odd_semaphores";
     String EVEN_SEMAPHORES = "even_semaphores";

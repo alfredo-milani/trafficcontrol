@@ -68,4 +68,7 @@ public class BaseIntersection implements ITupleObject, ISensor {
         return ImmutableList.copyOf(semaphoreSensors);
     }
 
+    public Long getIntersectionId() {
+        return intersectionId;
+    }
 }

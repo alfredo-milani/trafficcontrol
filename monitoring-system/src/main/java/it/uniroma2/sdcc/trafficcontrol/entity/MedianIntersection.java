@@ -3,13 +3,16 @@ package it.uniroma2.sdcc.trafficcontrol.entity;
 import com.tdunning.math.stats.TDigest;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadIntersectionTopology;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MedianIntersectionNotReady;
+import org.apache.storm.tuple.Tuple;
+
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEDIAN_VEHICLES_OBJECT;
 
 
 public class MedianIntersection extends BaseIntersection{
     private double compression = 100;
     private double quantile = 0.5; //mediana
 
-    private double medianIntersection;
+    private double medianIntersectionCalculated;
 
     public MedianIntersection(Long intersectionId) {
         super(intersectionId);
@@ -50,11 +53,19 @@ public class MedianIntersection extends BaseIntersection{
             ));
         }
 
-        medianIntersection = medianCalulator();
+        medianIntersectionCalculated = medianCalulator();
+    }
+
+    public static MedianIntersection getIstanceFrom(Tuple tuple) {
+        return (MedianIntersection) tuple.getValueByField(INTERSECTION_MEDIAN_VEHICLES_OBJECT);
     }
 
     @Override
     public String toString() {
-        return " medianIntersection=" + medianIntersection ;
+        return " medianIntersectionCalculated=" + medianIntersectionCalculated;
+    }
+
+    public double getMedianIntersectionCalculated() {
+        return medianIntersectionCalculated;
     }
 }

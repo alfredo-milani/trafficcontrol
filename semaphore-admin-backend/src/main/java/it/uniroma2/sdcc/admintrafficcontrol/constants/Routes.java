@@ -12,6 +12,7 @@ public interface Routes {
         String GET_SEMAPHORE = "{id}";
         String DELETE_SEMAPHORE= "delete/{id}";
         String UPDATE_SEMAPHORE = "update/{id}";
+        String EXIST_SEMAPHORE = "exist/{id}";
     }
 
     interface ADMIN {
