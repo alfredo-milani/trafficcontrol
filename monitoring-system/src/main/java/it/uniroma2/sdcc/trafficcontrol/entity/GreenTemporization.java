@@ -1,5 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
+
 import java.util.ArrayList;
 import java.util.List;
 

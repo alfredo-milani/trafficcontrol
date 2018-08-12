@@ -1,6 +1,9 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.ISensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.ITupleObject;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import lombok.Getter;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.shade.com.google.common.collect.Lists;
@@ -68,7 +71,4 @@ public class BaseIntersection implements ITupleObject, ISensor {
         return ImmutableList.copyOf(semaphoreSensors);
     }
 
-    public Long getIntersectionId() {
-        return intersectionId;
-    }
 }

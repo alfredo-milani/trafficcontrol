@@ -48,7 +48,6 @@ public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
         }
     }
 
-    @NotNull
-    protected abstract List<V> computeValueToPublish(Tuple tuple) throws Exception;
+    protected abstract @NotNull List<V> computeValueToPublish(Tuple tuple) throws Exception;
 
 }

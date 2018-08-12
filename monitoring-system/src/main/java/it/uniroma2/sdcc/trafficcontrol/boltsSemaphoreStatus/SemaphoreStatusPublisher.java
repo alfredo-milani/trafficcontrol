@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractKafkaPublisherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.StatusSemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.StatusSemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 

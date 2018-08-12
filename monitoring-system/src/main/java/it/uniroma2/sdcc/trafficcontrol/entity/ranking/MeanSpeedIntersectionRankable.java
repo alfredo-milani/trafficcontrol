@@ -1,8 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.uniroma2.sdcc.trafficcontrol.entity.ITupleObject;
 import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.ITupleObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,6 +67,12 @@ public class MeanSpeedIntersectionRankable implements IRankable, ITupleObject {
     @Override
     public Integer getValue() {
         return getMeanIntersectionSpeed();
+    }
+
+    @Override
+    public Boolean hasSameValue(Integer otherValue) {
+        return meanIntersectionSpeed.equals(otherValue);
+        // TODO
     }
 
     @Override

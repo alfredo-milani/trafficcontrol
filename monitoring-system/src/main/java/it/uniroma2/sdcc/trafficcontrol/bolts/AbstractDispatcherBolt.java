@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.bolts;
 
 import com.sun.tools.javac.util.Assert;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadStream;
+import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -37,8 +38,9 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
             } else {
                 streamValueMap.keySet().forEach(s -> collector.emit(s, streamValueMap.get(s)));
             }
-        } catch (Exception e) {
+        } catch (BadTuple e) {
             System.err.println(String.format("Bad Tuple: %s", tuple.toString()));
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             collector.ack(tuple);

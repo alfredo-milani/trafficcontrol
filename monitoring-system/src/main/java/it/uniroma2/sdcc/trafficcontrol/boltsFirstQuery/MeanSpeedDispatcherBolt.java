@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractDispatcherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
@@ -23,7 +23,7 @@ public class MeanSpeedDispatcherBolt extends AbstractDispatcherBolt {
         }
 
         return new HashMap<String, Values>() {{
-            put(DEFAULT_STREAM, new Values(richSemaphoreSensor.getSemaphoreId(), richSemaphoreSensor));
+            put(DEFAULT_STREAM, new Values(richSemaphoreSensor.getIntersectionId(), richSemaphoreSensor));
         }};
     }
 

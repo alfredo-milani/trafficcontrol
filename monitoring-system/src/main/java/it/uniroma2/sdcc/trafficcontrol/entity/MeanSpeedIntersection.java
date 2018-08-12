@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadIntersectionTopology;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MeanIntersectoinSpeedNotReady;
 import lombok.Getter;

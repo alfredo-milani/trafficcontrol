@@ -35,7 +35,7 @@ public class ThirdTopology extends Topology {
     }
 
     @Override
-    public String defineTopologyName() {
+    protected String defineTopologyName() {
         return CLASS_NAME;
     }
 

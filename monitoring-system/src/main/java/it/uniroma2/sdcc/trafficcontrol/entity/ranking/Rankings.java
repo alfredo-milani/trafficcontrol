@@ -2,7 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.uniroma2.sdcc.trafficcontrol.entity.ITupleObject;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.ITupleObject;
 import org.apache.storm.shade.com.google.common.collect.ImmutableList;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 

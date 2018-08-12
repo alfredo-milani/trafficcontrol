@@ -1,8 +1,9 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
-import it.uniroma2.sdcc.trafficcontrol.topologies.*;
+import it.uniroma2.sdcc.trafficcontrol.topologies.SecondTopology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.Topology;
+import it.uniroma2.sdcc.trafficcontrol.topologies.ValidationTopology;
 import lombok.Cleanup;
-import lombok.extern.java.Log;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
@@ -14,13 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.Params.EXIT_FAILURE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.*;
 
 
-@Log
 public class TopologyStarter {
 
     public static void main(String[] args) throws IOException {
@@ -28,11 +27,11 @@ public class TopologyStarter {
 
         List<Topology> topologies = Lists.newArrayList(
                 new ValidationTopology(),
-                //new SemaphoreStatusTopology(),
-                //new FirstTopology()
+                // new SemaphoreStatusTopology(),
+                // new FirstTopology(),
                 new SecondTopology()
-                //new ThirdTopology()
-                //new GreenSettingTopology()
+                // new ThirdTopology()
+                // new GreenSettingTopology()
         );
 
         switch (MODE) {
@@ -61,7 +60,7 @@ public class TopologyStarter {
                 break;
 
             default:
-                log.log(Level.SEVERE, "Errore sconosciuto");
+                System.err.println("Errore sconosciuto");
                 System.exit(EXIT_FAILURE);
         }
     }

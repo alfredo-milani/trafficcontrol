@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractAuthenticationBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;

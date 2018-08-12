@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractKafkaPublisherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 
@@ -10,9 +10,9 @@ import java.util.Collections;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 
-public class SemaphoreValidationPublisherBolt extends AbstractKafkaPublisherBolt<String> {
+public class ValidationPublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
-    public SemaphoreValidationPublisherBolt(String topic) {
+    public ValidationPublisherBolt(String topic) {
         super(topic);
     }
 

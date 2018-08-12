@@ -32,7 +32,7 @@ public class ValidationTopology extends Topology {
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE), 6);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE, CLASS_NAME), 6);
 
         builder.setBolt(VALIDATION_DISPATCHER_BOLT, new ValidationDispatcherBolt(), 6)
                 .shuffleGrouping(KAFKA_SPOUT);
@@ -49,10 +49,10 @@ public class ValidationTopology extends Topology {
                 .shuffleGrouping(MOBILE_SENSOR_AUTH_CACHE_BOLT, CACHE_MISS_STREAM);
 
 
-        builder.setBolt(SEMAPHORE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(SEMAPHORE_SENSOR_VALIDATED), 4)
+        builder.setBolt(SEMAPHORE_VALIDATION_PUBLISHER_BOLT, new ValidationPublisherBolt(SEMAPHORE_SENSOR_VALIDATED), 4)
                 .shuffleGrouping(SEMAPHORE_SENSOR_AUTH_CACHE_BOLT, CACHE_HIT_STREAM)
                 .shuffleGrouping(SEMAPHORE_AUTH_DB_BOLT);
-        builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(MOBILE_SENSOR_VALIDATED), 4)
+        builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new ValidationPublisherBolt(MOBILE_SENSOR_VALIDATED), 4)
                 .shuffleGrouping(MOBILE_SENSOR_AUTH_CACHE_BOLT, CACHE_HIT_STREAM)
                 .shuffleGrouping(MOBILE_AUTH_DB_BOLT);
 
@@ -60,7 +60,7 @@ public class ValidationTopology extends Topology {
     }
 
     @Override
-    public String defineTopologyName() {
+    protected String defineTopologyName() {
         return CLASS_NAME;
     }
 

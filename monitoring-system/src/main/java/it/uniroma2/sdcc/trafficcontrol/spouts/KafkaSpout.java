@@ -18,7 +18,6 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 import static it.uniroma2.sdcc.trafficcontrol.constants.Params.APP_NAME;
 import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.KAFKA_IP_PORT;
 
-
 public class KafkaSpout extends BaseRichSpout {
 
     private final static String DEFAULT_GROUP_ID = APP_NAME;

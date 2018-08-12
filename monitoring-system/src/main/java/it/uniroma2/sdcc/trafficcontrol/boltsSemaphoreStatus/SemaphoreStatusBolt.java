@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.RichSemaphoreSensor;
-import it.uniroma2.sdcc.trafficcontrol.entity.StatusSemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.StatusSemaphoreSensor;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;

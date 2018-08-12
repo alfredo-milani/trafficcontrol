@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractKafkaPublisherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporization;
-import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 
@@ -17,7 +17,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INT
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_EMIT_FREQUENCY;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPORIZATION_VALUE;
 
-public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
+public class GreenSetterPublisher extends AbstractKafkaPublisherBolt<String> {
 
     //portata di saturazione per larghezze di carreggiata inferiori a 5.5 metri
     //1850 per carreggiate di 3.05 metri(ovvero le strade urbane)
@@ -28,7 +28,7 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
     private int cycleDuration = 200;
     private int L = 4; //tempo perso
 
-    public GreenSetter(String topic) {
+    public GreenSetterPublisher(String topic) {
         super(topic);
     }
 
@@ -47,7 +47,6 @@ public class GreenSetter extends AbstractKafkaPublisherBolt<String> {
         if(evenSensors.size()==2){
             q0 = (float)evenSensors.get(0).getVehiclesNumber()/(float)SEMAPHORE_EMIT_FREQUENCY;
             q1 = (float)evenSensors.get(1).getVehiclesNumber()/(float)SEMAPHORE_EMIT_FREQUENCY;
-            System.out.println("qo e q1  "+  q0 +"-"+ q1);
 
             float maxQ = Math.max(q0,q1);
 

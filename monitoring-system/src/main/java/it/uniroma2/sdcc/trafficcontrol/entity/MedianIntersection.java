@@ -1,18 +1,19 @@
 package it.uniroma2.sdcc.trafficcontrol.entity;
 
 import com.tdunning.math.stats.TDigest;
+import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadIntersectionTopology;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MedianIntersectionNotReady;
-import org.apache.storm.tuple.Tuple;
+import lombok.Getter;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEDIAN_VEHICLES_OBJECT;
+import static it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersectionManager.COMPRESSION;
+import static it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersectionManager.QUANTILE;
 
 
-public class MedianIntersection extends BaseIntersection{
-    private double compression = 100;
-    private double quantile = 0.5; //mediana
+public class MedianIntersection extends BaseIntersection {
 
-    private double medianIntersectionCalculated;
+    @Getter
+    private double medianIntersection;
 
     public MedianIntersection(Long intersectionId) {
         super(intersectionId);
@@ -26,15 +27,12 @@ public class MedianIntersection extends BaseIntersection{
         addSemaphoreSensor(semaphoreSensor);
     }
 
-
-
-    private Double medianCalulator() {
-        TDigest tDigestIntesection = TDigest.createAvlTreeDigest(compression);
-        int size = semaphoreSensors.size();
-        for (int i = 0; i < size; ++i) {
-             tDigestIntesection.add(semaphoreSensors.get(i).getVehiclesNumber());
+    private Double computeMedian() {
+        TDigest tDigestIntesection = TDigest.createAvlTreeDigest(COMPRESSION);
+        for (SemaphoreSensor semaphoreSensor : semaphoreSensors) {
+            tDigestIntesection.add(semaphoreSensor.getVehiclesNumber());
         }
-        return tDigestIntesection.quantile(quantile);
+        return tDigestIntesection.quantile(QUANTILE);
     }
 
     public void computeMedianVehiclesIntersection(int semaphoreNumber) throws BadIntersectionTopology {
@@ -53,19 +51,12 @@ public class MedianIntersection extends BaseIntersection{
             ));
         }
 
-        medianIntersectionCalculated = medianCalulator();
-    }
-
-    public static MedianIntersection getIstanceFrom(Tuple tuple) {
-        return (MedianIntersection) tuple.getValueByField(INTERSECTION_MEDIAN_VEHICLES_OBJECT);
+        medianIntersection = computeMedian();
     }
 
     @Override
     public String toString() {
-        return " medianIntersectionCalculated=" + medianIntersectionCalculated;
+        return " medianIntersection=" + medianIntersection;
     }
 
-    public double getMedianIntersectionCalculated() {
-        return medianIntersectionCalculated;
-    }
 }

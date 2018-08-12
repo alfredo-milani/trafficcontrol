@@ -36,7 +36,7 @@ public class FirstTopology extends Topology {
                 .shuffleGrouping(KAFKA_SPOUT);
 
         // Bolt che calcola la velocità media di ogni intersezione
-        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBolt(60, 4), 4)
+        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBoltWindowed(60, 4), 4)
                 .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
 
         // Bolts gestori della finestra temporale da 15 minuti
@@ -69,7 +69,7 @@ public class FirstTopology extends Topology {
     }
 
     @Override
-    public String defineTopologyName() {
+    protected String defineTopologyName() {
         return CLASS_NAME;
     }
 

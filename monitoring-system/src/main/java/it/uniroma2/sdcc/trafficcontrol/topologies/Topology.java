@@ -20,7 +20,7 @@ public abstract class Topology {
         this.topologyName = defineTopologyName();
     }
 
-    // Template method
+    // Template's methods
     protected @NotNull Config defineConfig() {
         return new Config();
     }
@@ -30,7 +30,7 @@ public abstract class Topology {
     protected @NotNull String defineTopologyName() {
         return UUID.randomUUID().toString();
     }
-    // End - Template method
+    // End - Template's methods
 
     // Interfaccia pubblica
     public final Config createConfig() {

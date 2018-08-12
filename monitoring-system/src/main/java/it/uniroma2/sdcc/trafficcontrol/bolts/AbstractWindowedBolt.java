@@ -156,6 +156,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     }
 
     private void fillNewEvents(Long timestampToUse, Tuple tuple) {
+        // Aggiunta nuovo evento
         eventsWindow.getNewEventsMap().put(timestampToUse, tuple);
     }
 

@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.FilterBolt;
-import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenSetter;
+import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenSetterPublisher;
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenTimingDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.TopologyBuilder;
@@ -28,14 +28,14 @@ public class GreenSettingTopology extends Topology {
         builder.setBolt(FILTER_GREEN_BOLT, new FilterBolt(), 2)
                 .fieldsGrouping(GREEN_TIMING_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
 
-        builder.setBolt(GREEN_SETTER, new GreenSetter(GREEN_TEMPORIZATION), 2)
+        builder.setBolt(GREEN_SETTER, new GreenSetterPublisher(GREEN_TEMPORIZATION), 2)
                 .shuffleGrouping(FILTER_GREEN_BOLT);
 
         return builder;
     }
 
     @Override
-    public String defineTopologyName() {
+    protected String defineTopologyName() {
         return CLASS_NAME;
     }
 
