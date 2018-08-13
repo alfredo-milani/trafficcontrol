@@ -18,47 +18,95 @@ public class StartProducer {
     private static int threads = 2;
     private static int waitingTimeMillis = 2 * 1000;
     private static ProducerType producerType = ProducerType.AUTO;
+    private static SensorType sensorType;
 
     private enum ProducerType {
+        UNKNOWN,
         KEY,
         AUTO
     }
 
-    public static void main(String[] args) {
+    private enum SensorType {
+        UNKNOWN,
+        SEMAPHORE,
+        MOBILE
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static void main(String[] args) throws Exception {
         parseArgs(args);
 
         switch (producerType) {
             case KEY:
-                SemaphoreSensorProducer semaphoreSensorProducer = new SemaphoreSensorProducer(
-                        new KafkaProducer<>(initProducerProperties()),
-                        GENERIC_TUPLE_TO_VALIDATE
-                );
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-                System.out.println(String.format(
-                        "Starting producer\nClicca invio per inviare una tupla sul topic <%s>",
-                        GENERIC_TUPLE_TO_VALIDATE
-                ));
-                while (true) {
-                    try {
-                        bufferedReader.readLine();
+                switch (sensorType) {
+                    case SEMAPHORE:
+                        SemaphoreSensorProducer semaphoreSensorProducer = new SemaphoreSensorProducer(
+                                new KafkaProducer<>(initProducerProperties()),
+                                GENERIC_TUPLE_TO_VALIDATE
+                        );
+                        BufferedReader bufferedReaderSemaphore = new BufferedReader(new InputStreamReader(System.in));
                         System.out.println(String.format(
-                                "\t> Tupla inviata\t\t| %s |",
-                                semaphoreSensorProducer.produce()
+                                "Starting producer\nClicca invio per inviare una tupla sul topic <%s>",
+                                GENERIC_TUPLE_TO_VALIDATE
                         ));
-                    } catch (IOException e) {
-                        System.err.println("Errore durante l'invio della tupla");
-                    }
+                        while (true) {
+                            try {
+                                bufferedReaderSemaphore.readLine();
+                                System.out.println(String.format(
+                                        "\t> Tupla inviata\t\t| %s |",
+                                        semaphoreSensorProducer.produce()
+                                ));
+                            } catch (IOException e) {
+                                System.err.println("Errore durante l'invio della tupla");
+                            }
+                        }
+
+                    case MOBILE:
+                        MobileSensorProducer mobileSensorProducer = new MobileSensorProducer(
+                                new KafkaProducer<>(initProducerProperties()),
+                                GENERIC_TUPLE_TO_VALIDATE
+                        );
+                        BufferedReader bufferedReaderMobile = new BufferedReader(new InputStreamReader(System.in));
+                        System.out.println(String.format(
+                                "Starting producer\nClicca invio per inviare una tupla sul topic <%s>",
+                                GENERIC_TUPLE_TO_VALIDATE
+                        ));
+                        while (true) {
+                            try {
+                                bufferedReaderMobile.readLine();
+                                System.out.println(String.format(
+                                        "\t> Tupla inviata\t\t| %s |",
+                                        mobileSensorProducer.produce()
+                                ));
+                            } catch (IOException e) {
+                                System.err.println("Errore durante l'invio della tupla");
+                            }
+                        }
                 }
 
             case AUTO:
-                for (int i = 0; i < threads; ++i) {
-                    new Thread(new SemaphoreSensorProducer(
-                            new KafkaProducer<>(initProducerProperties()),
-                            GENERIC_TUPLE_TO_VALIDATE,
-                            waitingTimeMillis)
-                    ).start();
+                switch (sensorType) {
+                    case SEMAPHORE:
+                        for (int i = 0; i < threads; ++i) {
+                            new Thread(new SemaphoreSensorProducer(
+                                    new KafkaProducer<>(initProducerProperties()),
+                                    GENERIC_TUPLE_TO_VALIDATE,
+                                    waitingTimeMillis)
+                            ).start();
+                        }
+                        break;
+
+                    case MOBILE:
+                        for (int i = 0; i < threads; ++i) {
+                            new Thread(new MobileSensorProducer(
+                                    new KafkaProducer<>(initProducerProperties()),
+                                    GENERIC_TUPLE_TO_VALIDATE,
+                                    waitingTimeMillis)
+                            ).start();
+                        }
+                        break;
                 }
-                break;
+
         }
     }
 
@@ -75,7 +123,7 @@ public class StartProducer {
         return producerProperties;
     }
 
-    private static void parseArgs(String[] args) {
+    private static void parseArgs(String[] args) throws Exception {
         Options options = new Options();
 
         String nThreads = "t";
@@ -106,10 +154,21 @@ public class StartProducer {
                 producerType,
                 String.format("%s=", producerTypeLong),
                 true,
-                "Modalità emissione tuple (auto - con threads o key - su richiesta)"
+                "Modalità emissione tuple (auto - con threads - o key - su richiesta -; default: auto)"
         );
         producerTypeOption.setRequired(false);
         options.addOption(producerTypeOption);
+
+        String sensorType = "st";
+        String sensorTypeLong = "sensorTpye";
+        Option sensorTypeOption = new Option(
+                sensorType,
+                String.format("%s=", sensorTypeLong),
+                true,
+                "Tipo di sensori emulati (semaphore / mobile)"
+        );
+        sensorTypeOption.setRequired(true);
+        options.addOption(sensorTypeOption);
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -121,8 +180,8 @@ public class StartProducer {
             System.err.println(e.getMessage());
             formatter.printHelp(
                     String.format(
-                            "StartProducer -%s [num threads]",
-                            nThreads
+                            "StartProducer -%s [sensorType]",
+                            sensorType
                     ),
                     options
             );
@@ -137,6 +196,11 @@ public class StartProducer {
                 waitingTimeMillis : Integer.valueOf(cmd.getOptionValue(waitingTime));
         StartProducer.producerType = cmd.getOptionValue(producerType) == null ?
                 ProducerType.AUTO : ProducerType.valueOf(cmd.getOptionValue(producerType).toUpperCase());
+        StartProducer.sensorType = cmd.getOptionValue(producerType) == null ?
+                SensorType.UNKNOWN : SensorType.valueOf(cmd.getOptionValue(sensorType).toUpperCase());
+        if (StartProducer.sensorType.equals(SensorType.UNKNOWN)) {
+            throw new Exception("Devi specificare il tipo di sensore");
+        }
     }
 
 }

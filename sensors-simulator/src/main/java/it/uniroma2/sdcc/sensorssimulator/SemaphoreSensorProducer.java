@@ -70,7 +70,7 @@ public class SemaphoreSensorProducer implements Runnable {
         semaphoreId = ThreadLocalRandom.current().nextLong(1, 50);
         semaphoreLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
         semaphoreLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
-        semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
+        // semaphoreTimestampUTC = ThreadLocalRandom.current().nextLong(0, 10000000 + 1);
         semaphoreTimestampUTC = System.currentTimeMillis();
         greenLightDuration = (short) ThreadLocalRandom.current().nextInt(0, 300 + 1);
         greenLightStatus = (byte) ThreadLocalRandom.current().nextInt(0, 127 + 1);
@@ -79,16 +79,16 @@ public class SemaphoreSensorProducer implements Runnable {
             /*greenLightStatus = Byte.MAX_VALUE;
             yellowLightStatus = Byte.MAX_VALUE;
             redLightStatus = Byte.MAX_VALUE;*/
-        vehiclesPerSecond = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
-        averageVehiclesSpeed = (short) ThreadLocalRandom.current().nextInt(0, 50 + 1);
+        vehiclesPerSecond = (short) ThreadLocalRandom.current().nextInt(0, 70 + 1);
+        averageVehiclesSpeed = (short) ThreadLocalRandom.current().nextInt(0, 100 + 1);
 
         try {
-            String jsonStringLamp = mapper.writeValueAsString(this);
-            producer.send(new ProducerRecord<>(topicName, jsonStringLamp));
-            return jsonStringLamp;
+            String jsonString = mapper.writeValueAsString(this);
+            producer.send(new ProducerRecord<>(topicName, jsonString));
+            return jsonString;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return "Errore durante l'invio della tupla";
+            return "Errore durante l'invio della tupla del semaforo";
         }
     }
 
