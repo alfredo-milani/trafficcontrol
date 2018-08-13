@@ -27,4 +27,5 @@ public interface Routes {
         String DELETE_ADMIN = "delete/{id}";
         String UPDATE_ADMIN = "update/{id}";
     }
+
 }

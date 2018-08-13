@@ -2,7 +2,6 @@ package it.uniroma2.sdcc.admintrafficcontrol.rest;
 
 import it.uniroma2.sdcc.admintrafficcontrol.constants.Routes;
 import it.uniroma2.sdcc.admintrafficcontrol.controller.SemaphoreController;
-import it.uniroma2.sdcc.admintrafficcontrol.entity.Admin;
 import it.uniroma2.sdcc.admintrafficcontrol.entity.Semaphore;
 import it.uniroma2.sdcc.admintrafficcontrol.exceptions.EntityNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.util.List;
 
 @RestController
@@ -56,8 +54,6 @@ public class SemaphoreRest {
         Semaphore semaphore = semaphoreController.getSemaphore(id);
         return new ResponseEntity<>(semaphore, semaphore == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
-
-
 
     @RequestMapping(path = Routes.SEMAPHORE.DELETE_SEMAPHORE, method = RequestMethod.DELETE)
     public ResponseEntity<Semaphore> deleteSemaphore(@PathVariable Long id) {

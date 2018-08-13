@@ -137,6 +137,26 @@ public class Rankings implements ITupleObject {
         return new Rankings(this);
     }
 
+    private int getPositionOfLastEqualValue(int initialPosition) {
+        int finalIndex = initialPosition;
+        Integer currentValue;
+        List<IRankable> rankings = Lists.newArrayList(rankedItems);
+
+        if (initialPosition >= rankings.size()) {
+            throw new IndexOutOfBoundsException("La posizione iniziale non può essere >= della size");
+        }
+
+        try {
+            for (; finalIndex < rankings.size(); ++finalIndex) {
+                currentValue = rankings.get(finalIndex).getValue();
+                if (!currentValue.equals(rankings.get(finalIndex + 1).getValue())) break;
+            }
+        } catch (IndexOutOfBoundsException e){
+            return finalIndex;
+        }
+        return finalIndex;
+    }
+
     // Due Rankings sono considerati diversi anche se hanno elementi
     // con stesso valore (velocità media) ma posizioni diverse
     @Override
@@ -146,17 +166,45 @@ public class Rankings implements ITupleObject {
         if (!(o instanceof Rankings)) return false;
 
         Rankings other = (Rankings) o;
-        return rankedItems.equals(other.getRankings());
+
+        List<IRankable> thisIRankable = this.getRankings();
+        List<IRankable> otherIRankable = other.getRankings();
+
+        if (thisIRankable.size() != otherIRankable.size()) return false;
+        if (thisIRankable.size() == 0) return true;
+
+        int currentPositionThis = 0; int finalPositionThis;
+        int currentPositionOther = 0; int finalPositionOther;
+        do {
+            finalPositionThis = this.getPositionOfLastEqualValue(currentPositionThis);
+            finalPositionOther = other.getPositionOfLastEqualValue(currentPositionOther);
+
+            List<IRankable> subThis = thisIRankable.subList(currentPositionThis, ++finalPositionThis);
+            List<IRankable> subOther = otherIRankable.subList(currentPositionOther, ++finalPositionOther);
+
+            if (subThis.size() != subOther.size()) return false;
+            for (IRankable r : subThis) {
+                if (!subOther.contains(r)) return false;
+            }
+
+            currentPositionThis = finalPositionThis;
+            currentPositionOther = finalPositionOther;
+        } while (finalPositionThis < thisIRankable.size() && finalPositionOther < otherIRankable.size());
+
+        return true;
+
+        /*Rankings other = (Rankings) o;
+        return rankedItems.equals(other.getRankings());*/
 
         /*Rankings other = (Rankings) o;
         if (this.size() == other.size()) {
             if (this.size() == 0) return true;
 
-            // TODO modificare per tenere conto di più valori uguali (non solo 2)
             List<IRankable> l1 = this.getRankings();
             List<IRankable> l2 = other.getRankings();
             int i = 0;
             do {
+                // VALIDO SOLO PER 2 ELEMENTI IN SUCCESSIONE
                 if (!l1.get(i).equals(l2.get(i))) {
                     try {
                         if (!(l1.get(i).equals(l2.get(i + 1)) &&

@@ -80,7 +80,7 @@ public class SemaphoreSensorProducer implements Runnable {
             yellowLightStatus = Byte.MAX_VALUE;
             redLightStatus = Byte.MAX_VALUE;*/
         vehiclesPerSecond = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
-        averageVehiclesSpeed = (short) ThreadLocalRandom.current().nextInt(0, 400 + 1);
+        averageVehiclesSpeed = (short) ThreadLocalRandom.current().nextInt(0, 50 + 1);
 
         try {
             String jsonStringLamp = mapper.writeValueAsString(this);

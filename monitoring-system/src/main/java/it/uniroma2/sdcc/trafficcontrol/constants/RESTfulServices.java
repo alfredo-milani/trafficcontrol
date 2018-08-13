@@ -4,7 +4,7 @@ public interface RESTfulServices {
 
     // Base URL
     String HOSTNAME = "http://localhost:8200";
-    String BASE_URL = HOSTNAME + "/sdcc-admin";
+    String BASE_URL = HOSTNAME + "/sdcc_admin";
 
     // Semaphore resource
     String GET_SEMAPHORE_ID = BASE_URL + "/semaphore/exist/%d";

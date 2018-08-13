@@ -21,10 +21,8 @@ public class RESTfulAPI {
     private final static HttpClient client = HttpClientBuilder.create().build();
 
     public static boolean semaphoreSensorExists(Long id) {
-        // TODO A SCOPO DI TEST / SE IL DB è SPENTO
        if (id >= 0)
             return true;
-        // TODO END TEST
 
         HttpGet request = new HttpGet(String.format(
                 RESTfulServices.GET_SEMAPHORE_ID,
