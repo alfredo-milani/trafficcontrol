@@ -9,10 +9,7 @@ import lombok.Getter;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.MedianVehiclesIntersectionJsonFields.*;
 
@@ -26,7 +23,7 @@ public class MedianIntersectionManager implements ITupleObject {
     private double globalMedian;
 
     public MedianIntersectionManager() {
-        higherMedianIntersection = new HashMap<>();
+        higherMedianIntersection = new LinkedHashMap<>();
         globalMedian = 0.0;
     }
 
@@ -75,6 +72,19 @@ public class MedianIntersectionManager implements ITupleObject {
         return Lists.newArrayList(higherMedianIntersection.values());
     }
 
+    public void sort() {
+        List<MedianIntersection> toSort = Lists.newArrayList(higherMedianIntersection.values());
+        toSort.sort((o1, o2) -> {
+            double delta = o1.getMedianIntersection() - o2.getMedianIntersection();
+            if (delta > 1) return -1;
+            else if (delta == 0) return 0;
+            else return 1;
+        });
+
+        higherMedianIntersection.clear();
+        toSort.forEach(i -> higherMedianIntersection.put(i.getIntersectionId(), i));
+    }
+
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
@@ -84,7 +94,7 @@ public class MedianIntersectionManager implements ITupleObject {
                 globalMedian
         ));
         higherMedianIntersection.values().forEach(
-                i -> buffer.append(String.format("| Id: %d >\tval: %.2f\n", i.getIntersectionId(), i.getMedianIntersection()))
+                i -> buffer.append(String.format("| Id: %d >\tvehicles: %.2f\n", i.getIntersectionId(), i.getMedianIntersection()))
         );
         buffer.append("\n");
 

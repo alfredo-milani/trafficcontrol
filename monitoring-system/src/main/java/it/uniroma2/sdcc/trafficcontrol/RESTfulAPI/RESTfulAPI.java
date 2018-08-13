@@ -8,7 +8,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 import static org.apache.http.protocol.HTTP.USER_AGENT;
@@ -59,24 +58,6 @@ public class RESTfulAPI {
         // TODO END TEST
 
         // TODO
-    }
-
-    public static void main(String[] a) {
-        for (int i = 0; i < 100; ++i) {
-            Long random = ThreadLocalRandom.current().nextLong(1, 50);
-            log.log(
-                    Level.INFO,
-                    String.format("ID: %d\tRecord exist: %s", random, RESTfulAPI.semaphoreSensorExists(random))
-            );
-
-            /*
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            */
-        }
     }
 
 }

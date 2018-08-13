@@ -34,6 +34,8 @@ public class GlobalMedianCalculatorBoltWindowed extends AbstractWindowedBolt {
 
     @Override
     protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
+        Map<Long, MedianIntersection> oldHigherMedianIntersection = new HashMap<>(medianIntersectionManager.getHigherMedianIntersection());
+
         // Elimino dati scaduti provenienti dai due streams
         eventsWindow.getExpiredEvents().forEach(t -> {
             if (t.getSourceStreamId().equals(SEMAPHORE_SENSOR_STREAM)) {
@@ -56,7 +58,6 @@ public class GlobalMedianCalculatorBoltWindowed extends AbstractWindowedBolt {
         });
         medianIntersectionManager.updateMedianFrom(globalIntersections);
 
-        Map<Long, MedianIntersection> oldHigherMedianIntersection = new HashMap<>(medianIntersectionManager.getHigherMedianIntersection());
         // Aggiorno le intersezioni la cui mediana è superiore a quella globale
         eventsWindow.getNewEvents().forEach(t -> {
             if (t.getSourceStreamId().equals(MEDIAN_INTERSECTION_STREAM)) {
@@ -64,9 +65,11 @@ public class GlobalMedianCalculatorBoltWindowed extends AbstractWindowedBolt {
                 medianIntersectionManager.addIntersectionIfNeeded(medianIntersection);
             }
         });
+
         // Invio nuovi dati solo se ci sono stati aggiornamenti nella lista delle
         // intersezioni la cui mediana è maggiore rispetto a quella globale
         if (!oldHigherMedianIntersection.equals(medianIntersectionManager.getHigherMedianIntersection())) {
+            medianIntersectionManager.sort();
             collector.emit(new Values(medianIntersectionManager));
         }
     }

@@ -28,7 +28,7 @@ public class TopologyStarter {
         List<Topology> topologies = Lists.newArrayList(
                 new ValidationTopology(),
                 // new SemaphoreStatusTopology(),
-                // new FirstTopology(),
+                // new FirstTopology()
                 new SecondTopology()
                 // new ThirdTopology()
                 // new GreenSettingTopology()

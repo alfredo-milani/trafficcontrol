@@ -137,6 +137,8 @@ public class Rankings implements ITupleObject {
         return new Rankings(this);
     }
 
+    // Due Rankings sono considerati diversi anche se hanno elementi
+    // con stesso valore (velocità media) ma posizioni diverse
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -144,6 +146,9 @@ public class Rankings implements ITupleObject {
         if (!(o instanceof Rankings)) return false;
 
         Rankings other = (Rankings) o;
+        return rankedItems.equals(other.getRankings());
+
+        /*Rankings other = (Rankings) o;
         if (this.size() == other.size()) {
             if (this.size() == 0) return true;
 
@@ -169,7 +174,7 @@ public class Rankings implements ITupleObject {
             return true;
         } else {
             return false;
-        }
+        }*/
     }
 
     @Override

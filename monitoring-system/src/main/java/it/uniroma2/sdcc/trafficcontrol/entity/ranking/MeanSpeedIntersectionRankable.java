@@ -70,12 +70,6 @@ public class MeanSpeedIntersectionRankable implements IRankable, ITupleObject {
     }
 
     @Override
-    public Boolean hasSameValue(Integer otherValue) {
-        return meanIntersectionSpeed.equals(otherValue);
-        // TODO
-    }
-
-    @Override
     public int compareTo(IRankable other) {
         long delta = this.getValue() - other.getValue();
         if (delta > 0) {
