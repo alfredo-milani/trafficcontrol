@@ -47,6 +47,16 @@ public class Params {
         public static final String P_NUMBER_OF_WORKERS = "workers";
         public static Integer NUMBER_OF_WORKERS = NUMBER_WORKERS_DEFAULT;
 
+        // Parametri per terza query
+        // Proprietà "road-delta"
+        // Rappresenta l'errore massimo nell'applicazione che associa
+        // una vettuera ad una sequenza di semafori
+        public static final String P_ROAD_DELTA = "road-delta";
+        public static Double ROAD_DELTA;
+        // File (JSON) contenente la descrizione della sequenza di semafori
+        public static final String P_SEMAPHORES_SEQUENCES_FILE = "sequence-semaphore-file";
+        public static String SEMAPHORES_SEQUENCES_FILE;
+
     }
 
 }

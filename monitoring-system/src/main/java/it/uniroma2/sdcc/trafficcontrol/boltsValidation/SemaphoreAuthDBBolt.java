@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
 import it.uniroma2.sdcc.trafficcontrol.RESTfulAPI.RESTfulAPI;
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractAuthenticationBolt;
+import it.uniroma2.sdcc.trafficcontrol.constants.RESTfulServices;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
@@ -24,7 +25,7 @@ public class SemaphoreAuthDBBolt extends AbstractAuthenticationBolt {
         synchronized (cacheManager.getCacheManager()) {
             // Double checked lock
             if (!(semaphoreInSystem = cacheManager.isKeyInCache(semaphoreSensor.getSemaphoreId()))) {
-                if (semaphoreInSystem = RESTfulAPI.semaphoreSensorExists(semaphoreSensor.getSemaphoreId())) {
+                if (semaphoreInSystem = RESTfulAPI.sensorExists(RESTfulServices.GET_SEMAPHORE_ID, semaphoreSensor.getSemaphoreId())) {
                     cacheManager.put(semaphoreSensor.getSemaphoreId(), semaphoreSensor.getSemaphoreId());
                 }
             }

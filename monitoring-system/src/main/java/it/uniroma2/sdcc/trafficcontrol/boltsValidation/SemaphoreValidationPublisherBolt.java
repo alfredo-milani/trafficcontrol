@@ -10,9 +10,9 @@ import java.util.Collections;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 
-public class ValidationPublisherBolt extends AbstractKafkaPublisherBolt<String> {
+public class SemaphoreValidationPublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
-    public ValidationPublisherBolt(String topic) {
+    public SemaphoreValidationPublisherBolt(String topic) {
         super(topic);
     }
 

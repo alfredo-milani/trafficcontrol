@@ -40,7 +40,7 @@ public class MobileSensorRest {
     }
 
 
-    @RequestMapping(path = Routes.MOBILE_SENSOR.EXIST__MOBILE_SENSOR, method = RequestMethod.GET)
+    @RequestMapping(path = Routes.MOBILE_SENSOR.EXIST_MOBILE_SENSOR, method = RequestMethod.GET)
     public ResponseEntity<Boolean> existMobileSensor(@PathVariable Long id) {
         Boolean b = mobileSensorController.existMobileSensor(id);
         return new ResponseEntity<>(b, !b ? HttpStatus.NOT_FOUND : HttpStatus.OK);
@@ -52,7 +52,7 @@ public class MobileSensorRest {
         return new ResponseEntity<>(mobileSensor, mobileSensor == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.MOBILE_SENSOR.DELETE__MOBILE_SENSOR, method = RequestMethod.DELETE)
+    @RequestMapping(path = Routes.MOBILE_SENSOR.DELETE_MOBILE_SENSOR, method = RequestMethod.DELETE)
     public ResponseEntity<Semaphore> deleteSemaphore(@PathVariable Long id) {
         if(!mobileSensorController.deleteMobileSensor(id))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporization;
+import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import org.apache.storm.task.OutputCollector;
@@ -20,7 +20,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPOR
 public class FilterBolt extends BaseRichBolt {
 
     private OutputCollector collector;
-    private HashMap<Long, GreenTemporization> handlerHashMap;
+    private HashMap<Long, GreenTemporizationIntersection> handlerHashMap;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
@@ -38,9 +38,9 @@ public class FilterBolt extends BaseRichBolt {
 
             // Se la chiave è presente ritorna l'istanza dalla hashMap,
             // altrimenti aggiungi il valore nella hashMap e ritorna null
-            GreenTemporization intersectionFromHashMap = handlerHashMap.putIfAbsent(
+            GreenTemporizationIntersection intersectionFromHashMap = handlerHashMap.putIfAbsent(
                     intersectionId,
-                    new GreenTemporization(intersectionId)
+                    new GreenTemporizationIntersection(intersectionId)
             );
 
             if (intersectionFromHashMap != null) {

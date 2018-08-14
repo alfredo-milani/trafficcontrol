@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.storm.tuple.Tuple;
 
-import java.io.IOException;
-
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.KAFKA_RAW_TUPLE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
@@ -77,7 +75,7 @@ public class RichSemaphoreSensor implements ITupleObject, ISensor {
                     vehiclesPerSecond,
                     averageVehiclesSpeed
             );
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }

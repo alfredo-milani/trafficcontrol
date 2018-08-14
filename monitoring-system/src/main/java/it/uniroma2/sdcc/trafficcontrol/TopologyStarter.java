@@ -28,7 +28,7 @@ public class TopologyStarter {
         List<Topology> topologies = Lists.newArrayList(
                 new ValidationTopology(),
                 // new SemaphoreStatusTopology(),
-                // new FirstTopology(),
+                // new FirstTopology()
                 // new SecondTopology(),
                 new ThirdTopology()
                 // new GreenSettingTopology()
@@ -88,6 +88,10 @@ public class TopologyStarter {
         NUMBER_OF_WORKERS = properties.getProperty(P_NUMBER_OF_WORKERS) == null
                 ? NUMBER_WORKERS_DEFAULT
                 : Integer.valueOf(properties.getProperty(P_NUMBER_OF_WORKERS));
+        ROAD_DELTA = properties.getProperty(P_ROAD_DELTA) == null
+                ? null
+                : Double.valueOf(properties.getProperty(P_ROAD_DELTA));
+        SEMAPHORES_SEQUENCES_FILE = properties.getProperty(P_SEMAPHORES_SEQUENCES_FILE);
     }
 
 }

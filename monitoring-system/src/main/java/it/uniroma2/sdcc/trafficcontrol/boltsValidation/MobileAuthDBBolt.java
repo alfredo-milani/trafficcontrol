@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
 import it.uniroma2.sdcc.trafficcontrol.RESTfulAPI.RESTfulAPI;
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractAuthenticationBolt;
+import it.uniroma2.sdcc.trafficcontrol.constants.RESTfulServices;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
@@ -24,7 +25,7 @@ public class MobileAuthDBBolt extends AbstractAuthenticationBolt {
         synchronized (cacheManager.getCacheManager()) {
             // Double checked lock
             if (!(mobileInSystem = cacheManager.isKeyInCache(mobileSensor.getMobileId()))) {
-                if (mobileInSystem = RESTfulAPI.mobileSensorExists(mobileSensor.getMobileId())) {
+                if (mobileInSystem = RESTfulAPI.sensorExists(RESTfulServices.GET_MOBILE_SENSOR_ID, mobileSensor.getMobileId())) {
                     cacheManager.put(mobileSensor.getMobileId(), mobileSensor.getMobileId());
                 }
             }

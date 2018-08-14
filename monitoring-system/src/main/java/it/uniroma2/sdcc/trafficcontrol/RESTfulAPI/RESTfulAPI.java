@@ -1,18 +1,14 @@
 package it.uniroma2.sdcc.trafficcontrol.RESTfulAPI;
 
-import it.uniroma2.sdcc.trafficcontrol.constants.RESTfulServices;
-import lombok.extern.java.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 import static org.apache.http.protocol.HTTP.USER_AGENT;
 
-@Log
 public class RESTfulAPI {
 
     public final static int STATUS_CODE_200 = 200;
@@ -20,14 +16,11 @@ public class RESTfulAPI {
 
     private final static HttpClient client = HttpClientBuilder.create().build();
 
-    public static boolean semaphoreSensorExists(Long id) {
+    public static boolean sensorExists(String url, Long id) {
        if (id >= 0)
             return true;
 
-        HttpGet request = new HttpGet(String.format(
-                RESTfulServices.GET_SEMAPHORE_ID,
-                id
-        ));
+        HttpGet request = new HttpGet(String.format(url, id));
 
         // Add request header
         request.addHeader("User-Agent", USER_AGENT);
@@ -39,23 +32,11 @@ public class RESTfulAPI {
             // Without doing this HttpClient will wait indefinitely for a connection to free up so that it can be reused.
             request.releaseConnection();
         } catch (IOException e) {
-            log.log(Level.WARNING, e.getMessage());
             return false;
         }
 
         int statusCode = response.getStatusLine().getStatusCode();
         return statusCode >= STATUS_CODE_200 && statusCode < STATUS_CODE_300;
-    }
-
-    public static boolean mobileSensorExists(Long id) {
-        // TODO A SCOPO DI TEST / SE IL DB è SPENTO
-        if (id >= 0)
-            return id >= 0;
-        else
-            return false;
-        // TODO END TEST
-
-        // TODO
     }
 
 }

@@ -10,10 +10,10 @@ import org.apache.storm.tuple.Values;
 import java.util.HashMap;
 import java.util.Map;
 
+import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.MOBILE_SENSOR;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
-import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 
-public class DirectionDispatcherBolt extends AbstractDispatcherBolt {
+public class SequencesDispatcherBolt extends AbstractDispatcherBolt {
 
     @Override
     protected Map<String, Values> declareStreamValue(Tuple tuple) throws BadTuple {
@@ -22,10 +22,10 @@ public class DirectionDispatcherBolt extends AbstractDispatcherBolt {
             throw new BadTuple();
         }
 
-        // TODO
         // - leggi da file (o da file proprietà) la sequenza dei semafori (del tipo: "seq1":{ "lat":12,2, "long":44,5}, ecc.)
         // - crea una mappa dai valori letti dal file
-        // -
+        // - lat/long tipo (manhattan): 40.752107, -74.004805 -> 281 11th ave Fino a 40.741725, -73.978209 kips bay
+        // Con una distanza in line retta di 2,8 km. Con una larghezza di strada di long -73.994320 - -73.994259 = 0.000061
 
         return new HashMap<String, Values>() {{
             // put(DEFAULT_STREAM, new Values(RichMobileSensor., richMobileSensor));
@@ -35,7 +35,7 @@ public class DirectionDispatcherBolt extends AbstractDispatcherBolt {
     @Override
     protected Map<String, Fields> declareStreamField() {
         return new HashMap<String, Fields>() {{
-            put(DEFAULT_STREAM, new Fields(INTERSECTION_ID, SEMAPHORE_SENSOR));
+            put(DEFAULT_STREAM, new Fields(INTERSECTION_ID, MOBILE_SENSOR));
         }};
     }
 

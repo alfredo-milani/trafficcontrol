@@ -196,7 +196,7 @@ public class StartProducer {
                 waitingTimeMillis : Integer.valueOf(cmd.getOptionValue(waitingTime));
         StartProducer.producerType = cmd.getOptionValue(producerType) == null ?
                 ProducerType.AUTO : ProducerType.valueOf(cmd.getOptionValue(producerType).toUpperCase());
-        StartProducer.sensorType = cmd.getOptionValue(producerType) == null ?
+        StartProducer.sensorType = cmd.getOptionValue(sensorType) == null ?
                 SensorType.UNKNOWN : SensorType.valueOf(cmd.getOptionValue(sensorType).toUpperCase());
         if (StartProducer.sensorType.equals(SensorType.UNKNOWN)) {
             throw new Exception("Devi specificare il tipo di sensore");

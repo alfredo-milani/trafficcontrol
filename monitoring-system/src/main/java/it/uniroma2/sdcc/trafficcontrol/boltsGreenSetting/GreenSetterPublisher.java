@@ -3,7 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractKafkaPublisherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporization;
+import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
@@ -35,7 +35,7 @@ public class GreenSetterPublisher extends AbstractKafkaPublisherBolt<String> {
     @Override
     protected List<String> computeValueToPublish(Tuple tuple) throws ClassCastException, IllegalArgumentException {
         ArrayList<String> strings = new ArrayList<>();
-        GreenTemporization greenTemporizationManager = (GreenTemporization) tuple.getValueByField(GREEN_TEMPORIZATION_VALUE);
+        GreenTemporizationIntersection greenTemporizationManager = (GreenTemporizationIntersection) tuple.getValueByField(GREEN_TEMPORIZATION_VALUE);
 
         List<SemaphoreSensor> evenSensors =  greenTemporizationManager.getSemaphoreSensorsEven();
         List<SemaphoreSensor> oddSensors =  greenTemporizationManager.getSemaphoreSensorsOdd();
