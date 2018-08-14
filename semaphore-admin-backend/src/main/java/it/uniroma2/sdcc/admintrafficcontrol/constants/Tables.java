@@ -28,4 +28,21 @@ public interface Tables {
         String C_USERNAME = "username";
     }
 
+
+
+
+    // Mobile sensor table
+    interface T_MOBILE_SENSOR {
+        // Table name
+        String MOBILE_SENSOR = Entities.MOBILE_SENSOR;
+
+        // Mobile sensor columns
+        String ID = "id";
+        String TIMESTAMP = "timestamp";
+        String LATITUDE = "latitude";
+        String LONGITUDE = "longitude";
+        String SPEED = "speed";
+
+    }
+
 }

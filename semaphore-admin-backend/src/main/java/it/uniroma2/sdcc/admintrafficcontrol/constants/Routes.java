@@ -28,4 +28,16 @@ public interface Routes {
         String UPDATE_ADMIN = "update/{id}";
     }
 
+    interface MOBILE_SENSOR {
+        String MOBILE_SENSOR_BASE_ROUTE = Entities.MOBILE_SENSOR;
+
+        String CREATE = "create/{id}";
+        String GET_MOBILE_SENSORS = "all";
+        String GET_MOBILE_SENSOR = "{id}";
+        String DELETE__MOBILE_SENSOR= "delete/{id}";
+        String UPDATE_MOBILE_SENSOR = "update/{id}";
+        String EXIST__MOBILE_SENSOR = "exist/{id}";
+
+    }
+
 }

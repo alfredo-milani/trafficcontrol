@@ -4,5 +4,6 @@ public interface Entities {
 
     String SEMAPHORE = "semaphore";
     String ADMIN = "admin";
+    String MOBILE_SENSOR = "mobile_sensor";
 
 }
