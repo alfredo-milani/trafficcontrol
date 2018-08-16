@@ -24,6 +24,8 @@ public class ValidationTopology extends Topology {
         Config config = new Config();
 
         config.setNumWorkers(NUMBER_OF_WORKERS);
+        // Storm default: 1 for workers
+        // config.setNumAckers(NUMBER_WORKERS_SELECTED);
 
         return config;
     }

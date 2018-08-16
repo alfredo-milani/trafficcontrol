@@ -25,6 +25,7 @@ public class SecondTopology extends Topology {
         builder.setBolt(MEDIAN_VEHICLES_DISPATCHER_BOLT, new MedianDispatcherBolt(),4)
                 .shuffleGrouping(KAFKA_SPOUT);
 
+
         // Bolt che calcola la mediana di ogni intersezione
         builder.setBolt(MEDIAN_CALCULATOR_BOLT, new MedianCalculatorBoltWindowed(60,4),4)
                 .fieldsGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM, new Fields(INTERSECTION_ID));
@@ -41,6 +42,7 @@ public class SecondTopology extends Topology {
         builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_24_H, new GlobalMedianCalculatorBoltWindowed(24 * 60 * 60,4))
                 .globalGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM)
                 .globalGrouping(MEDIAN_CALCULATOR_BOLT, MEDIAN_INTERSECTION_STREAM);
+
 
         builder.setBolt(CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_15_MIN, new CongestedIntersectionsPublisherBolt(CONGESTED_INTERSECTIONS_15_MIN))
                 .shuffleGrouping(GLOBAL_MEDIAN_CALCULATOR_BOLT_15_MIN);

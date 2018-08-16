@@ -1,0 +1,36 @@
+{
+  "semaphoresSequences": [
+    {
+      "semaphoresSequence": [
+        1, 2, 3, 4
+      ],
+      "initialCoordinate": 32.3244,
+      "finalCoordinate": 12.4324,
+      "sequenceType": "longitudinal"
+    },
+    {
+      "semaphoresSequence": [
+        5, 6, 7, 8
+      ],
+      "initialCoordinate": 21.2324,
+      "finalCoordinate": 11.3432,
+      "sequenceType": "LATITUDINAL"
+    },
+    {
+      "semaphoresSequence": [
+        9, 10, 11, 12
+      ],
+      "initialCoordinate": 34.3222,
+      "finalCoordinate": 13.1233,
+      "sequenceType": "longitudinal"
+    },
+    {
+      "semaphoresSequence": [
+        13, 14, 15, 16
+      ],
+      "initialCoordinate": 66.2344,
+      "finalCoordinate": -43.3245,
+      "sequenceType": "latitudinal"
+    }
+  ]
+}

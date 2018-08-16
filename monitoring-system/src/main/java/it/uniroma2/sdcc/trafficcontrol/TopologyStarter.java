@@ -29,7 +29,7 @@ public class TopologyStarter {
                 new ValidationTopology(),
                 // new SemaphoreStatusTopology(),
                 // new FirstTopology()
-                // new SecondTopology(),
+                // new SecondTopology()
                 new ThirdTopology()
                 // new GreenSettingTopology()
         );

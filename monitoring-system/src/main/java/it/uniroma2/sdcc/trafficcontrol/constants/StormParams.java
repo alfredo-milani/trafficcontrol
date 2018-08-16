@@ -61,7 +61,11 @@ public interface StormParams {
 
     // Sequence Bolts - Third query
     String CONGESTED_SEQUENCE_CALCULATOR_BOLT = "congested_sequence_calculator_bolt";
-    String DIRECTION_DISPATCHER_BOLT = "direction_dispatcher_bolt";
-    String SEQUENCE_PUBLISHER_BOLT = "sequence_publisher_bolt";
+    String SEQUENCES_DISPATCHER_BOLT = "sequences_dispatcher_bolt";
+    String SEQUENCE_SELECTOR_BOLT = "sequence_selector_bolt";
+    String CONGESTED_SEQUENCE_PUBLISHER_BOLT = "congested_sequence_publisher_bolt";
+    String CONGESTION_COMPUTATION_BASE_BOLT = "congestion_computation_base_bolt";
+    String CONGESTION_COMPUTATION_BASE_STREAM = "congestion_computation_base_stream";
+    String SEMAPHORE_SEQUENCE_OBJECT = "semaphore_sequence_object";
 
 }

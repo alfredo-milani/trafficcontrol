@@ -2,12 +2,10 @@ package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.*;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
-import org.apache.storm.Config;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.NUMBER_OF_WORKERS;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
@@ -17,23 +15,14 @@ public class FirstTopology extends Topology {
     private final static String CLASS_NAME = FirstTopology.class.getSimpleName();
 
     @Override
-    protected Config defineConfig() {
-        Config config = new Config();
-
-        config.setNumWorkers(NUMBER_OF_WORKERS);
-        // Storm default: 1 for workers
-        // config.setNumAckers(NUMBER_WORKERS_SELECTED);
-
-        return config;
-    }
-
-    @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
+
         builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt(), 4)
                 .shuffleGrouping(KAFKA_SPOUT);
+
 
         // Bolt che calcola la velocità media di ogni intersezione
         builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBoltWindowed(60, 4), 4)
@@ -54,6 +43,7 @@ public class FirstTopology extends Topology {
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID));
         builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT_24_H, new GlobalWindowedRankingsBolt(24 * 60 * 60, 5))
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT_24_H);
+
 
         // Publisher bolt per la finestra temporale da 15 minuti
         builder.setBolt(RANK_PUBLISHER_BOLT_15_MIN, new RankPublisherBolt(RANKING_15_MIN))

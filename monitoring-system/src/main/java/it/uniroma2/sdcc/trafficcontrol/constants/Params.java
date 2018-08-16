@@ -54,7 +54,7 @@ public class Params {
         public static final String P_ROAD_DELTA = "road-delta";
         public static Double ROAD_DELTA;
         // File (JSON) contenente la descrizione della sequenza di semafori
-        public static final String P_SEMAPHORES_SEQUENCES_FILE = "sequence-semaphore-file";
+        public static final String P_SEMAPHORES_SEQUENCES_FILE = "sequences-semaphores-structure";
         public static String SEMAPHORES_SEQUENCES_FILE;
 
     }

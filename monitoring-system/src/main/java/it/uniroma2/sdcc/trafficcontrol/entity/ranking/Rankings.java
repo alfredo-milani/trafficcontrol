@@ -193,10 +193,19 @@ public class Rankings implements ITupleObject {
 
         return true;
 
-        /*Rankings other = (Rankings) o;
-        return rankedItems.equals(other.getRankings());*/
 
-        /*Rankings other = (Rankings) o;
+        /*
+        algoritmo di default
+
+        Rankings other = (Rankings) o;
+        return rankedItems.equals(other.getRankings());
+        */
+
+        /*
+        Algoritmo custom che controlla se ci sono solo due
+        successive uguaglianze nel punteggio
+
+        Rankings other = (Rankings) o;
         if (this.size() == other.size()) {
             if (this.size() == 0) return true;
 
@@ -222,7 +231,8 @@ public class Rankings implements ITupleObject {
             return true;
         } else {
             return false;
-        }*/
+        }
+        */
     }
 
     @Override

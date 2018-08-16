@@ -1,39 +1,56 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
+import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.CongestedSequencePublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.CongestionComputationWindowedBolt;
+import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.SequenceSelectorWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.SequencesDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequencesManager;
+import it.uniroma2.sdcc.trafficcontrol.entity.SequencesBolts;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
+import org.apache.storm.topology.BoltDeclarer;
 import org.apache.storm.topology.TopologyBuilder;
 
+import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.CONGESTED_SEQUENCE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.MOBILE_SENSOR_VALIDATED;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.DIRECTION_DISPATCHER_BOLT;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.KAFKA_SPOUT;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.ROAD_DELTA;
+import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.SEMAPHORES_SEQUENCES_FILE;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
 public class ThirdTopology extends Topology {
 
     private static final String CLASS_NAME = ThirdTopology.class.getSimpleName();
 
-    /*@Override
-    protected Config defineConfig() {
-        Config config = new Config();
-
-        config.setNumWorkers(NUMBER_OF_WORKERS);
-
-        return config;
-    }*/
-
     @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
+        SequencesBolts sequencesBolts = new SequencesBolts(SEMAPHORES_SEQUENCES_FILE, ROAD_DELTA);
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(MOBILE_SENSOR_VALIDATED, CLASS_NAME), 4);
-        builder.setBolt(DIRECTION_DISPATCHER_BOLT, new SequencesDispatcherBolt(), 4)
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(MOBILE_SENSOR_VALIDATED, CLASS_NAME),4);
+
+        // Dispatcher che smista le varie tuple proveniente dai sensori mobili verso i bolts
+        // relativi per il loro processamento (attraverso vari streams)
+        builder.setBolt(SEQUENCES_DISPATCHER_BOLT, new SequencesDispatcherBolt(sequencesBolts),4)
                 .shuffleGrouping(KAFKA_SPOUT);
 
-        // - dispatcher che smista le tuple ai vari streams che si occupano di un sottoinsieme
-        // di sequenze (ad un bolt vanno più streams, il bolt gestisce più di 1 sequenza
-        // - bolt windowed che calcola il grado di congestione e li invia al global
-        // il global (non windowed) trova li grado di congestione più alto
-        // il publisher pubblica la sequenza più congestionanta
+
+        // Bolts che calcolano il grado di congestione
+        sequencesBolts.getSequenceBoltList().forEach(
+                sb -> builder.setBolt(sb.getBoltName(), new CongestionComputationWindowedBolt(sb.getSemaphoresSequence()))
+                        .globalGrouping(SEQUENCES_DISPATCHER_BOLT, sb.getStreamName())
+        );
+        // Bolt che sceglie la sequenza di semafori più congestionata
+        BoltDeclarer sequenceBoltDeclarer = builder.setBolt(
+                SEQUENCE_SELECTOR_BOLT,
+                new SequenceSelectorWindowedBolt(SemaphoresSequencesManager.getsemaphoresSequenceFromBoltsList(sequencesBolts), ROAD_DELTA)
+        );
+        sequencesBolts.getSequenceBoltList().forEach(
+                sb -> sequenceBoltDeclarer.globalGrouping(sb.getBoltName())
+        );
+
+
+        // Publisher bolt per la pubblicazione della sequenza più congestionata
+        builder.setBolt(CONGESTED_SEQUENCE_PUBLISHER_BOLT, new CongestedSequencePublisherBolt(CONGESTED_SEQUENCE),2)
+                .shuffleGrouping(SEQUENCE_SELECTOR_BOLT);
 
         return builder;
     }

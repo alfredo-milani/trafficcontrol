@@ -1,7 +1,6 @@
 package it.uniroma2.sdcc.admintrafficcontrol.entity;
 
 import it.uniroma2.sdcc.admintrafficcontrol.constants.Tables;
-import javafx.scene.control.Tab;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

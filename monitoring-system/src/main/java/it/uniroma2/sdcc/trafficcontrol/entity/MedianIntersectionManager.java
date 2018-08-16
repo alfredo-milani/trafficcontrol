@@ -72,6 +72,7 @@ public class MedianIntersectionManager implements ITupleObject {
         return Lists.newArrayList(higherMedianIntersection.values());
     }
 
+    @SuppressWarnings("Duplicates")
     public void sort() {
         List<MedianIntersection> toSort = Lists.newArrayList(higherMedianIntersection.values());
         toSort.sort((o1, o2) -> {
