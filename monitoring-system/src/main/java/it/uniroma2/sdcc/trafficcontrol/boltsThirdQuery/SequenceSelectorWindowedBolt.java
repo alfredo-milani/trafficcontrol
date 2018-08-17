@@ -18,39 +18,48 @@ public class SequenceSelectorWindowedBolt extends AbstractWindowedBolt {
 
     private final SemaphoresSequencesManager semaphoresSequencesManager;
 
-    public SequenceSelectorWindowedBolt() {
+    public SequenceSelectorWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+        super(windowSizeInSeconds, emitFrequencyInSeconds);
         semaphoresSequencesManager = new SemaphoresSequencesManager();
     }
 
-    public SequenceSelectorWindowedBolt(List<SemaphoresSequence> semaphoresSequences, Double roadDelta) {
+    public SequenceSelectorWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds,
+                                        List<SemaphoresSequence> semaphoresSequences, Double roadDelta) {
+        super(windowSizeInSeconds, emitFrequencyInSeconds);
         semaphoresSequencesManager = new SemaphoresSequencesManager(semaphoresSequences, roadDelta);
     }
 
-    public SequenceSelectorWindowedBolt(String JSONFileStructure, Double roadDelta) {
+    public SequenceSelectorWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds,
+                                        String JSONFileStructure, Double roadDelta) {
+        super(windowSizeInSeconds, emitFrequencyInSeconds);
         semaphoresSequencesManager = SemaphoresSequencesManager.getInstanceFrom(JSONFileStructure, roadDelta);
     }
 
     @Override
     protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
-        SemaphoresSequence oldSemaphoresSequence = semaphoresSequencesManager.getSemaphoresSequences().size() != 0
-                ? semaphoresSequencesManager.getSemaphoresSequences().get(0)
-                : null;
+        SemaphoresSequence oldSemaphoresSequence = semaphoresSequencesManager.getFirstSequence();
+        Double oldCongestionGrade = 0D;
+        if (oldSemaphoresSequence != null) oldCongestionGrade = oldSemaphoresSequence.getCongestionGrade();
 
         eventsWindow.getExpiredEvents().forEach(t -> {
             SemaphoresSequence semaphoresSequence = (SemaphoresSequence) t.getValueByField(SEMAPHORE_SEQUENCE_OBJECT);
-            semaphoresSequencesManager.getSemaphoresSequences().remove(semaphoresSequence);
+            semaphoresSequence.setCongestionGrade(0D);
+            semaphoresSequencesManager.updateSemaphoresSequenceWith(semaphoresSequence);
         });
 
         eventsWindow.getNewEvents().forEach(t -> {
             SemaphoresSequence semaphoresSequence = (SemaphoresSequence) t.getValueByField(SEMAPHORE_SEQUENCE_OBJECT);
-            semaphoresSequencesManager.getSemaphoresSequences().add(semaphoresSequence);
+            semaphoresSequencesManager.updateSemaphoresSequenceWith(semaphoresSequence);
         });
 
-        if (semaphoresSequencesManager.getSemaphoresSequences().size() != 0) {
-            semaphoresSequencesManager.sortList();
-            if (!semaphoresSequencesManager.getSemaphoresSequences().get(0).equals(oldSemaphoresSequence)) {
-                collector.emit(new Values(semaphoresSequencesManager.getSemaphoresSequences().get(0)));
+        try {
+            semaphoresSequencesManager.sortListByCongestionGrade();
+            // Aggiorniamo la sequenza anche se cambia solo il suo grado di congestione
+            if (!semaphoresSequencesManager.getFirstSequence().getCongestionGrade().equals(oldCongestionGrade)) {
+                collector.emit(new Values(semaphoresSequencesManager.getFirstSequence()));
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Lista vuota
         }
     }
 

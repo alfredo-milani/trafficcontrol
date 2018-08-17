@@ -34,11 +34,7 @@ public class SequencesDispatcherBolt extends AbstractDispatcherBolt {
             throw new BadTuple();
         }
 
-        // - lat/long tipo (manhattan): 40.752107, -74.004805 -> 281 11th ave Fino a 40.741725, -73.978209 kips bay
-        // Con una distanza in line retta di 2,8 km. Con una larghezza di strada di long -73.994320 - -73.994259 = 0.000061
-
         SemaphoresSequence semaphoresSequenceMobileSensor = SemaphoresSequencesManager.findSequenceFrom(richMobileSensor);
-
         for (SequencesBolts.SequenceBolt sb : sequencesBolts.getSequenceBoltList()) {
             if (sb.getSemaphoresSequence().equals(semaphoresSequenceMobileSensor)) {
                 return new HashMap<String, Values>() {{

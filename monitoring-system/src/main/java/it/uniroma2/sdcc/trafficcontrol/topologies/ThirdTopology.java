@@ -35,13 +35,21 @@ public class ThirdTopology extends Topology {
 
         // Bolts che calcolano il grado di congestione
         sequencesBolts.getSequenceBoltList().forEach(
-                sb -> builder.setBolt(sb.getBoltName(), new CongestionComputationWindowedBolt(sb.getSemaphoresSequence()))
+                sb -> builder.setBolt(
+                        sb.getBoltName(),
+                        new CongestionComputationWindowedBolt(5 * 60,4, sb.getSemaphoresSequence())
+                )
                         .globalGrouping(SEQUENCES_DISPATCHER_BOLT, sb.getStreamName())
         );
         // Bolt che sceglie la sequenza di semafori più congestionata
         BoltDeclarer sequenceBoltDeclarer = builder.setBolt(
                 SEQUENCE_SELECTOR_BOLT,
-                new SequenceSelectorWindowedBolt(SemaphoresSequencesManager.getsemaphoresSequenceFromBoltsList(sequencesBolts), ROAD_DELTA)
+                new SequenceSelectorWindowedBolt(
+                        5 * 60,
+                        4,
+                        SemaphoresSequencesManager.getsemaphoresSequenceFromBoltsList(sequencesBolts),
+                        ROAD_DELTA
+                )
         );
         sequencesBolts.getSequenceBoltList().forEach(
                 sb -> sequenceBoltDeclarer.globalGrouping(sb.getBoltName())

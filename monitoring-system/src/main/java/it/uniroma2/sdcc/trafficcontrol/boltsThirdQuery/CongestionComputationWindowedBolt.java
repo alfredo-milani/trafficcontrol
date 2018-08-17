@@ -17,11 +17,14 @@ public class CongestionComputationWindowedBolt extends AbstractWindowedBolt {
 
     private final SemaphoresSequence semaphoresSequence;
 
-    public CongestionComputationWindowedBolt() {
+    public CongestionComputationWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+        super(windowSizeInSeconds, emitFrequencyInSeconds);
         semaphoresSequence = new SemaphoresSequence();
     }
 
-    public CongestionComputationWindowedBolt(SemaphoresSequence semaphoresSequence) {
+    public CongestionComputationWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds,
+                                             SemaphoresSequence semaphoresSequence) {
+        super(windowSizeInSeconds, emitFrequencyInSeconds);
         this.semaphoresSequence = semaphoresSequence;
     }
 

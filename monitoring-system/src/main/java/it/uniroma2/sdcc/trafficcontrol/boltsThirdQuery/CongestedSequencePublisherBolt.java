@@ -20,8 +20,8 @@ public class CongestedSequencePublisherBolt extends AbstractKafkaPublisherBolt<S
     @Override
     protected List<String> computeValueToPublish(Tuple tuple) {
         SemaphoresSequence semaphoresSequence = (SemaphoresSequence) tuple.getValueByField(SEMAPHORE_SEQUENCE_OBJECT);
-        // return new ArrayList<>(Collections.singletonList(semaphoresSequence.toString()));
-        return new ArrayList<>(Collections.singletonList(semaphoresSequence.getJsonStringFromInstance()));
+        return new ArrayList<>(Collections.singletonList(semaphoresSequence.toString()));
+        // return new ArrayList<>(Collections.singletonList(semaphoresSequence.getJsonStringFromInstance()));
     }
 
     @Override

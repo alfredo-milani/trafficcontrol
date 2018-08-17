@@ -28,6 +28,7 @@ public class SemaphoresSequence implements ITupleObject {
     private Double congestionGrade;
 
     public enum SequenceType {
+
         LATITUDINAL,
         LONGITUDINAL;
 
@@ -40,6 +41,37 @@ public class SemaphoresSequence implements ITupleObject {
         public static SequenceType forValue(String value) {
             return namesMap.get(StringUtils.upperCase(value));
         }
+
+    }
+
+    public enum CongestionCategory {
+
+        FIRST((short) 0, (short) 20, 0.42),
+        SECOND((short) 21, (short) 40, 0.28),
+        THIRD((short) 41, (short) 60, 0.20),
+        FOURTH((short) 61, (short) 80, 0.075),
+        FIFTH((short) 81, (short) 100, 0.025),
+        SIXTH((short) 101, Short.MAX_VALUE, 0.0);
+
+        private final Short v1;
+        private final Short v2;
+        private final Double value;
+
+        CongestionCategory(Short v1, Short v2, Double value) {
+            this.v1 = v1;
+            this.v2 = v2;
+            this.value = value;
+        }
+
+        public static CongestionCategory getCategory(Short vel) {
+            for (CongestionCategory category : CongestionCategory.values()) {
+                if (vel >= category.v1 && vel <= category.v2) {
+                    return category;
+                }
+            }
+            return null;
+        }
+
     }
 
     public SemaphoresSequence() {
@@ -59,14 +91,38 @@ public class SemaphoresSequence implements ITupleObject {
     }
 
     public Double computeCongestionGrade() {
+
+        // TODO CONTROLLARE CORRETTEZZA
+
         if (sensorsInSequence.size() != 0) {
+            Map<CongestionCategory, Integer> categoryVehiclesMap = new HashMap<>(CongestionCategory.values().length);
+            for (CongestionCategory category : CongestionCategory.values()) categoryVehiclesMap.put(category, 0);
+            sensorsInSequence.forEach(s -> {
+                CongestionCategory category = CongestionCategory.getCategory(s.getMobileSpeed());
+                categoryVehiclesMap.put(category, categoryVehiclesMap.get(category) + 1);
+            });
 
-            // TODO
+            Double nom = 0.0, den = 0.0;
+            for (Map.Entry<CongestionCategory, Integer> entry : categoryVehiclesMap.entrySet()) {
+                nom += entry.getKey().value * entry.getValue();
+            }
+            for (CongestionCategory category : CongestionCategory.values()) {
+                den += category.value;
+            }
 
-            return congestionGrade = 0.34;
+            return congestionGrade = nom / den;
         } else {
             return congestionGrade = 0.0;
         }
+    }
+
+    public void addSensorInSequence(RichMobileSensor richMobileSensor) {
+        sensorsInSequence.removeIf(s -> s.getMobileId().equals(richMobileSensor.getMobileId()));
+        sensorsInSequence.add(richMobileSensor);
+    }
+
+    public void removeSensorInSequence(RichMobileSensor richMobileSensor) {
+        sensorsInSequence.removeIf(s -> s.getMobileId().equals(richMobileSensor.getMobileId()));
     }
 
     public SemaphoresSequence createCopyToSend() {
@@ -101,12 +157,18 @@ public class SemaphoresSequence implements ITupleObject {
                 "Semaphore sequence <print timestamp - %s>\n",
                 new SimpleDateFormat("HH:mm:ss:SSS").format(new Date(System.currentTimeMillis()))
         ));
-        buffer.append(String.format("| semaphore sequence: %s\n", semaphoresSequence.toArray()));
-        buffer.append(String.format("| initial coordinate: %.6f\n", initialCoordinate));
-        buffer.append(String.format("| initial coordinate: %.6f\n", finalCoordinate));
-        buffer.append(String.format("| sequence type: %s\n", sequenceType.toString()));
-        buffer.append(String.format("| congestion grade: %.3f\n", congestionGrade));
-        buffer.append("\n");
+        StringBuilder semaphoreSequenceString = new StringBuilder();
+        for (int i = 0; i < semaphoresSequence.toArray().length; ++i) {
+            semaphoreSequenceString.append(semaphoresSequence.get(i));
+            if (i != semaphoresSequence.toArray().length - 1) {
+                semaphoreSequenceString.append(", ");
+            }
+        }
+        buffer.append(String.format("|  semaphore sequence: %s\n", semaphoreSequenceString));
+        buffer.append(String.format("|  initial coordinate: %.6f\n", initialCoordinate));
+        buffer.append(String.format("|  initial coordinate: %.6f\n", finalCoordinate));
+        buffer.append(String.format("|  sequence type: %s\n", sequenceType.toString()));
+        buffer.append(String.format("|_ congestion grade: %.3f\n", congestionGrade));
 
         return buffer.toString();
     }
