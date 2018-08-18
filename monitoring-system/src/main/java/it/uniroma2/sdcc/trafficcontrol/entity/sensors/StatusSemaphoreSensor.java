@@ -3,11 +3,13 @@ package it.uniroma2.sdcc.trafficcontrol.entity.sensors;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
 @Getter
 @Setter
+@ToString
 public class StatusSemaphoreSensor implements ITupleObject, ISensor {
 
     public enum SemaphoreStatus {

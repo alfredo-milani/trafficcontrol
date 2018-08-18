@@ -34,12 +34,12 @@ public class CongestionComputationWindowedBolt extends AbstractWindowedBolt {
 
         eventsWindow.getExpiredEvents().forEach(t -> {
             RichMobileSensor richMobileSensor = (RichMobileSensor) t.getValueByField(MOBILE_SENSOR);
-            semaphoresSequence.getSensorsInSequence().remove(richMobileSensor);
+            semaphoresSequence.removeSensorInSequence(richMobileSensor);
         });
 
         eventsWindow.getNewEvents().forEach(t -> {
             RichMobileSensor richMobileSensor = (RichMobileSensor) t.getValueByField(MOBILE_SENSOR);
-            semaphoresSequence.getSensorsInSequence().add(richMobileSensor);
+            semaphoresSequence.addSensorInSequence(richMobileSensor);
         });
 
         semaphoresSequence.computeCongestionGrade();

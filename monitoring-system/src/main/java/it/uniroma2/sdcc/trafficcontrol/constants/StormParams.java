@@ -9,7 +9,7 @@ public interface StormParams {
     String SEMAPHORE_SENSOR_STREAM = "semaphore_sensor_stream";
     String MOBILE_SENSOR_STREAM = "mobile_sensor_stream";
 
-    // Validation abstractsBolts
+    // Validation bolts
     String SEMAPHORE_SENSOR_AUTH_CACHE_BOLT = "semaphore_sensor_auth_cache_bolt";
     String MOBILE_SENSOR_AUTH_CACHE_BOLT = "mobile_sensor_auth_cache_bolt";
     String CACHE_HIT_STREAM = "cache_hit_stream";
@@ -19,7 +19,7 @@ public interface StormParams {
     String SEMAPHORE_VALIDATION_PUBLISHER_BOLT = "semaphore_validation_publisher_bolt";
     String MOBILE_VALIDATION_PUBLISHER_BOLT = "mobile_validation_publisher_bolt";
 
-    // Semaphore status abstractsBolts
+    // Semaphore status bolts
     String SEMAPHORE_STATUS_BOLT = "semaphore_status_bolt";
     String SEMAPHORE_STATUS_PUBLISHER_BOLT = "semaphore_status_publisher_bolt";
 
@@ -53,7 +53,7 @@ public interface StormParams {
     String CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_24_H = "congested_intersections_publisher_bolt_24_h";
     String MEDIAN_INTERSECTION_STREAM = "median_intersection_stream";
 
-    // Temporization abstractsBolts
+    // Temporization bolts
     String GREEN_TIMING_DISPATCHER_BOLT = "green_timing_dispatcher_bolt";
     String FILTER_GREEN_BOLT = "filter_green_bolt";
     String GREEN_SETTER = "green_setter";

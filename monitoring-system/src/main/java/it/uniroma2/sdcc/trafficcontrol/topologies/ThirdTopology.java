@@ -37,7 +37,11 @@ public class ThirdTopology extends Topology {
         sequencesBolts.getSequenceBoltList().forEach(
                 sb -> builder.setBolt(
                         sb.getBoltName(),
-                        new CongestionComputationWindowedBolt(5 * 60,4, sb.getSemaphoresSequence())
+                        new CongestionComputationWindowedBolt(
+                                5 * 60,
+                                4,
+                                sb.getSemaphoresSequence()
+                        )
                 )
                         .globalGrouping(SEQUENCES_DISPATCHER_BOLT, sb.getStreamName())
         );

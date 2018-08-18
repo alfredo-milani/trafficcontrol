@@ -19,7 +19,8 @@ public class SemaphoreStatusPublisher extends AbstractKafkaPublisherBolt<String>
     @Override
     protected ArrayList<String> computeValueToPublish(Tuple tuple) {
         StatusSemaphoreSensor sensorStatus = (StatusSemaphoreSensor) tuple.getValueByField(SEMAPHORE_STATUS);
-        return new ArrayList<>(Collections.singletonList(sensorStatus.getJsonStringFromInstance()));
+        return new ArrayList<>(Collections.singletonList(sensorStatus.toString()));
+        // return new ArrayList<>(Collections.singletonList(sensorStatus.getJsonStringFromInstance()));
     }
 
     @Override
