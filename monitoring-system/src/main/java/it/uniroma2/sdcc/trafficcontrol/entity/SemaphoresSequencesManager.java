@@ -12,11 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.SEMAPHORES_SEQUENCES_FILE;
-import static it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence.SequenceType.LATITUDINAL;
-import static it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence.SequenceType.LONGITUDINAL;
 
 @Getter
 @Setter
@@ -35,8 +32,9 @@ public class SemaphoresSequencesManager implements Serializable {
         this.roadDelta = roadDelta;
     }
 
-    public void dispatchMobileSensorToSequence() {
-        // TODO dispatcha in funzione dell'errore road_delta
+    public void dispatchMobileSensorToSequence(RichMobileSensor richMobileSensor) {
+        SemaphoresSequence semaphoresSequence = findSequenceFrom(richMobileSensor);
+        addSensorTo(semaphoresSequence, richMobileSensor);
     }
 
     public static SemaphoresSequencesManager getInstanceFrom(String JSONStructurePath, Double roadDelta) {
@@ -63,32 +61,25 @@ public class SemaphoresSequencesManager implements Serializable {
         return semaphoresSequences;
     }
 
-    public static SemaphoresSequence findSequenceFrom(RichMobileSensor richMobileSensor) {
-        // - lat/long tipo (manhattan): 40.752107, -74.004805 -> 281 11th ave Fino a 40.741725, -73.978209 kips bay
-        // Con una distanza in linea retta di 2,8 km. Con una larghezza di strada di long -73.994320 - -73.994259 = 0.000061
+    public SemaphoresSequence findSequenceFrom(RichMobileSensor richMobileSensor) {
+        for (SemaphoresSequence s : semaphoresSequences) {
+            switch (s.getSequenceType()) {
+                case LONGITUDINAL:
+                    if (richMobileSensor.getMobileLongitude() >= s.getMainCoordinate() - roadDelta &&
+                            richMobileSensor.getMobileLongitude() <= s.getMainCoordinate() + roadDelta) {
+                        return s;
+                    }
+                    break;
 
-        // TODO
-
-        int r = ThreadLocalRandom.current().nextInt(0,2);
-        if (r % 2 == 0) {
-            return new SemaphoresSequence(
-                    new ArrayList<Long>() {{add(1L);add(2L);add(3L);add(4L);}},
-                    32.3244,
-                    12.4324,
-                    LONGITUDINAL,
-                    null,
-                    null
-            );
-        } else {
-            return new SemaphoresSequence(
-                    new ArrayList<Long>() {{add(5L);add(6L);add(7L);add(8L);}},
-                    21.2324,
-                    11.3432,
-                    LATITUDINAL,
-                    null,
-                    null
-            );
+                case LATITUDINAL:
+                    if (richMobileSensor.getMobileLatitude() >= s.getMainCoordinate() - roadDelta &&
+                            richMobileSensor.getMobileLatitude() <= s.getMainCoordinate() + roadDelta) {
+                        return s;
+                    }
+                    break;
+            }
         }
+        return null;
     }
 
     public static SemaphoresSequence findSequenceFrom(Double position) {
@@ -120,9 +111,16 @@ public class SemaphoresSequencesManager implements Serializable {
         return true;
     }
 
+    public boolean addSensorTo(SemaphoresSequence semaphoresSequence, RichMobileSensor mobileSensor) {
+        int index = semaphoresSequences.indexOf(semaphoresSequence);
+        if (index == -1) return false;
+        semaphoresSequences.get(index).getSensorsInSequence().add(mobileSensor);
+        return true;
+    }
+
     @SuppressWarnings("Duplicates")
     public void sortListByCongestionGrade() {
-        if (semaphoresSequences == null) throw new IllegalStateException("La lista è vuota");
+        if (semaphoresSequences == null) throw new IllegalStateException("La lista non è stata inizializzata");
         if (semaphoresSequences.size() == 0) throw new ArrayIndexOutOfBoundsException("Lista vuota");
 
         semaphoresSequences.sort((o1, o2) -> {

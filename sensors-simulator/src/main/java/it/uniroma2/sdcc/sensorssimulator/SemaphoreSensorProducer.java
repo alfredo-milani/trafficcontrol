@@ -51,7 +51,7 @@ public class SemaphoreSensorProducer implements Runnable {
         this.waitTime = waitTime;
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
+    @SuppressWarnings({"InfiniteLoopStatement", "Duplicates"})
     @Override
     public void run() {
         while (true) {

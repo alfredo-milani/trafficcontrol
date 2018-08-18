@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.bolts;
+package it.uniroma2.sdcc.trafficcontrol.abstractsBolts;
 
 import com.sun.tools.javac.util.Assert;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadStream;
@@ -11,6 +11,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 public abstract class AbstractDispatcherBolt extends BaseRichBolt {
@@ -51,10 +52,11 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
      * Computa la stringa da emettere verso il bolt successivo nella topologia.
      *
      * @param tuple Tupla ricevuta dal bolt precedente
-     * Se si vuole usare lo stream di default utilizzare la key {@link AbstractDispatcherBolt#DEFAULT_STREAM}
+     * Se si vuole usare lo stream di default utilizzare la key {@link AbstractDispatcherBolt#DEFAULT_STREAM}.
+     * Se non si vuole emettere nessuna tupla è sufficiente ritornare al chiamante una {@link Map} vuota.
      * @throws Exception Generica eccezione
      */
-    protected abstract Map<String, Values> declareStreamValue(Tuple tuple) throws Exception;
+    protected abstract @NotNull Map<String, Values> declareStreamValue(Tuple tuple) throws Exception;
 
     @Override
     public final void declareOutputFields(OutputFieldsDeclarer declarer) {
@@ -81,6 +83,6 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
      *
      * Se si vuole usare lo stream di default utilizzare la key {@link AbstractDispatcherBolt#DEFAULT_STREAM}
      */
-    protected abstract Map<String, Fields> declareStreamField();
+    protected abstract @NotNull Map<String, Fields> declareStreamField();
 
 }

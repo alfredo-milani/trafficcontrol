@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
 import it.uniroma2.sdcc.trafficcontrol.RESTfulAPI.RESTfulAPI;
-import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractAuthenticationBolt;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractAuthenticationBolt;
 import it.uniroma2.sdcc.trafficcontrol.constants.RESTfulServices;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;

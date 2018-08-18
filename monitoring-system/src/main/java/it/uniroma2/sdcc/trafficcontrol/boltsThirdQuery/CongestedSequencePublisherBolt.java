@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;

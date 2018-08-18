@@ -15,6 +15,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.CONGESTION_C
 public class SequencesBolts implements Serializable {
 
     private final List<SequenceBolt> sequenceBoltList;
+    private final SemaphoresSequencesManager semaphoresSequencesManager;
 
     @Getter
     public class SequenceBolt implements Serializable {
@@ -33,11 +34,11 @@ public class SequencesBolts implements Serializable {
 
     public SequencesBolts(List<SequenceBolt> sequenceBoltList) {
         this.sequenceBoltList = sequenceBoltList;
+        semaphoresSequencesManager = new SemaphoresSequencesManager();
     }
 
     public SequencesBolts(String JSONStructureFile, Double roadDelta) {
-        SemaphoresSequencesManager semaphoresSequencesManager =
-                SemaphoresSequencesManager.getInstanceFrom(JSONStructureFile, roadDelta);
+        semaphoresSequencesManager = SemaphoresSequencesManager.getInstanceFrom(JSONStructureFile, roadDelta);
         if (semaphoresSequencesManager == null) {
             throw new IllegalArgumentException(String.format("Impossibile creare l'istanza dal file: %s", JSONStructureFile));
         }

@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.tuple.Fields;

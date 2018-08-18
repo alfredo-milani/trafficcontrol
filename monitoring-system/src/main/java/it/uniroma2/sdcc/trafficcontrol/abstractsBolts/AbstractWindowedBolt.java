@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.bolts;
+package it.uniroma2.sdcc.trafficcontrol.abstractsBolts;
 
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.Config;

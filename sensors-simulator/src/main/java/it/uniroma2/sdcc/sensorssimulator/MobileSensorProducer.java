@@ -38,7 +38,7 @@ public class MobileSensorProducer implements Runnable {
         this.waitTime = waitTime;
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
+    @SuppressWarnings({"InfiniteLoopStatement", "Duplicates"})
     @Override
     public void run() {
         while (true) {
@@ -55,9 +55,11 @@ public class MobileSensorProducer implements Runnable {
     public String produce() {
         mobileId = ThreadLocalRandom.current().nextLong(1, 50);
         mobileTimestampUTC = System.currentTimeMillis();
-        mobileLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
-        mobileLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);
-        mobileSpeed = (short) ThreadLocalRandom.current().nextInt(0, 100 + 1);
+        /*mobileLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
+        mobileLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);*/
+        mobileLatitude = ThreadLocalRandom.current().nextDouble(40.761, 40.762);
+        mobileLonditude = -73.997357;
+        mobileSpeed = (short) ThreadLocalRandom.current().nextInt(0, 150 + 1);
 
         try {
             String jsonString = mapper.writeValueAsString(this);

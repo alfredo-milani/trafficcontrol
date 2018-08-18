@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.ISensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;

@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.IWindow;
 import it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;

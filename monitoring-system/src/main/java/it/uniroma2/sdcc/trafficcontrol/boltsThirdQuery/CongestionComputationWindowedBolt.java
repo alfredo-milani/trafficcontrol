@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.bolts.IWindow;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.IWindow;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
 import org.apache.storm.task.OutputCollector;

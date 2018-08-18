@@ -21,12 +21,24 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.CongestedSequenceJsonFil
 public class SemaphoresSequence implements ITupleObject {
 
     @EqualsAndHashCode.Include private List<Long> semaphoresSequence;
+    @EqualsAndHashCode.Include private Double mainCoordinate;
     @EqualsAndHashCode.Include private Double initialCoordinate;
     @EqualsAndHashCode.Include private Double finalCoordinate;
     @EqualsAndHashCode.Include private SequenceType sequenceType;
     private List<RichMobileSensor> sensorsInSequence;
     private Double congestionGrade;
 
+    /**
+     * Rappresenta la disposizione spaziale della sequenza di semafori.
+     *
+     * Una sequenza di semafori di tipo {@link SequenceType#LONGITUDINAL} indica che
+     * l'intera sequenza giace sulla stessa longitudine definita da {@link SemaphoresSequence#mainCoordinate}
+     * e si estende dalla coordinata definita da {@link SemaphoresSequence#initialCoordinate} e {@link SemaphoresSequence#finalCoordinate}
+     *
+     * Allo stesso modo, una sequenza di semafori di tipo {@link SequenceType#LATITUDINAL} indica che
+     * l'intera sequenza giace sulla stessa latitudine definita da {@link SemaphoresSequence#mainCoordinate}
+     * e si estende dalla coordinata definita da {@link SemaphoresSequence#initialCoordinate} e {@link SemaphoresSequence#finalCoordinate}
+     */
     public enum SequenceType {
 
         LATITUDINAL,
@@ -79,10 +91,11 @@ public class SemaphoresSequence implements ITupleObject {
         congestionGrade = 0.0;
     }
 
-    public SemaphoresSequence(List<Long> semaphoresSequence, Double initialCoordinate,
-                              Double finalCoordinate, SequenceType sequenceType,
+    public SemaphoresSequence(List<Long> semaphoresSequence, Double mainCoordinate,
+                              Double initialCoordinate, Double finalCoordinate, SequenceType sequenceType,
                               List<RichMobileSensor> sensorsInSequence, Double congestionGrade) {
         this.semaphoresSequence = semaphoresSequence;
+        this.mainCoordinate = mainCoordinate;
         this.initialCoordinate = initialCoordinate;
         this.finalCoordinate = finalCoordinate;
         this.sequenceType = sequenceType;
@@ -129,8 +142,9 @@ public class SemaphoresSequence implements ITupleObject {
         // Per ridurre overhead nella trasmissione non
         // trasmettiamo la lista dei sensori mobili
         return new SemaphoresSequence(
-                semaphoresSequence, initialCoordinate, finalCoordinate,
-                sequenceType, null, congestionGrade
+                semaphoresSequence, mainCoordinate, initialCoordinate,
+                finalCoordinate, sequenceType, null,
+                congestionGrade
         );
     }
 
@@ -142,6 +156,7 @@ public class SemaphoresSequence implements ITupleObject {
         ObjectNode sequenceNode = objectNode.putObject(CONGESTED_SEQUENCE_INSTANCE);
         ArrayNode semaphoreSequenceArrayNode = sequenceNode.putArray(SEMAPHORES_SEQUENCE);
         semaphoresSequence.forEach(semaphoreSequenceArrayNode::add);
+        sequenceNode.put(SEQUENCE_SEMAPHORE_MAIN_COORDINATE, mainCoordinate);
         sequenceNode.put(SEQUENCE_SEMAPHORE_INITIAL_COORDINATE, initialCoordinate);
         sequenceNode.put(SEQUENCE_SEMAPHORE_FINAL_COORDINATE, finalCoordinate);
         sequenceNode.put(SEQUENCE_TYPE, sequenceType.toString());
@@ -165,8 +180,9 @@ public class SemaphoresSequence implements ITupleObject {
             }
         }
         buffer.append(String.format("|  semaphore sequence: %s\n", semaphoreSequenceString));
+        buffer.append(String.format("|  main coordinate: %.6f\n", mainCoordinate));
         buffer.append(String.format("|  initial coordinate: %.6f\n", initialCoordinate));
-        buffer.append(String.format("|  initial coordinate: %.6f\n", finalCoordinate));
+        buffer.append(String.format("|  final coordinate: %.6f\n", finalCoordinate));
         buffer.append(String.format("|  sequence type: %s\n", sequenceType.toString()));
         buffer.append(String.format("|_ congestion grade: %.3f\n", congestionGrade));
 

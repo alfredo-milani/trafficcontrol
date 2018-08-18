@@ -27,7 +27,7 @@ public class ThirdTopology extends Topology {
 
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(MOBILE_SENSOR_VALIDATED, CLASS_NAME),4);
 
-        // Dispatcher che smista le varie tuple proveniente dai sensori mobili verso i bolts
+        // Dispatcher che smista le varie tuple proveniente dai sensori mobili verso i abstractsBolts
         // relativi per il loro processamento (attraverso vari streams)
         builder.setBolt(SEQUENCES_DISPATCHER_BOLT, new SequencesDispatcherBolt(sequencesBolts),4)
                 .shuffleGrouping(KAFKA_SPOUT);

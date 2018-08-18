@@ -1,8 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
-import it.uniroma2.sdcc.trafficcontrol.bolts.AbstractDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence;
-import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequencesManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.SequencesBolts;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
@@ -34,7 +33,8 @@ public class SequencesDispatcherBolt extends AbstractDispatcherBolt {
             throw new BadTuple();
         }
 
-        SemaphoresSequence semaphoresSequenceMobileSensor = SemaphoresSequencesManager.findSequenceFrom(richMobileSensor);
+        SemaphoresSequence semaphoresSequenceMobileSensor =
+                sequencesBolts.getSemaphoresSequencesManager().findSequenceFrom(richMobileSensor);
         for (SequencesBolts.SequenceBolt sb : sequencesBolts.getSequenceBoltList()) {
             if (sb.getSemaphoresSequence().equals(semaphoresSequenceMobileSensor)) {
                 return new HashMap<String, Values>() {{
@@ -43,7 +43,7 @@ public class SequencesDispatcherBolt extends AbstractDispatcherBolt {
             }
         }
 
-        throw new BadTuple("Errore nel processamento della tupla");
+        return new HashMap<>();
     }
 
     @Override
