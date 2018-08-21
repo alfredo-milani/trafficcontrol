@@ -3,7 +3,6 @@ package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import it.uniroma2.sdcc.trafficcontrol.boltsValidation.*;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
-import org.apache.storm.Config;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
@@ -11,7 +10,6 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.CacheParams.MOBILE_AUTHE
 import static it.uniroma2.sdcc.trafficcontrol.constants.CacheParams.SEMAPHORE_AUTHENTICATION_CACHE_NAME;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.MOBILE_ID;
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.NUMBER_OF_WORKERS;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
@@ -20,21 +18,10 @@ public class ValidationTopology extends Topology {
     private final static String CLASS_NAME = ValidationTopology.class.getSimpleName();
 
     @Override
-    protected Config defineConfig() {
-        Config config = new Config();
-
-        config.setNumWorkers(NUMBER_OF_WORKERS);
-        // Storm default: 1 for workers
-        // config.setNumAckers(NUMBER_WORKERS_SELECTED);
-
-        return config;
-    }
-
-    @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE, CLASS_NAME), 6);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(GENERIC_TUPLE_TO_VALIDATE), 6);
 
         builder.setBolt(VALIDATION_DISPATCHER_BOLT, new ValidationDispatcherBolt(), 6)
                 .shuffleGrouping(KAFKA_SPOUT);

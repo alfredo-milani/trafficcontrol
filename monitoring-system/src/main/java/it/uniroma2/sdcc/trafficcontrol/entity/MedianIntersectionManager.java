@@ -77,7 +77,7 @@ public class MedianIntersectionManager implements ITupleObject {
         List<MedianIntersection> toSort = Lists.newArrayList(higherMedianIntersection.values());
         toSort.sort((o1, o2) -> {
             double delta = o1.getMedianIntersection() - o2.getMedianIntersection();
-            if (delta > 1) return -1;
+            if (delta > 0) return -1;
             else if (delta == 0) return 0;
             else return 1;
         });

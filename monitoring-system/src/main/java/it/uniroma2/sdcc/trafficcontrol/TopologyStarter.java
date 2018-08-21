@@ -41,6 +41,8 @@ public class TopologyStarter {
                         t.createConfig(),
                         t.createTopology()
                 ));
+
+
                 break;
 
             case MODE_CLUSTER:

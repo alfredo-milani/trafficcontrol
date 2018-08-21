@@ -16,7 +16,7 @@ public class RESTfulAPI {
 
     private final static HttpClient client = HttpClientBuilder.create().build();
 
-    public static boolean sensorExists(String url, Long id) {
+    public static boolean sensorExistsWithIdFromEndpoint(Long id, String url) {
         // TEST SCOPE
         if (id >= 0) return true;
 
