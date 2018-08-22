@@ -58,12 +58,17 @@ public class SemaphoresSequence implements ITupleObject {
 
     public enum CongestionCategory {
 
-        FIRST((short) 0, (short) 20, 0.42),
-        SECOND((short) 21, (short) 40, 0.28),
-        THIRD((short) 41, (short) 60, 0.20),
-        FOURTH((short) 61, (short) 80, 0.075),
-        FIFTH((short) 81, (short) 100, 0.025),
-        SIXTH((short) 101, Short.MAX_VALUE, 0.0);
+        FIRST((short) 0, (short) 10, 0.1650),
+        SECOND((short) 11, (short) 20, 0.1575),
+        THIRD((short) 21, (short) 30, 0.1550),
+        FOURTH((short) 31, (short) 40, 0.1525),
+        FIFTH((short) 41, (short) 50, 0.1050),
+        SIXTH((short) 51, (short) 60, 0.1030),
+        SEVENTH((short) 61, (short) 70, 0.1020),
+        EIGHTH((short) 71, (short) 80, 0.03),
+        NINTH((short) 81, (short) 90, 0.02),
+        TENTH((short) 91, (short) 100, 0.01),
+        ELEVENTH((short) 101, Short.MAX_VALUE, 0.0);
 
         private final Short v1;
         private final Short v2;
@@ -104,9 +109,6 @@ public class SemaphoresSequence implements ITupleObject {
     }
 
     public Double computeCongestionGrade() {
-
-        // TODO CONTROLLARE CORRETTEZZA
-
         if (sensorsInSequence.size() != 0) {
             Map<CongestionCategory, Integer> categoryVehiclesMap = new HashMap<>(CongestionCategory.values().length);
             for (CongestionCategory category : CongestionCategory.values()) categoryVehiclesMap.put(category, 0);

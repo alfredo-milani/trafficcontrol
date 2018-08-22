@@ -11,9 +11,9 @@ import org.apache.storm.tuple.Values;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.MOBILE_SENSOR;
 
-public class MobileAuthDBBolt extends AbstractAuthenticationBolt {
+public class MobileAuthByEndpointBolt extends AbstractAuthenticationBolt {
 
-    public MobileAuthDBBolt(String cacheName) {
+    public MobileAuthByEndpointBolt(String cacheName) {
         super(cacheName);
     }
 

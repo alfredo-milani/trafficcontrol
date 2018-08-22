@@ -11,9 +11,9 @@ import org.apache.storm.tuple.Values;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 
-public class SemaphoreAuthDBBolt extends AbstractAuthenticationBolt {
+public class SemaphoreAuthByEndpointBolt extends AbstractAuthenticationBolt {
 
-    public SemaphoreAuthDBBolt(String cacheName) {
+    public SemaphoreAuthByEndpointBolt(String cacheName) {
         super(cacheName);
     }
 

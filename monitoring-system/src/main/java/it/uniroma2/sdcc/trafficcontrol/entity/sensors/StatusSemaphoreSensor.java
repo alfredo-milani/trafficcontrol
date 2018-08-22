@@ -3,20 +3,12 @@ package it.uniroma2.sdcc.trafficcontrol.entity.sensors;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
 @Getter
 @Setter
-@ToString
 public class StatusSemaphoreSensor implements ITupleObject, ISensor {
-
-    public enum SemaphoreStatus {
-        WORKING,
-        AVERAGE,
-        FAULTY
-    }
 
     private Long intersectionId;
     private Long semaphoreId;
@@ -26,6 +18,14 @@ public class StatusSemaphoreSensor implements ITupleObject, ISensor {
     private SemaphoreStatus greenLightStatus;
     private SemaphoreStatus yellowLightStatus;
     private SemaphoreStatus redLightStatus;
+
+    public enum SemaphoreStatus {
+
+        WORKING,
+        AVERAGE,
+        FAULTY
+
+    }
 
     public StatusSemaphoreSensor(Long intersectionId, Long semaphoreId,
                                  Double semaphoreLatitude, Double semaphoreLongitude,
@@ -126,9 +126,21 @@ public class StatusSemaphoreSensor implements ITupleObject, ISensor {
     }
 
     public boolean hasFaultyLamps() {
-        return !greenLightStatus.equals(SemaphoreStatus.WORKING) ||
-                !yellowLightStatus.equals(SemaphoreStatus.WORKING) ||
-                !redLightStatus.equals(SemaphoreStatus.WORKING);
+        return greenLightStatus.equals(SemaphoreStatus.FAULTY) ||
+                yellowLightStatus.equals(SemaphoreStatus.FAULTY) ||
+                redLightStatus.equals(SemaphoreStatus.FAULTY);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[Intersection ID\t- %d\n", intersectionId) +
+                String.format("[Semaphore ID\t\t- %d\n", semaphoreId) +
+                String.format("[Latitude\t\t\t- %.6f\n", semaphoreLatitude) +
+                String.format("[Longitude\t\t\t- %.6f\n", semaphoreLongitude) +
+                String.format("[Green lamp\t\t\t- %s\n", greenLightStatus.toString()) +
+                String.format("[Yellow lamp\t\t- %s\n", yellowLightStatus.toString()) +
+                String.format("[Red lamp\t\t\t- %s\n", redLightStatus.toString()) +
+                "\n";
     }
 
 }

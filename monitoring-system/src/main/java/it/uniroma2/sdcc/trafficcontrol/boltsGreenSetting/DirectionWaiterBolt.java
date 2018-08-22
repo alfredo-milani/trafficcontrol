@@ -17,7 +17,7 @@ import java.util.Map;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPORIZATION_VALUE;
 
-public class FilterBolt extends BaseRichBolt {
+public class DirectionWaiterBolt extends BaseRichBolt {
 
     private OutputCollector collector;
     private HashMap<Long, GreenTemporizationIntersection> handlerHashMap;
@@ -45,14 +45,11 @@ public class FilterBolt extends BaseRichBolt {
 
             if (intersectionFromHashMap != null) {
                 intersectionFromHashMap.addSemaphoreSensor(semaphoreSensor);
-                    //if(semaphoreSensorsEven.size()==2)
-                if (intersectionFromHashMap.getSemaphoreSensorsEven().size()==2 ||
-                        intersectionFromHashMap.getSemaphoreSensorsOdd().size()==2) {
-                    // TODO emetti sse sono almeno 2 semafori (con id semaforo pari/dispari)
+                if (intersectionFromHashMap.getSemaphoreSensorsEven().size() == 2 ||
+                        intersectionFromHashMap.getSemaphoreSensorsOdd().size() == 2) {
                     collector.emit(new Values(handlerHashMap.remove(intersectionId)));
                 }
             }
-
         } catch (ClassCastException | IllegalArgumentException e) {
             e.printStackTrace();
         } finally {

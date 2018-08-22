@@ -32,9 +32,9 @@ public class ValidationTopology extends Topology {
         builder.setBolt(MOBILE_SENSOR_AUTH_CACHE_BOLT, new MobileSensorAuthCacheBolt(MOBILE_AUTHENTICATION_CACHE_NAME), 4)
                 .fieldsGrouping(VALIDATION_DISPATCHER_BOLT, MOBILE_SENSOR_STREAM, new Fields(MOBILE_ID));
 
-        builder.setBolt(SEMAPHORE_AUTH_DB_BOLT, new SemaphoreAuthDBBolt(SEMAPHORE_AUTHENTICATION_CACHE_NAME), 6)
+        builder.setBolt(SEMAPHORE_AUTH_DB_BOLT, new SemaphoreAuthByEndpointBolt(SEMAPHORE_AUTHENTICATION_CACHE_NAME), 6)
                 .shuffleGrouping(SEMAPHORE_SENSOR_AUTH_CACHE_BOLT, CACHE_MISS_STREAM);
-        builder.setBolt(MOBILE_AUTH_DB_BOLT, new MobileAuthDBBolt(MOBILE_AUTHENTICATION_CACHE_NAME), 6)
+        builder.setBolt(MOBILE_AUTH_DB_BOLT, new MobileAuthByEndpointBolt(MOBILE_AUTHENTICATION_CACHE_NAME), 6)
                 .shuffleGrouping(MOBILE_SENSOR_AUTH_CACHE_BOLT, CACHE_MISS_STREAM);
 
 

@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
-import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.FilterBolt;
+import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.DirectionWaiterBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenSetterPublisher;
 import it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting.GreenTimingDispatcherBolt;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
@@ -25,7 +25,7 @@ public class GreenSettingTopology extends Topology {
         builder.setBolt(GREEN_TIMING_DISPATCHER_BOLT, new GreenTimingDispatcherBolt(), 2)
                 .shuffleGrouping(KAFKA_SPOUT);
 
-        builder.setBolt(FILTER_GREEN_BOLT, new FilterBolt(), 2)
+        builder.setBolt(FILTER_GREEN_BOLT, new DirectionWaiterBolt(), 2)
                 .fieldsGrouping(GREEN_TIMING_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
 
         builder.setBolt(GREEN_SETTER, new GreenSetterPublisher(GREEN_TEMPORIZATION), 2)
