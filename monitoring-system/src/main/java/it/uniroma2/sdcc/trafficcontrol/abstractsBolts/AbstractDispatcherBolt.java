@@ -1,6 +1,5 @@
 package it.uniroma2.sdcc.trafficcontrol.abstractsBolts;
 
-import com.sun.tools.javac.util.Assert;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadStream;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.task.OutputCollector;
@@ -29,7 +28,6 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
     public final void execute(Tuple tuple) {
         try {
             Map<String, Values> streamValueMap = declareStreamValue(tuple);
-            Assert.checkNonNull(streamValueMap);
 
             if (streamValueMap.get(DEFAULT_STREAM) != null) {
                 if (streamValueMap.size() > 1) {
@@ -61,7 +59,6 @@ public abstract class AbstractDispatcherBolt extends BaseRichBolt {
     @Override
     public final void declareOutputFields(OutputFieldsDeclarer declarer) {
         Map<String, Fields> streamFieldMap = declareStreamField();
-        Assert.checkNonNull(streamFieldMap);
 
         try {
             if (streamFieldMap.get(DEFAULT_STREAM) != null) {

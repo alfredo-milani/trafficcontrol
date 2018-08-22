@@ -20,7 +20,8 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.*;
 
 public class TopologyStarter {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)
+            throws IOException {
         fillProperties();
 
         List<Topology> topologies = Lists.newArrayList(
@@ -41,8 +42,6 @@ public class TopologyStarter {
                         t.createConfig(),
                         t.createTopology()
                 ));
-
-
                 break;
 
             case MODE_CLUSTER:
@@ -80,6 +79,9 @@ public class TopologyStarter {
 
         properties.load(input);
 
+        MODE = properties.getProperty(P_MODE) == null
+                ? MODE_LOCAL
+                : properties.getProperty(P_MODE);
         KAFKA_IP = properties.getProperty(P_KAFKA_IP);
         KAFKA_PORT = properties.getProperty(P_KAFKA_PORT) == null
                 ? KAFKA_PORT_DEFAULT

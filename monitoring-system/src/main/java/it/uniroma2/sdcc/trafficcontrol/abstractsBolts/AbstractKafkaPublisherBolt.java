@@ -1,6 +1,5 @@
 package it.uniroma2.sdcc.trafficcontrol.abstractsBolts;
 
-import com.sun.istack.internal.NotNull;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.storm.task.OutputCollector;
@@ -8,6 +7,7 @@ import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;

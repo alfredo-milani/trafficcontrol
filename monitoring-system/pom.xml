@@ -11,6 +11,35 @@
 
     <artifactId>monitoring-system</artifactId>
 
+    <!-- Necessario per escudere storm jar dall'archivio da creare e
+    per includere tutte le altre dipendenze necessarie -->
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptors>
+                        <descriptor>/jar-with-dependencies-without-storm.xml</descriptor>
+                    </descriptors>
+                    <archive>
+                        <manifest>
+                            <mainClass>it.uniroma2.sdcc.trafficcontrol.TopologyStarter</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
 
         <dependency>
@@ -36,7 +65,7 @@
             <version>1.3.1</version>
         </dependency>
 
-        <!-- Per usare RESTFUL API -->
+        <!-- Per usare RESTFUL API facendo chiamate HTTP -->
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -75,6 +104,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>
