@@ -18,6 +18,7 @@
             <unpack>true</unpack>
             <scope>compile</scope>   <!-- note here!!!! -->
             <excludes>
+                <!-- Format: groupId:artifactId:type[:classifier]:version -->
                 <exclude>org.apache.storm:storm-core:jar:1.2.1</exclude>
             </excludes>
         </dependencySet>
