@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.EXIT_FAILURE;
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.KAFKA_IP_PORT;
+import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.EXIT_FAILURE;
+import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.KAFKA_IP_PORT;
 
 
 public class StartProducer {

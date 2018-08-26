@@ -12,9 +12,9 @@ import org.apache.storm.topology.TopologyBuilder;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.CONGESTED_SEQUENCE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.MOBILE_SENSOR_VALIDATED;
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.ROAD_DELTA;
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.SEMAPHORES_SEQUENCES_FILE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
+import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.ROAD_DELTA;
+import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.SEMAPHORES_SEQUENCES_FILE;
 
 public class ThirdTopology extends Topology {
 

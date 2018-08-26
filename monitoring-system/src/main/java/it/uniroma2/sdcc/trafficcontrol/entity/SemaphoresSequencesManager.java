@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.SEMAPHORES_SEQUENCES_FILE;
+import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.SEMAPHORES_SEQUENCES_FILE;
 
 @Getter
 @Setter

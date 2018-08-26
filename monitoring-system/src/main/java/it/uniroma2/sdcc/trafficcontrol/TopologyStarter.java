@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
 import it.uniroma2.sdcc.trafficcontrol.topologies.*;
-import lombok.Cleanup;
+import it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
@@ -10,20 +10,18 @@ import org.apache.storm.generated.InvalidTopologyException;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
-
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.EXIT_FAILURE;
-import static it.uniroma2.sdcc.trafficcontrol.constants.Params.Properties.*;
 
 
 public class TopologyStarter {
 
     public static void main(String[] args)
             throws IOException {
-        fillProperties();
+        // Caricamento proprità dell'applicazione
+        ApplicationsProperties properties = ApplicationsProperties.getInstance();
+        properties.loadProperties();
 
+        // Creazione topologie
         List<Topology> topologies = Lists.newArrayList(
                 new ValidationTopology(),
                 new SemaphoreStatusTopology(),
@@ -33,8 +31,9 @@ public class TopologyStarter {
                 new GreenSettingTopology()
         );
 
-        switch (MODE) {
-            case MODE_LOCAL:
+        switch (ApplicationsProperties.MODE) {
+            // Esecuzione storm in modalità locale
+            case ApplicationsProperties.MODE_LOCAL:
                 final LocalCluster cluster = new LocalCluster();
 
                 topologies.forEach(t -> cluster.submitTopology(
@@ -44,7 +43,8 @@ public class TopologyStarter {
                 ));
                 break;
 
-            case MODE_CLUSTER:
+            // Esecuzione storm in modalità cluster
+            case ApplicationsProperties.MODE_CLUSTER:
                 topologies.forEach(t -> {
                     try {
                         StormSubmitter.submitTopology(
@@ -60,40 +60,8 @@ public class TopologyStarter {
 
             default:
                 System.err.println("Errore sconosciuto");
-                System.exit(EXIT_FAILURE);
+                System.exit(ApplicationsProperties.EXIT_FAILURE);
         }
-    }
-
-    private static void fillProperties()
-            throws IOException {
-        Properties properties = new Properties();
-
-        @Cleanup InputStream input = TopologyStarter.class
-                .getClassLoader()
-                .getResourceAsStream(PROPERTIES_FILENAME);
-
-        if (input == null) {
-            System.out.println("Sorry, unable to find " + PROPERTIES_FILENAME);
-            return;
-        }
-
-        properties.load(input);
-
-        MODE = properties.getProperty(P_MODE) == null
-                ? MODE_LOCAL
-                : properties.getProperty(P_MODE);
-        KAFKA_IP = properties.getProperty(P_KAFKA_IP);
-        KAFKA_PORT = properties.getProperty(P_KAFKA_PORT) == null
-                ? KAFKA_PORT_DEFAULT
-                : Integer.valueOf(properties.getProperty(P_KAFKA_PORT));
-        KAFKA_IP_PORT = String.format("%s:%d", KAFKA_IP, KAFKA_PORT);
-        NUMBER_OF_WORKERS = properties.getProperty(P_NUMBER_OF_WORKERS) == null
-                ? NUMBER_WORKERS_DEFAULT
-                : Integer.valueOf(properties.getProperty(P_NUMBER_OF_WORKERS));
-        ROAD_DELTA = properties.getProperty(P_ROAD_DELTA) == null
-                ? null
-                : Double.valueOf(properties.getProperty(P_ROAD_DELTA));
-        SEMAPHORES_SEQUENCES_FILE = properties.getProperty(P_SEMAPHORES_SEQUENCES_FILE);
     }
 
 }

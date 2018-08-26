@@ -18,7 +18,7 @@ public class RESTfulAPI {
 
     public static boolean sensorExistsWithIdFromEndpoint(Long id, String url) {
         // TEST SCOPE
-        if (id >= 0) return true;
+        // if (id >= 0) return true;
 
         HttpGet request = new HttpGet(String.format(url, id));
 
