@@ -15,9 +15,7 @@ public class ApplicationsProperties extends Properties {
     public static final String APP_NAME = "Monitoring System";
 
     // Exit status
-    @ToString.Include
     public static final int EXIT_SUCCESS = 0;
-    @ToString.Include
     public static final int EXIT_FAILURE = 1;
 
     // Nome file proprietà
@@ -63,6 +61,8 @@ public class ApplicationsProperties extends Properties {
     private static final String P_SEMAPHORES_SEQUENCES_FILE = "sequences-semaphores-structure";
     @ToString.Include
     public static String SEMAPHORES_SEQUENCES_FILE;
+
+
 
     private static class Cointainer {
         private final static ApplicationsProperties instance = new ApplicationsProperties();

@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.sensorssimulator;
 
+import it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
@@ -19,6 +20,7 @@ public class StartProducer {
     private static int waitingTimeMillis = 2 * 1000;
     private static ProducerType producerType = ProducerType.AUTO;
     private static SensorType sensorType;
+    private final static ApplicationsProperties properties = ApplicationsProperties.getInstance();
 
     private enum ProducerType {
         UNKNOWN,
@@ -34,6 +36,7 @@ public class StartProducer {
 
     @SuppressWarnings("Duplicates")
     public static void main(String[] args) throws Exception {
+        properties.loadProperties();
         parseArgs(args);
 
         switch (producerType) {
@@ -113,8 +116,8 @@ public class StartProducer {
     private static Properties initProducerProperties() {
         Properties producerProperties = new Properties();
         /**
-         *  KAFKA_IP_PORT proprietà collegata ad un altro modulo ->
-         *  prendere questa informazione dallo stesso file proprietà
+         *  {@link KAFKA_IP_PORT} proprietà collegata ad un altro modulo
+         *  attraverso la classe {@link ApplicationsProperties}
          */
         producerProperties.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);

@@ -18,6 +18,7 @@
         <module>monitoring-system</module>
         <module>sensors-simulator</module>
         <module>semaphore-admin-backend</module>
+        <module>influxClient</module>
     </modules>
 
 </project>

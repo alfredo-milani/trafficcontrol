@@ -20,8 +20,8 @@ public class CongestedIntersectionsPublisherBolt extends AbstractKafkaPublisherB
     @Override
     protected List<String> computeValueToPublish(Tuple tuple) {
         MedianIntersectionManager medianIntersectionManager = (MedianIntersectionManager) tuple.getValueByField(CONGESTED_INTERSECTIONS);
-        return new ArrayList<>(Collections.singletonList(medianIntersectionManager.toString()));
-        // return new ArrayList<>(Collections.singletonList(medianIntersectionManager.getJsonStringFromInstance()));
+        // return new ArrayList<>(Collections.singletonList(medianIntersectionManager.toString()));
+        return new ArrayList<>(Collections.singletonList(medianIntersectionManager.getJsonStringFromInstance()));
     }
 
     @Override

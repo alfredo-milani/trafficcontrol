@@ -18,8 +18,7 @@ public class TopologyStarter {
     public static void main(String[] args)
             throws IOException {
         // Caricamento proprità dell'applicazione
-        ApplicationsProperties properties = ApplicationsProperties.getInstance();
-        properties.loadProperties();
+        ApplicationsProperties.getInstance().loadProperties();
 
         // Creazione topologie
         List<Topology> topologies = Lists.newArrayList(
