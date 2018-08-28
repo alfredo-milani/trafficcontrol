@@ -2,7 +2,6 @@ package it.uniroma2.sdcc.influxDBWriter.kafkaReaders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.java.Log;
-import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 
@@ -28,14 +27,7 @@ public class RankingReader extends AbstractKafkaWriter {
     }
 
     @Override
-    protected BatchPoints computeBatchPoints(JsonNode jsonNode, String dbName) {
-        // Creation and definition of a batch containing points for influxDB
-        BatchPoints batchPoints = BatchPoints
-                .database(dbName)
-                .retentionPolicy(RETANTION_POLICY)
-                .consistency(InfluxDB.ConsistencyLevel.QUORUM)
-                .build();
-
+    protected BatchPoints attachPointTo(BatchPoints batchPoints, JsonNode jsonNode) {
         JsonNode ranking = jsonNode.get(RANKING);
         Iterator<JsonNode> rankingIterator = ranking.elements();
         while (rankingIterator.hasNext()) {

@@ -1,7 +1,6 @@
 package it.uniroma2.sdcc.influxDBWriter.kafkaReaders;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 
@@ -25,14 +24,7 @@ public class SemaphoreStatusWriter extends AbstractKafkaWriter {
     }
 
     @Override
-    protected BatchPoints computeBatchPoints(JsonNode jsonNode, String dbName) {
-        // Creation and definition of a batch containing points for influxDB
-        BatchPoints batchPoints = BatchPoints
-                .database(dbName)
-                .retentionPolicy(RETANTION_POLICY)
-                .consistency(InfluxDB.ConsistencyLevel.QUORUM)
-                .build();
-
+    protected BatchPoints attachPointTo(BatchPoints batchPoints, JsonNode jsonNode) {
         batchPoints.point(
                 Point.measurement(tableName)
                         .time(getAtomicTimestamp(), TimeUnit.MILLISECONDS)
