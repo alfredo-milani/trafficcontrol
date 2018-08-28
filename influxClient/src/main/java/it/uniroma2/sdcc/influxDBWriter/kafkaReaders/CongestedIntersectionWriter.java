@@ -27,10 +27,11 @@ public class CongestedIntersectionWriter extends AbstractKafkaWriter {
     protected BatchPoints attachPointTo(BatchPoints batchPoints, JsonNode jsonNode) {
         JsonNode intersectionNode = jsonNode
                 .get(CONGESTED_SEQUENCE_INSTANCE);
-        String sequenceString = intersectionNode.get(SEMAPHORES_SEQUENCE).toString();
-        sequenceString = sequenceString.replace("[", "");
-        sequenceString = sequenceString.replace("]", "");
-        sequenceString = sequenceString.replace(",", ", ");
+        String sequenceString = intersectionNode
+                .get(SEMAPHORES_SEQUENCE).toString()
+                .replace("[", "")
+                .replace("]", "")
+                .replace(",", ", ");
 
         batchPoints.point(
                 Point.measurement(tableName)

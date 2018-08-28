@@ -27,8 +27,7 @@ public class GreenTimingWriter extends AbstractKafkaWriter {
     @Override
     protected BatchPoints attachPointTo(BatchPoints batchPoints, JsonNode jsonNode) {
         String semaphoreSide = jsonNode
-                .get(SEMAPHORE_SIDE)
-                .toString()
+                .get(SEMAPHORE_SIDE).toString()
                 .replace("\"", "");
         switch (semaphoreSide) {
             case SEMAPHORE_SIDE_EVEN:

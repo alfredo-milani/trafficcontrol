@@ -27,7 +27,6 @@ public class CongestIntersectionsWriter extends AbstractKafkaWriter {
     @Override
     protected BatchPoints attachPointTo(BatchPoints batchPoints, JsonNode jsonNode) {
         JsonNode intersectionsNode = jsonNode.get(HIGHER_MEDIAN);
-
         Iterator<JsonNode> intersectionIterator = intersectionsNode.elements();
         while (intersectionIterator.hasNext()) {
             JsonNode intersectionElement = intersectionIterator.next();
