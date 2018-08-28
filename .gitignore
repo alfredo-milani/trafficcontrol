@@ -54,7 +54,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# Editor-based Rest InfluxDBClient
+# Editor-based Rest it.uniroma2.sdcc.influxDBWriter.InfluxDBWriter
 .idea/httpRequests
 
 

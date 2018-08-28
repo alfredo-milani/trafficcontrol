@@ -31,15 +31,15 @@ public class SecondTopology extends Topology {
                 .fieldsGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM, new Fields(INTERSECTION_ID));
 
         // Bolt che calcola la mediana globale e riceve le mediane delle intersezioni per la finestra temporale di 15 minuti
-        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_15_MIN, new GlobalMedianCalculatorBoltWindowed(15 * 60,4))
+        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_15_MIN, new GlobalMedianCalculatorBoltWindowed(15 * 60,5))
                 .globalGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM)
                 .globalGrouping(MEDIAN_CALCULATOR_BOLT, MEDIAN_INTERSECTION_STREAM);
         // Bolt che calcola la mediana globale e riceve le mediane delle intersezioni per la finestra temporale di 1 ora
-        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_1_H, new GlobalMedianCalculatorBoltWindowed(60 * 60,4))
+        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_1_H, new GlobalMedianCalculatorBoltWindowed(60 * 60,5))
                 .globalGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM)
                 .globalGrouping(MEDIAN_CALCULATOR_BOLT, MEDIAN_INTERSECTION_STREAM);
         // Bolt che calcola la mediana globale e riceve le mediane delle intersezioni per la finestra temporale di 24 ore
-        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_24_H, new GlobalMedianCalculatorBoltWindowed(24 * 60 * 60,4))
+        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_24_H, new GlobalMedianCalculatorBoltWindowed(24 * 60 * 60,5))
                 .globalGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM)
                 .globalGrouping(MEDIAN_CALCULATOR_BOLT, MEDIAN_INTERSECTION_STREAM);
 

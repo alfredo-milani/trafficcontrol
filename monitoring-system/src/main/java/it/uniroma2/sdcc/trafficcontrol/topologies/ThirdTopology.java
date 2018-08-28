@@ -39,7 +39,7 @@ public class ThirdTopology extends Topology {
                         sb.getBoltName(),
                         new CongestionComputationWindowedBolt(
                                 5 * 60,
-                                4,
+                                5,
                                 sb.getSemaphoresSequence()
                         )
                 )
@@ -50,7 +50,7 @@ public class ThirdTopology extends Topology {
                 SEQUENCE_SELECTOR_BOLT,
                 new SequenceSelectorWindowedBolt(
                         5 * 60,
-                        4,
+                        5,
                         SemaphoresSequencesManager.getsemaphoresSequenceFromBoltsList(sequencesBolts),
                         ROAD_DELTA
                 )

@@ -58,6 +58,9 @@ public interface StormParams {
     String FILTER_GREEN_BOLT = "filter_green_bolt";
     String GREEN_SETTER = "green_setter";
     String GREEN_TEMPORIZATION_VALUE = "green_temporization_value";
+    String SEMAPHORE_SIDE = "semaphore_side";
+    String SEMAPHORE_SIDE_EVEN = "semaphore_side_even";
+    String SEMAPHORE_SIDE_ODD = "semaphore_side_odd";
 
     // Sequence Bolts - Third query
     String CONGESTED_SEQUENCE_CALCULATOR_BOLT = "congested_sequence_calculator_bolt";

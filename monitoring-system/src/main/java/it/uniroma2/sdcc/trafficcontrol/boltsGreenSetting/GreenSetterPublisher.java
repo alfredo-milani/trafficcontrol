@@ -1,5 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
@@ -9,8 +11,9 @@ import org.apache.storm.tuple.Tuple;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_EMIT_FREQUENCY;
-import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GREEN_TEMPORIZATION_VALUE;
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
 public class GreenSetterPublisher extends AbstractKafkaPublisherBolt<String> {
 
@@ -23,10 +26,13 @@ public class GreenSetterPublisher extends AbstractKafkaPublisherBolt<String> {
     private int cycleDuration = 200;
     private int L = 4; //tempo perso
 
+    private final static ObjectMapper mapper = new ObjectMapper();
+
     public GreenSetterPublisher(String topic) {
         super(topic);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     protected List<String> computeValueToPublish(Tuple tuple) throws ClassCastException, IllegalArgumentException {
         ArrayList<String> strings = new ArrayList<>();
@@ -53,12 +59,14 @@ public class GreenSetterPublisher extends AbstractKafkaPublisherBolt<String> {
             if (greenValueEven <= 0)
                 greenValueEven = 100;
 
-            /*ObjectNode objectNode = mapper.createObjectNode();
+            ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put(INTERSECTION_ID, greenTemporizationManager.getIntersectionId());
-            objectNode.put(EVEN_SEMAPHORES,"even");
-            objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueEven);*/
+            objectNode.put(SEMAPHORE_SIDE, SEMAPHORE_SIDE_EVEN);
+            objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueEven);
 
-            strings.add(printArray(greenTemporizationManager.getIntersectionId(),"even", greenValueEven));
+            strings.add(objectNode.toString());
+
+            // strings.add(printArray(greenTemporizationManager.getIntersectionId(),"even", greenValueEven));
         }
 
         if (oddSensors.size() == 2){
@@ -74,12 +82,14 @@ public class GreenSetterPublisher extends AbstractKafkaPublisherBolt<String> {
             if (greenValueOdd <= 0)
                 greenValueOdd = 100;
 
-            /*ObjectNode objectNode = mapper.createObjectNode();
+            ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put(INTERSECTION_ID, greenTemporizationManager.getIntersectionId());
-            objectNode.put(ODD_SEMAPHORES,"odd");
-            objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueOdd);*/
+            objectNode.put(SEMAPHORE_SIDE, SEMAPHORE_SIDE_ODD);
+            objectNode.put(GREEN_TEMPORIZATION_VALUE, greenValueOdd);
+            strings.add(objectNode.toString());
 
-            strings.add(printArray(greenTemporizationManager.getIntersectionId(),"odd", greenValueOdd));
+            // strings.add(printArray(greenTemporizationManager.getIntersectionId(),"odd", greenValueOdd));
+
         }
 
         return strings;
