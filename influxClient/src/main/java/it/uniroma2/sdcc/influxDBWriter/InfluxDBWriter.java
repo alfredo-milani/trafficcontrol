@@ -14,7 +14,7 @@ public class InfluxDBWriter {
 
     /*
         Grafana potrebbe non visualizzare dati (No data to show) nel caso in cui la topologia
-        considerata non abbia stampato nuovi dati su Kafka perché non ce ne sono.
+        considerata non abbia stampato nuovi dati su Kafka perché non ce ne sono di nuovi.
      */
     public static void main(String[] args)
             throws IOException {
