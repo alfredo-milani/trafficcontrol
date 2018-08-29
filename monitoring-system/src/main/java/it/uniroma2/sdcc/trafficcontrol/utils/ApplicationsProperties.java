@@ -83,19 +83,16 @@ public class ApplicationsProperties extends Properties {
 
     public void loadProperties(String pathConfigurationFile)
             throws IOException {
-        if (pathConfigurationFile != null) {
-            PROPERTIES_FILENAME = pathConfigurationFile;
-        } else {
-            PROPERTIES_FILENAME = DEFAULT_PROPERTIES_FILENAME;
-        }
+        PROPERTIES_FILENAME = pathConfigurationFile != null
+                ? pathConfigurationFile
+                : DEFAULT_PROPERTIES_FILENAME;
 
         @Cleanup InputStream input = ApplicationsProperties.class
                 .getClassLoader()
-                .getResourceAsStream(pathConfigurationFile);
+                .getResourceAsStream(PROPERTIES_FILENAME);
 
         if (input == null) {
-            System.out.println("Sorry, unable to find " + pathConfigurationFile);
-            return;
+            throw new IOException("Sorry, unable to find " + PROPERTIES_FILENAME);
         }
 
         load(input);

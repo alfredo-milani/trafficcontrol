@@ -50,16 +50,13 @@ public abstract class AbstractKafkaWriter implements Runnable {
     private final static ObjectMapper mapper = new ObjectMapper();
     private final static JsonFactory factory = mapper.getFactory();
 
-    // Proprietà configurate dall'utente
-    private final static ApplicationsProperties properties = ApplicationsProperties.getInstance();
-
     public AbstractKafkaWriter(String dbName, String topicName) throws IOException {
         this(dbName, topicName, DEFAULT_POOL_TIMEOUT);
     }
 
     public AbstractKafkaWriter(String dbName, String topicName, Long poolTimeout) throws IOException {
         // Load properties
-        properties.loadProperties();
+        ApplicationsProperties.getInstance().loadProperties();
 
         // Creating Database
         this.dbName = dbName;

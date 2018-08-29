@@ -12,6 +12,10 @@ public class InfluxDBWriter {
 
     public final static String DB_NAME = "TopologiesResults";
 
+    /*
+        Grafana potrebbe non visualizzare dati (No data to show) nel caso in cui la topologia
+        considerata non abbia stampato nuovi dati su Kafka perché non ce ne sono.
+     */
     public static void main(String[] args)
             throws IOException {
         List<AbstractKafkaWriter> readers = Lists.newArrayList(
