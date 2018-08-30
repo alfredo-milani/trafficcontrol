@@ -25,21 +25,21 @@ public class FirstTopology extends Topology {
 
 
         // Bolt che calcola la velocità media di ogni intersezione
-        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBoltWindowed(60, 4), 4)
+        builder.setBolt(MEAN_CALCULATOR_BOLT, new MeanCalculatorBoltWindowed(60, 2), 4)
                 .fieldsGrouping(MEAN_SPEED_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
 
         // Bolts gestori della finestra temporale da 15 minuti
-        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT_15_MIN, new PartialWindowedRankingsBolt(15 * 60, 2), 5)
+        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT_15_MIN, new PartialWindowedRankingsBolt(15 * 60, 5), 5)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID));
         builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT_15_MIN, new GlobalWindowedRankingsBolt(15 * 60, 5))
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT_15_MIN);
         // Bolts gestori della finestra temporale da 1 ora
-        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT_1_H, new PartialWindowedRankingsBolt(60 * 60, 2), 5)
+        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT_1_H, new PartialWindowedRankingsBolt(60 * 60, 5), 5)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID));
         builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT_1_H, new GlobalWindowedRankingsBolt(60 * 60, 5))
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT_1_H);
         // Bolts gestori della finestra temporale da 24 ore
-        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT_24_H, new PartialWindowedRankingsBolt(24 * 60 * 60, 2), 5)
+        builder.setBolt(PARTIAL_WINDOWED_RANK_BOLT_24_H, new PartialWindowedRankingsBolt(24 * 60 * 60, 5), 5)
                 .fieldsGrouping(MEAN_CALCULATOR_BOLT, new Fields(INTERSECTION_ID));
         builder.setBolt(GLOBAL_WINDOWED_RANK_BOLT_24_H, new GlobalWindowedRankingsBolt(24 * 60 * 60, 5))
                 .globalGrouping(PARTIAL_WINDOWED_RANK_BOLT_24_H);

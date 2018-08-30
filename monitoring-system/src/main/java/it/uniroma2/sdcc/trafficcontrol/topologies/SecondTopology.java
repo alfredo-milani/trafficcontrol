@@ -27,7 +27,7 @@ public class SecondTopology extends Topology {
 
 
         // Bolt che calcola la mediana di ogni intersezione
-        builder.setBolt(MEDIAN_CALCULATOR_BOLT, new MedianCalculatorBoltWindowed(60,4),4)
+        builder.setBolt(MEDIAN_CALCULATOR_BOLT, new MedianCalculatorBoltWindowed(60,2),4)
                 .fieldsGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM, new Fields(INTERSECTION_ID));
 
         // Bolt che calcola la mediana globale e riceve le mediane delle intersezioni per la finestra temporale di 15 minuti
