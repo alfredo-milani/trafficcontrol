@@ -4,7 +4,7 @@ import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
-import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.ITimeWindow;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MedianIntersectionNotReady;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -34,7 +34,7 @@ public class MedianCalculatorBoltWindowed extends AbstractWindowedBolt {
     }
 
     @Override
-    protected void onTick(OutputCollector collector, ITimeWindow<Tuple> eventsWindow) {
+    protected void onTick(OutputCollector collector, IClientTimeWindow<Tuple> eventsWindow) {
         eventsWindow.getExpiredEvents().forEach(t -> medianIntersectionQueue.remove(
                 ((RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR)).getIntersectionId()
         ));

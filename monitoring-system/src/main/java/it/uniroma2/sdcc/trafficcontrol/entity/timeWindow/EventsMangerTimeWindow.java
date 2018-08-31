@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Getter
-public class EventsTimeWindow implements ITimeWindow<Tuple>, Serializable {
+public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Serializable {
 
     private final long windowSizeInMillis;
     private long lowerBoundWindow;
@@ -19,7 +19,7 @@ public class EventsTimeWindow implements ITimeWindow<Tuple>, Serializable {
     private final Map<Long, Tuple> currentEventsMap;
     private final Map<Long, Tuple> expiredEventsMap;
 
-    public EventsTimeWindow(long windowSizeInMillis) {
+    public EventsMangerTimeWindow(long windowSizeInMillis) {
         this.windowSizeInMillis = windowSizeInMillis;
         lowerBoundWindow = upperBoundWindow = System.currentTimeMillis();
         this.newEventsMap = new HashMap<>();
@@ -28,7 +28,7 @@ public class EventsTimeWindow implements ITimeWindow<Tuple>, Serializable {
     }
 
     /**
-     * Aggiorna i valori {@link EventsTimeWindow#upperBoundWindow} e {@link EventsTimeWindow#lowerBoundWindow}
+     * Aggiorna i valori {@link EventsMangerTimeWindow#upperBoundWindow} e {@link EventsMangerTimeWindow#lowerBoundWindow}
      */
     @Override
     public void updateWindow(long interval) {

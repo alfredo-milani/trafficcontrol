@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.abstractsBolts;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.EventsTimeWindow;
-import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.ITimeWindow;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.EventsMangerTimeWindow;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.Config;
 import org.apache.storm.task.OutputCollector;
@@ -23,7 +23,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
     private OutputCollector collector;
     private final long emitFrequencyInMillis;
-    private final EventsTimeWindow eventsTimeWindow;
+    private final EventsMangerTimeWindow eventsTimeWindow;
 
     public AbstractWindowedBolt() {
         this(DEFAULT_WINDOW_SIZE_IN_SECONDS, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
@@ -52,7 +52,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         }
 
         this.emitFrequencyInMillis = emitFrequencyInSeconds * TIME_UNIT_MILLIS;
-        this.eventsTimeWindow = new EventsTimeWindow(windowSizeInSeconds * TIME_UNIT_MILLIS);
+        this.eventsTimeWindow = new EventsMangerTimeWindow(windowSizeInSeconds * TIME_UNIT_MILLIS);
     }
 
     @Override
@@ -122,7 +122,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         return null;
     }
 
-    protected abstract void onTick(OutputCollector collector, ITimeWindow<Tuple> eventsWindow);
+    protected abstract void onTick(OutputCollector collector, IClientTimeWindow<Tuple> eventsWindow);
 
     protected void onValidTupleReceived(Tuple tuple) {
 

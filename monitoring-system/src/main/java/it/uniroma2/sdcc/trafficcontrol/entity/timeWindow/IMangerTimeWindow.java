@@ -1,12 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.timeWindow;
 
-import java.util.ArrayList;
-
-public interface ITimeWindow<T> {
-
-    long getLowerBoundWindow();
-
-    long getUpperBoundWindow();
+public interface IMangerTimeWindow<T> extends IClientTimeWindow<T> {
 
     void updateWindow(long interval);
 
@@ -15,12 +9,6 @@ public interface ITimeWindow<T> {
     void addCurrentEvent(long timestamp, T t);
 
     void addExpiredEvent(long timestamp, T t);
-
-    ArrayList<T> getNewEvents();
-
-    ArrayList<T> getCurrentEvents();
-
-    ArrayList<T> getExpiredEvents();
 
     void clearNewEvents();
 

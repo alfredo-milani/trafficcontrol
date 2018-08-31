@@ -3,7 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
-import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.ITimeWindow;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
@@ -29,7 +29,7 @@ public class CongestionComputationWindowedBolt extends AbstractWindowedBolt {
     }
 
     @Override
-    protected void onTick(OutputCollector collector, ITimeWindow<Tuple> eventsWindow) {
+    protected void onTick(OutputCollector collector, IClientTimeWindow<Tuple> eventsWindow) {
         Double oldCongestionGrade = semaphoresSequence.getCongestionGrade();
 
         eventsWindow.getExpiredEvents().forEach(t -> {
