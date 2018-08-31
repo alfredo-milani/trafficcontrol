@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public interface IClientTimeWindow<T> {
 
+    long getWindowSize();
+
     long getLowerBoundWindow();
 
     long getUpperBoundWindow();

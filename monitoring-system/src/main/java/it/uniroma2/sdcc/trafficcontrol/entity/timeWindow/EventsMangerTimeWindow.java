@@ -9,18 +9,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-@Getter
 public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Serializable {
 
-    private final long windowSizeInMillis;
-    private long lowerBoundWindow;
-    private long upperBoundWindow;
+    // Window size in milliseconds
+    @Getter private final long windowSize;
+    @Getter private long lowerBoundWindow;
+    @Getter private long upperBoundWindow;
     private final Map<Long, Tuple> newEventsMap;
     private final Map<Long, Tuple> currentEventsMap;
     private final Map<Long, Tuple> expiredEventsMap;
 
-    public EventsMangerTimeWindow(long windowSizeInMillis) {
-        this.windowSizeInMillis = windowSizeInMillis;
+    public EventsMangerTimeWindow(long windowSize) {
+        this.windowSize = windowSize;
         lowerBoundWindow = upperBoundWindow = System.currentTimeMillis();
         this.newEventsMap = new HashMap<>();
         this.currentEventsMap = new HashMap<>();
@@ -36,10 +36,10 @@ public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Seriali
         upperBoundWindow += interval;
 
         long deltaHeadTail = upperBoundWindow - lowerBoundWindow;
-        if (deltaHeadTail > windowSizeInMillis) {
+        if (deltaHeadTail > windowSize) {
             // La finestra dal tempo 0 è > windowSize
             // Avanzamento tail finestra temporale
-            lowerBoundWindow += deltaHeadTail - windowSizeInMillis;
+            lowerBoundWindow += deltaHeadTail - windowSize;
         }
     }
 
