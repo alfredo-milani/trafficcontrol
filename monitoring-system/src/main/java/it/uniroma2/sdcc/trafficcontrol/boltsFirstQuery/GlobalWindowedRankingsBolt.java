@@ -1,8 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.IWindow;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.ITimeWindow;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
@@ -45,11 +45,11 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
     }
 
     @Override
-    protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
+    protected void onTick(OutputCollector collector, ITimeWindow<Tuple> eventsWindow) {
         Rankings oldRankings = rankings.copy();
 
         rankings.getRankings().forEach(r -> {
-            if (r.getTimestamp() < getLowerBoundWindow()) rankings.removeIfExists(r);
+            if (r.getTimestamp() < eventsWindow.getLowerBoundWindow()) rankings.removeIfExists(r);
         });
         eventsWindow.getNewEvents().forEach(
                 t -> rankings.updateWith((Rankings) t.getValueByField(PARTIAL_RANKINGS_OBJECT))

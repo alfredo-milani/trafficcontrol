@@ -1,5 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.abstractsBolts;
 
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.EventsTimeWindow;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.ITimeWindow;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.Config;
 import org.apache.storm.task.OutputCollector;
@@ -8,10 +10,7 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.utils.TupleUtils;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -19,58 +18,12 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
     protected static final int DEFAULT_EMIT_FREQUENCY_IN_SECONDS = 2;
     protected static final int DEFAULT_WINDOW_SIZE_IN_SECONDS = 10;
+    protected static final long TIME_UNIT_MILLIS = 1000L;
     private static final AtomicLong LAST_TIME_MS = new AtomicLong();
 
     private OutputCollector collector;
-    private final int windowSizeInSeconds;
-    private final long windowSizeInMillis;
-    private final int emitFrequencyInSeconds;
     private final long emitFrequencyInMillis;
-    private final EventsWindow eventsWindow;
-    private boolean isWindowSlidingTotally;
-    private long lowerBoundWindow;
-    private long upperBoundWindow;
-
-    private final class EventsWindow implements IWindow<Tuple>, Serializable {
-
-        private final Map<Long, Tuple> newEventMap;
-        private final Map<Long, Tuple> currentEventMap;
-        private final Map<Long, Tuple> expiredEventMap;
-
-        private EventsWindow() {
-            this.newEventMap = new HashMap<>();
-            this.currentEventMap = new HashMap<>();
-            this.expiredEventMap = new HashMap<>();
-        }
-
-        @Override
-        public final ArrayList<Tuple> getNewEvents() {
-            return new ArrayList<>(newEventMap.values());
-        }
-
-        @Override
-        public final ArrayList<Tuple> getCurrentEvents() {
-            return new ArrayList<>(currentEventMap.values());
-        }
-
-        @Override
-        public final ArrayList<Tuple> getExpiredEvents() {
-            return new ArrayList<>(expiredEventMap.values());
-        }
-
-        private Map<Long, Tuple> getNewEventsMap() {
-            return newEventMap;
-        }
-
-        private Map<Long, Tuple> getCurrentEventsMap() {
-            return currentEventMap;
-        }
-
-        private Map<Long, Tuple> getExpiredEventsMap() {
-            return expiredEventMap;
-        }
-
-    }
+    private final EventsTimeWindow eventsTimeWindow;
 
     public AbstractWindowedBolt() {
         this(DEFAULT_WINDOW_SIZE_IN_SECONDS, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
@@ -98,12 +51,8 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             ));
         }
 
-        this.windowSizeInSeconds = windowSizeInSeconds;
-        this.windowSizeInMillis = this.windowSizeInSeconds * 1000;
-        this.emitFrequencyInSeconds = emitFrequencyInSeconds;
-        this.emitFrequencyInMillis = this.emitFrequencyInSeconds * 1000;
-        this.eventsWindow = new EventsWindow();
-        this.lowerBoundWindow = this.upperBoundWindow = System.currentTimeMillis();
+        this.emitFrequencyInMillis = emitFrequencyInSeconds * TIME_UNIT_MILLIS;
+        this.eventsTimeWindow = new EventsTimeWindow(windowSizeInSeconds * TIME_UNIT_MILLIS);
     }
 
     @Override
@@ -115,15 +64,16 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     public final void execute(Tuple tuple) {
         try {
             if (TupleUtils.isTick(tuple)) {
-                updateWindow();
-                if (isWindowSlidingTotally) fillExpiredEventsAndRemoveFromCurrent();
-                fillCurrentEvents();
+                eventsTimeWindow.updateWindow(emitFrequencyInMillis);
+                eventsTimeWindow.moveEventsFromCurrentToExpired();
+                eventsTimeWindow.copyEventsFromNewToCurrent();
 
-                onTick(collector, eventsWindow);
+                onTick(collector, eventsTimeWindow);
 
-                clearNewAndExpiredEvents();
+                eventsTimeWindow.clearNewEvents();
+                eventsTimeWindow.clearExpiredEvents();
             } else {
-                fillNewEvents(getTimestampToUse(tuple), tuple);
+                eventsTimeWindow.addNewEvent(getTimestampToUse(tuple), tuple);
 
                 onValidTupleReceived(tuple);
             }
@@ -136,77 +86,18 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         }
     }
 
-    /**
-     * Aggiorna i valori {@link AbstractWindowedBolt#upperBoundWindow} e {@link AbstractWindowedBolt#lowerBoundWindow}
-     *
-     * Assegna {@code isWindowSlidingTotally = true} sse è stato aggiornato il valore {@link AbstractWindowedBolt#lowerBoundWindow}
-     * {@code isWindowSlidingTotally = false} altrimenti
-     */
-    private void updateWindow() {
-        // Avanzamento head finestra temporale
-        upperBoundWindow += emitFrequencyInMillis;
-
-        long deltaHeadTail = upperBoundWindow - lowerBoundWindow;
-        if (deltaHeadTail > windowSizeInMillis) {
-            // La finestra dal tempo 0 è > windowSize
-            // Avanzamento tail finestra temporale
-            lowerBoundWindow += deltaHeadTail - windowSizeInMillis;
-            isWindowSlidingTotally = true;
-        }
-    }
-
-    private void fillNewEvents(Long timestampToUse, Tuple tuple) {
-        // Aggiunta nuovo evento
-        eventsWindow.getNewEventsMap().put(timestampToUse, tuple);
-    }
-
-    private void fillCurrentEvents() {
-        // Aggiungo gli eventi occorsi nello sliding interval nella lista degli eventi correnti
-        eventsWindow.getCurrentEventsMap().putAll(eventsWindow.getNewEventsMap());
-    }
-
-    private void fillExpiredEventsAndRemoveFromCurrent() {
-        /*eventsWindow.getCurrentEventsMap().keySet().forEach(k -> {
-            if (k < lowerBoundWindow) {
-                eventsWindow.getExpiredEventsMap().put(k, eventsWindow.getCurrentEventsMap().get(k));
-            }
-        });
-        eventsWindow.getCurrentEventsMap().keySet().removeIf(k -> k < lowerBoundWindow);
-
-        Necessarie le ConcurrentHashMap per l'uso seguente
-        currentEventMap.keySet().forEach(k -> {
-            if (k < lowerBoundWindow) {
-                expiredEventMap.put(k, currentEventMap.get(k));
-                currentEventMap.remove(k);
-            }
-        });*/
-
-        Iterator<Map.Entry<Long, Tuple>> iterator = eventsWindow.getCurrentEventsMap().entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Long, Tuple> record = iterator.next();
-            if (record.getKey() < lowerBoundWindow) {
-                // Aggiunta dei valori eliminati in expiredEventMap
-                eventsWindow.getExpiredEventsMap().put(record.getKey(), record.getValue());
-                // Eliminazione eventi usciti dalla finestra temporale corrente
-                iterator.remove();
-            }
-        }
-    }
-
     private Long getTimestampToUse(Tuple tuple) throws BadTuple {
         Long lastTime, timestampToUse = System.currentTimeMillis();
-        /*
-        Per calcolare un timestamp unico condiviso tra più threads
+        // Per calcolare un timestamp unico condiviso tra più threads
         do {
             lastTime = LAST_TIME_MS.get();
             if (lastTime >= timestampToUse) timestampToUse = lastTime + 1;
         } while (!LAST_TIME_MS.compareAndSet(lastTime, timestampToUse));
-        */
 
         Long timestampFromTuple = getTimestampFrom(tuple);
+
         if (timestampFromTuple != null) {
-            // TODO vedere se mettere anche l'upper bound per il timestamp delle tuple (e vedere se le tuple vengono accettate)
-            if (timestampFromTuple < lowerBoundWindow /* || timestampFromTuple > upperBoundWindow + emitFrequencyInMillis */) {
+            if (timestampFromTuple < eventsTimeWindow.getLowerBoundWindow()) {
                 throw new BadTuple(String.format(
                         "%s rejects tuple with timestamp <%d>",
                         this.getClass().getSimpleName(),
@@ -231,12 +122,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         return null;
     }
 
-    private void clearNewAndExpiredEvents() {
-        eventsWindow.getNewEventsMap().clear();
-        eventsWindow.getExpiredEventsMap().clear();
-    }
-
-    protected abstract void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow);
+    protected abstract void onTick(OutputCollector collector, ITimeWindow<Tuple> eventsWindow);
 
     protected void onValidTupleReceived(Tuple tuple) {
 
@@ -245,20 +131,8 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
     @Override
     public final Map<String, Object> getComponentConfiguration() {
         Map<String, Object> conf = new HashMap<>();
-        conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, emitFrequencyInSeconds);
+        conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, emitFrequencyInMillis / TIME_UNIT_MILLIS);
         return conf;
-    }
-
-    protected long getLowerBoundWindow() {
-        return lowerBoundWindow;
-    }
-
-    protected long getUpperBoundWindow() {
-        return upperBoundWindow;
-    }
-
-    public boolean isWindowSlidingTotally() {
-        return isWindowSlidingTotally;
     }
 
 }

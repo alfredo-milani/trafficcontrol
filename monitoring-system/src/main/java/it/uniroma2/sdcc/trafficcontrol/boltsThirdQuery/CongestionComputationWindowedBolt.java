@@ -1,9 +1,9 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.IWindow;
 import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.ITimeWindow;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
@@ -29,7 +29,7 @@ public class CongestionComputationWindowedBolt extends AbstractWindowedBolt {
     }
 
     @Override
-    protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
+    protected void onTick(OutputCollector collector, ITimeWindow<Tuple> eventsWindow) {
         Double oldCongestionGrade = semaphoresSequence.getCongestionGrade();
 
         eventsWindow.getExpiredEvents().forEach(t -> {
@@ -44,8 +44,14 @@ public class CongestionComputationWindowedBolt extends AbstractWindowedBolt {
 
         semaphoresSequence.computeCongestionGrade();
         if (!semaphoresSequence.getCongestionGrade().equals(oldCongestionGrade)) {
-            collector.emit(new Values(semaphoresSequence.createCopyToSend()));
+            collector.emit(new Values(semaphoresSequence.lightweightCopy()));
         }
+    }
+
+    @Override
+    protected Long getTimestampFrom(Tuple tuple) {
+        RichMobileSensor richMobileSensor = (RichMobileSensor) tuple.getValueByField(MOBILE_SENSOR);
+        return richMobileSensor.getMobileTimestampUTC();
     }
 
     @Override

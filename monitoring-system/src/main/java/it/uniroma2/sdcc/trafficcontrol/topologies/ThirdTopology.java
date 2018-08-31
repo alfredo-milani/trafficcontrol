@@ -33,7 +33,8 @@ public class ThirdTopology extends Topology {
                 .shuffleGrouping(KAFKA_SPOUT);
 
 
-        // Bolts che calcolano il grado di congestione
+        // Bolts che calcolano il grado di congestione.
+        // Viene creato un bolt per ogni sequenza di semafori da controllare
         sequencesBolts.getSequenceBoltList().forEach(
                 sb -> builder.setBolt(
                         sb.getBoltName(),

@@ -140,7 +140,7 @@ public class SemaphoresSequence implements ITupleObject {
         sensorsInSequence.removeIf(s -> s.getMobileId().equals(richMobileSensor.getMobileId()));
     }
 
-    public SemaphoresSequence createCopyToSend() {
+    public SemaphoresSequence lightweightCopy() {
         // Per ridurre overhead nella trasmissione non
         // trasmettiamo la lista dei sensori mobili
         return new SemaphoresSequence(

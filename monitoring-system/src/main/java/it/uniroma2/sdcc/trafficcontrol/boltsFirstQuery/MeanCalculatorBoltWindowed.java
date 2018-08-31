@@ -1,10 +1,10 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.IWindow;
 import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.ITimeWindow;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MeanIntersectoinSpeedNotReady;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -33,7 +33,7 @@ public class MeanCalculatorBoltWindowed extends AbstractWindowedBolt {
     }
 
     @Override
-    protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
+    protected void onTick(OutputCollector collector, ITimeWindow<Tuple> eventsWindow) {
         eventsWindow.getExpiredEvents().forEach(t -> meanSpeedIntersectionQueue.remove(
                 ((RichSemaphoreSensor) t.getValueByField(SEMAPHORE_SENSOR)).getIntersectionId()
         ));

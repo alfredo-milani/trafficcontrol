@@ -1,15 +1,17 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.IWindow;
+import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.MeanSpeedIntersectionRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
+import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.ITimeWindow;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
+import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.INTERSECTION_MEAN_SPEED_OBJECT;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.PARTIAL_RANKINGS_OBJECT;
 
 public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
@@ -45,7 +47,7 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
     }
 
     @Override
-    protected void onTick(OutputCollector collector, IWindow<Tuple> eventsWindow) {
+    protected void onTick(OutputCollector collector, ITimeWindow<Tuple> eventsWindow) {
         Rankings oldRankings = rankings.copy();
 
         eventsWindow
@@ -60,10 +62,10 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
         }
     }
 
-    /*@Override
+    @Override
     protected Long getTimestampFrom(Tuple tuple) {
         return ((MeanSpeedIntersection) tuple.getValueByField(INTERSECTION_MEAN_SPEED_OBJECT)).getOldestSemaphoreTimestamp();
-    }*/
+    }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
