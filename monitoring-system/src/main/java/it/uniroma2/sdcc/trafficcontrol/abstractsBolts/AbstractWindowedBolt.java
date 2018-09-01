@@ -68,7 +68,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
                 eventsTimeWindow.moveEventsFromCurrentToExpired();
                 eventsTimeWindow.copyEventsFromNewToCurrent();
 
-                onTick(collector, eventsTimeWindow);
+                onTick(collector, eventsTimeWindow.copy());
 
                 eventsTimeWindow.clearNewEvents();
                 eventsTimeWindow.clearExpiredEvents();

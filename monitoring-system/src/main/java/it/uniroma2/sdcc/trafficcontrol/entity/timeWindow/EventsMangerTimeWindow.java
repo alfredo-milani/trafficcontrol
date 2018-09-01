@@ -11,8 +11,7 @@ import java.util.Map;
 
 public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Serializable {
 
-    // Window size in milliseconds
-    @Getter private final long windowSize;
+    @Getter private final long windowSize; // Window size in milliseconds
     @Getter private long lowerBoundWindow;
     @Getter private long upperBoundWindow;
     private final Map<Long, Tuple> newEventsMap;
@@ -124,6 +123,17 @@ public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Seriali
                 iterator.remove();
             }
         }
+    }
+
+    // Copia difensiva
+    public EventsMangerTimeWindow copy() {
+        EventsMangerTimeWindow emtw = new EventsMangerTimeWindow(windowSize);
+        emtw.lowerBoundWindow = this.lowerBoundWindow;
+        emtw.upperBoundWindow = this.upperBoundWindow;
+        emtw.newEventsMap.putAll(this.newEventsMap);
+        emtw.currentEventsMap.putAll(this.currentEventsMap);
+        emtw.expiredEventsMap.putAll(this.expiredEventsMap);
+        return emtw;
     }
 
 }
