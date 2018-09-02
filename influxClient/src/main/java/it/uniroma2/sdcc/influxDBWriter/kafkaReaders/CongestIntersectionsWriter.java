@@ -35,6 +35,7 @@ public class CongestIntersectionsWriter extends AbstractKafkaWriter {
                             .time(getAtomicTimestamp(), TimeUnit.MILLISECONDS)
                             .addField(INTERSECTION_ID, intersectionElement.get(INTERSECTION_ID).longValue())
                             .addField(MEDIAN_VEHICLES_INTERSECTION, intersectionElement.get(MEDIAN_VEHICLES_INTERSECTION).doubleValue())
+                            .addField(GLOBAL_MEDIAN, jsonNode.get(GLOBAL_MEDIAN).doubleValue())
                             .build()
             );
         }
