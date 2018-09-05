@@ -1,6 +1,5 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
-import it.uniroma2.sdcc.trafficcontrol.boltsValidation.SemaphoreAuthByEndpointBolt;
 import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
 import it.uniroma2.sdcc.trafficcontrol.topologies.Topology;
 import org.apache.storm.LocalCluster;
@@ -27,7 +26,7 @@ public class TopologyStarter {
         } catch (IOException e) {
             System.err.println(String.format(
                     "%s: error while reading configuration file",
-                    SemaphoreAuthByEndpointBolt.class.getSimpleName()
+                    TopologyStarter.class.getSimpleName()
             ));
             e.printStackTrace();
         }
