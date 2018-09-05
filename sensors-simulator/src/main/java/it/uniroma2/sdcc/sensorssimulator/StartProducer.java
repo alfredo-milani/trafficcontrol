@@ -10,8 +10,6 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.EXIT_FAILURE;
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.KAFKA_IP_PORT;
 
 
 public class StartProducer {
@@ -20,7 +18,7 @@ public class StartProducer {
     private static int waitingTimeMillis = 2 * 1000;
     private static ProducerType producerType = ProducerType.AUTO;
     private static SensorType sensorType;
-    // File di configurazione onfigurazione
+    // File di configurazione
     private final static Config config;
     static {
         config = Config.getInstance();
@@ -132,7 +130,7 @@ public class StartProducer {
          *  {@link KAFKA_IP_PORT} proprietà collegata ad un altro modulo
          *  attraverso la classe {@link ApplicationsProperties}
          */
-        producerProperties.put(BOOTSTRAP_SERVERS, config.get(KAFKA_IP_PORT));
+        producerProperties.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         producerProperties.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 
@@ -202,7 +200,7 @@ public class StartProducer {
                     options
             );
 
-            System.exit((int) config.get(EXIT_FAILURE));
+            System.exit(config.getExitFailure());
             return;
         }
 

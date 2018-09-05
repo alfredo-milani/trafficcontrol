@@ -10,7 +10,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.DEBUG_LEVEL;
 import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.DEBUG_LEVEL_MOCK_END_POINTS;
 import static org.apache.http.protocol.HTTP.*;
 
@@ -25,12 +24,13 @@ public class RESTfulAPI {
             ? JAVA_VERSION
             : JAVA_AGENT + " " + JAVA_VERSION;
 
-    public static boolean mockEndpoint;
+    private final static Config config;
+    private final static boolean mockEndpoint;
     static {
+        config = Config.getInstance();
         try {
-            Config config = Config.getInstance();
+            // Caricamento proprietà
             config.loadIfHasNotAlreadyBeenLoaded();
-            mockEndpoint = (short) config.get(DEBUG_LEVEL) == DEBUG_LEVEL_MOCK_END_POINTS;
         } catch (IOException e) {
             System.err.println(String.format(
                     "%s: error while reading configuration file",
@@ -38,6 +38,7 @@ public class RESTfulAPI {
             ));
             e.printStackTrace();
         }
+        mockEndpoint = config.getDebugLevel() == DEBUG_LEVEL_MOCK_END_POINTS;
     }
 
     private final static HttpClient client = HttpClientBuilder.create().build();

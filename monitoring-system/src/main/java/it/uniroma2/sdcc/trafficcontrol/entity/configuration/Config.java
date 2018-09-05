@@ -7,7 +7,9 @@ import org.apache.storm.shade.com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 public class Config extends HashMap<String, Object> {
@@ -125,7 +127,7 @@ public class Config extends HashMap<String, Object> {
     }
 
     public static Config getInstanceAndLoad() throws IOException {
-        if (!(boolean) SingletonContainer.instance.get(PROPERTIES_LOADED_FROM_FILE)) {
+        if (!SingletonContainer.instance.getPropertiesLoadedFromFile()) {
             SingletonContainer.instance.load();
         }
         return SingletonContainer.instance;
@@ -133,18 +135,18 @@ public class Config extends HashMap<String, Object> {
 
     public void load()
             throws IOException {
-        load((String) get(PROPERTIES_FILENAME));
+        load(getPropertiesFilename());
     }
 
     public void load(String configurationFile)
             throws IOException {
         if (configurationFile != null) {
-            put(PROPERTIES_FILENAME, configurationFile);
+            setConfigurationFile(configurationFile);
         }
 
         @Cleanup InputStream input = Config.class
                 .getClassLoader()
-                .getResourceAsStream((String) get(PROPERTIES_FILENAME));
+                .getResourceAsStream(getPropertiesFilename());
 
         if (input == null) {
             throw new IOException("Sorry, unable to find " + get(PROPERTIES_FILENAME));
@@ -202,7 +204,94 @@ public class Config extends HashMap<String, Object> {
     }
 
     public void setConfigurationFile(String configurationFile) {
-        put(DEFAULT_PROPERTIES_FILENAME, configurationFile);
+        put(PROPERTIES_FILENAME, configurationFile);
+    }
+
+    public String getApplicationName() {
+        return (String) get(APPLICATION_NAME);
+    }
+
+    public int getExitSuccess() {
+        return (int) get(EXIT_SUCCESS);
+    }
+
+    public int getExitFailure() {
+        return (int) get(EXIT_FAILURE);
+    }
+
+    public boolean getPropertiesLoadedFromFile() {
+        return (boolean) get(PROPERTIES_LOADED_FROM_FILE);
+    }
+
+    public short getDebugLevel() {
+        return (short) get(DEBUG_LEVEL);
+    }
+
+    public String getPropertiesFilename() {
+        return (String) get(PROPERTIES_FILENAME);
+    }
+
+    public String getMode() {
+        return (String) get(MODE);
+    }
+
+    public String getKafkaIp() {
+        return (String) get(KAFKA_IP);
+    }
+
+    public int getKafkaPort() {
+        return (int) get(KAFKA_PORT);
+    }
+
+    public String getKafkaIpPort() {
+        return (String) get(KAFKA_IP_PORT);
+    }
+
+    public int getNumberWorkers() {
+        return (int) get(NUMBER_WORKERS);
+    }
+
+    public Double getRoadDelta() {
+        return (Double) get(ROAD_DELTA);
+    }
+
+    public String getSemaphoresSequencesFile() {
+        return (String) get(SEMAPHORES_SEQUENCES_FILE);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Topology> getTopologiesToStart() {
+        List<Topology> topologies = new ArrayList<>();
+
+        List<String> topologiesToStart = (List<String>) get(TOPOLOGIES_TO_START);
+        if (topologiesToStart.size() == 1 && topologiesToStart.contains(TOPOLOGIES_ALL)) {
+            topologies.add(new ValidationTopology());
+            topologies.add(new SemaphoreStatusTopology());
+            topologies.add(new FirstTopology());
+            topologies.add(new SecondTopology());
+            topologies.add(new ThirdTopology());
+            topologies.add(new GreenTimingTopology());
+        } else {
+            topologiesToStart.forEach(s -> {
+                if (s.equals(TOPOLOGY_VALIDATION))              topologies.add(new ValidationTopology());
+                else if (s.equals(TOPOLOGY_SEMAPHORE_STATUS))   topologies.add(new SemaphoreStatusTopology());
+                else if (s.equals(TOPOLOGY_FIRST))              topologies.add(new FirstTopology());
+                else if (s.equals(TOPOLOGY_SECOND))             topologies.add(new SecondTopology());
+                else if (s.equals(TOPOLOGY_THIRD))              topologies.add(new ThirdTopology());
+                else if (s.equals(TOPOLOGY_GREEN_TIMING))       topologies.add(new GreenTimingTopology());
+                else System.err.println(String.format("Topologia sconosciuta: \"%s\"", s));
+            });
+        }
+
+        return topologies;
+    }
+
+    public String getSemaphoresSensorsEndpoint() {
+        return (String) get(SEMAPHORES_SENSORS_ENDPOINT);
+    }
+
+    public String getMobileSensorsEndpoint() {
+        return (String) get(MOBILE_SENSORS_ENDPOINT);
     }
 
     @Override

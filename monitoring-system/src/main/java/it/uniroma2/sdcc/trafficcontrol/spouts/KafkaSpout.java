@@ -17,8 +17,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.APPLICATION_NAME;
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.KAFKA_IP_PORT;
 
 public class KafkaSpout extends BaseRichSpout {
 
@@ -26,7 +24,7 @@ public class KafkaSpout extends BaseRichSpout {
     private KafkaConsumer<String, String> consumer;
     private final String sourceTopic;
     private final String groupId;
-    // File di configurazione onfigurazione
+    // File di configurazione
     private final static Config config;
     static {
         config = Config.getInstance();
@@ -43,7 +41,7 @@ public class KafkaSpout extends BaseRichSpout {
     }
 
     public KafkaSpout(String sourceTopic) {
-        this(sourceTopic, (String) config.get(APPLICATION_NAME));
+        this(sourceTopic, config.getApplicationName());
     }
 
     public KafkaSpout(String sourceTopic, String groupId) {
@@ -56,7 +54,7 @@ public class KafkaSpout extends BaseRichSpout {
         this.collector = collector;
 
         Properties props = new Properties();
-        props.put(BOOTSTRAP_SERVERS, config.get(KAFKA_IP_PORT));
+        props.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
         props.put(GROUP_ID, groupId);
         props.put(AUTO_COMMIT, TRUE_VALUE);
         props.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);

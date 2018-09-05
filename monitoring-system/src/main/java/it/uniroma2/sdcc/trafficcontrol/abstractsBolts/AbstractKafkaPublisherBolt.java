@@ -15,14 +15,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.KAFKA_IP_PORT;
 
 public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
 
     private OutputCollector collector;
     private KafkaProducer<String, V> producer;
     private final String topic;
-    // File di configurazione onfigurazione
+    // File di configurazione
     private final static Config config;
     static {
         config = Config.getInstance();
@@ -45,7 +44,7 @@ public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
     @Override
     public final void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         Properties props = new Properties();
-        props.put(BOOTSTRAP_SERVERS, config.get(KAFKA_IP_PORT));
+        props.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
         props.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         props.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 

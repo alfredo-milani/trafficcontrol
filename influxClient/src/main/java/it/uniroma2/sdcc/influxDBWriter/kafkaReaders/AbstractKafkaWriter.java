@@ -21,7 +21,6 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.KAFKA_IP_PORT;
 
 @Log
 public abstract class AbstractKafkaWriter implements Runnable {
@@ -50,7 +49,7 @@ public abstract class AbstractKafkaWriter implements Runnable {
     private final static ObjectMapper mapper = new ObjectMapper();
     private final static JsonFactory factory = mapper.getFactory();
 
-    // File di configurazione onfigurazione
+    // File di configurazione
     private final static Config config;
     static {
         config = Config.getInstance();
@@ -84,7 +83,7 @@ public abstract class AbstractKafkaWriter implements Runnable {
 
     private Properties getComsumerProperties() {
         Properties properties = new Properties();
-        properties.put(BOOTSTRAP_SERVERS, config.get(KAFKA_IP_PORT));
+        properties.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
         properties.put(GROUP_ID, KAFKA_GROUP_ID);
         properties.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);
         properties.put(VALUE_DESERIALIZER, DESERIALIZER_VALUE);

@@ -13,11 +13,10 @@ import org.apache.storm.tuple.Values;
 import java.io.IOException;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEMAPHORE_SENSOR;
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.SEMAPHORES_SENSORS_ENDPOINT;
 
 public class SemaphoreAuthByEndpointBolt extends AbstractAuthenticationBolt {
 
-    // File di configurazione onfigurazione
+    // File di configurazione
     private final static Config config;
     static {
         config = Config.getInstance();
@@ -37,7 +36,7 @@ public class SemaphoreAuthByEndpointBolt extends AbstractAuthenticationBolt {
     public SemaphoreAuthByEndpointBolt(String cacheName) {
         super(cacheName);
 
-        semaphoreSensorEndpoint = (String) config.get(SEMAPHORES_SENSORS_ENDPOINT);
+        semaphoreSensorEndpoint = config.getSemaphoresSensorsEndpoint();
         if (semaphoreSensorEndpoint == null) {
             throw new BadEndpointException(String.format(
                     "Si deve specificare un endpoint valido. Endpoint corrente: \"%s\"",
