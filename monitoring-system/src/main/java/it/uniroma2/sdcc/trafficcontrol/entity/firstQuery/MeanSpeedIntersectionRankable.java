@@ -1,7 +1,7 @@
-package it.uniroma2.sdcc.trafficcontrol.entity.ranking;
+package it.uniroma2.sdcc.trafficcontrol.entity.firstQuery;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
+import it.uniroma2.sdcc.trafficcontrol.entity.ranking.IRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.ITupleObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

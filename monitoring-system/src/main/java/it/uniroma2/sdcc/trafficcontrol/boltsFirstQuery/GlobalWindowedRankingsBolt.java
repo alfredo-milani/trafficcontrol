@@ -30,11 +30,11 @@ public class GlobalWindowedRankingsBolt extends AbstractWindowedBolt {
         );
     }
 
-    public GlobalWindowedRankingsBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public GlobalWindowedRankingsBolt(long windowSizeInSeconds, long emitFrequencyInSeconds) {
         this(TOP_N_DEFAULT, windowSizeInSeconds, emitFrequencyInSeconds);
     }
 
-    public GlobalWindowedRankingsBolt(int topN, int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public GlobalWindowedRankingsBolt(int topN, long windowSizeInSeconds, long emitFrequencyInSeconds) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
 
         if (topN < 1) {

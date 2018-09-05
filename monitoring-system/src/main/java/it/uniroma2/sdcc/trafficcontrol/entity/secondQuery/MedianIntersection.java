@@ -1,13 +1,14 @@
-package it.uniroma2.sdcc.trafficcontrol.entity;
+package it.uniroma2.sdcc.trafficcontrol.entity.secondQuery;
 
 import com.tdunning.math.stats.TDigest;
+import it.uniroma2.sdcc.trafficcontrol.entity.BaseIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadIntersectionTopology;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.MedianIntersectionNotReady;
 import lombok.Getter;
 
-import static it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersectionManager.COMPRESSION;
-import static it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersectionManager.QUANTILE;
+import static it.uniroma2.sdcc.trafficcontrol.entity.secondQuery.MedianIntersectionManager.COMPRESSION;
+import static it.uniroma2.sdcc.trafficcontrol.entity.secondQuery.MedianIntersectionManager.QUANTILE;
 
 
 public class MedianIntersection extends BaseIntersection {

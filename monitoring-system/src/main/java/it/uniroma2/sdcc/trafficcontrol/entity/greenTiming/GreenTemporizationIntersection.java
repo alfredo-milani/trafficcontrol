@@ -1,5 +1,6 @@
-package it.uniroma2.sdcc.trafficcontrol.entity;
+package it.uniroma2.sdcc.trafficcontrol.entity.greenTiming;
 
+import it.uniroma2.sdcc.trafficcontrol.entity.BaseIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 
 import java.util.ArrayList;

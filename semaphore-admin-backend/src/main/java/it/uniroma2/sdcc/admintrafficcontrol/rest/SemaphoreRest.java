@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = Routes.SEMAPHORE.SEMAPHORE_BASE_ROUTE)
+@RequestMapping(path = Routes.SEMAPHORE.BASE_ROUTE)
 @CrossOrigin
 public class SemaphoreRest {
-
 
     private final SemaphoreController semaphoreController;
 
@@ -24,8 +23,7 @@ public class SemaphoreRest {
         this.semaphoreController = semaphoreController;
     }
 
-
-    @RequestMapping(path = Routes.SEMAPHORE.CREATE, method = RequestMethod.POST)
+    @PostMapping(Routes.SEMAPHORE.CREATE)
     public ResponseEntity<Semaphore> getSemaphore(@RequestBody Semaphore semaphore, @PathVariable Long intersectionId,
                                                   @PathVariable Long semaphoreId) {
         Semaphore newSemaphore=null;
@@ -36,33 +34,32 @@ public class SemaphoreRest {
         return new ResponseEntity<>(newSemaphore, semaphore== null ? HttpStatus.FOUND : HttpStatus.CREATED);
     }
 
-    @RequestMapping(path = Routes.SEMAPHORE.GET_SEMAPHORES, method = RequestMethod.GET)
+    @GetMapping(Routes.SEMAPHORE.GET_SEMAPHORES)
     public ResponseEntity<List<Semaphore>> getSemaphores() {
         List<Semaphore> semaphores = semaphoreController.findAllSemaphore();
         return new ResponseEntity<>(semaphores, HttpStatus.OK);
     }
 
-
-    @RequestMapping(path = Routes.SEMAPHORE.EXIST_SEMAPHORE, method = RequestMethod.GET)
+    @GetMapping(Routes.SEMAPHORE.EXIST_SEMAPHORE)
     public ResponseEntity<Boolean> existSemaphore(@PathVariable Long id) {
         Boolean b = semaphoreController.existSemaphore(id);
         return new ResponseEntity<>(b, !b ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.SEMAPHORE.GET_SEMAPHORE, method = RequestMethod.GET)
+    @GetMapping(Routes.SEMAPHORE.GET_SEMAPHORE)
     public ResponseEntity<Semaphore> getSemaphore(@PathVariable Long id) {
         Semaphore semaphore = semaphoreController.getSemaphore(id);
         return new ResponseEntity<>(semaphore, semaphore == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.SEMAPHORE.DELETE_SEMAPHORE, method = RequestMethod.DELETE)
+    @DeleteMapping(Routes.SEMAPHORE.DELETE_SEMAPHORE)
     public ResponseEntity<Semaphore> deleteSemaphore(@PathVariable Long id) {
         if(!semaphoreController.deleteSemaphore(id))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.SEMAPHORE.UPDATE_SEMAPHORE, method = RequestMethod.PUT)
+    @PutMapping(Routes.SEMAPHORE.UPDATE_SEMAPHORE)
     public ResponseEntity<Semaphore> updateSemaphore(@PathVariable Long id, @RequestBody Semaphore semaphore) {
         Semaphore semaphoreUpdated;
         try {

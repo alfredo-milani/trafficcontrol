@@ -1,9 +1,9 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractDispatcherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence;
-import it.uniroma2.sdcc.trafficcontrol.entity.SequencesBolts;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequence;
+import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SequencesBolts;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadTuple;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;

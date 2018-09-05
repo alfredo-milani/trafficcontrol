@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(path = Routes.ADMIN.ADMIN_BASE_ROUTE)
+@RequestMapping(path = Routes.ADMIN.BASE_ROUTE)
 @CrossOrigin
 public class AdminRest {
 
@@ -24,14 +24,13 @@ public class AdminRest {
         this.adminController = adminController;
     }
 
-
-    @RequestMapping(path = Routes.ADMIN.GET_ADMINS, method = RequestMethod.GET)
+    @GetMapping(Routes.ADMIN.GET_ADMINS)
     public ResponseEntity<List<Admin>> getAdmins() {
         List<Admin> persone = adminController.getAdmins();
         return new ResponseEntity<>(persone, HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.ADMIN.UPDATE_ADMIN, method = RequestMethod.PUT)
+    @PutMapping(Routes.ADMIN.UPDATE_ADMIN)
     public ResponseEntity<Admin> updateAdmin(@PathVariable Long id, @RequestBody Admin admin) {
         Admin adminUpdated;
         try {
@@ -42,19 +41,19 @@ public class AdminRest {
         return new ResponseEntity<>(adminUpdated, HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.ADMIN.GET_ADMIN, method = RequestMethod.GET)
+    @GetMapping(Routes.ADMIN.GET_ADMIN)
     public ResponseEntity<Admin> getAdmin(@PathVariable Long id) {
         Admin admin = adminController.getAdmin(id);
         return new ResponseEntity<>(admin, admin == null ? HttpStatus.NOT_FOUND : HttpStatus.CREATED);
     }
 
-    @RequestMapping(path = Routes.ADMIN.SIGN_IN, method = RequestMethod.POST)
+    @PostMapping(Routes.ADMIN.SIGN_IN)
     public ResponseEntity<Admin> logIn(@RequestBody Admin admin) {
         Admin adminLogged = adminController.login(admin);
         return new ResponseEntity<>(adminLogged, adminLogged == null ? HttpStatus.UNAUTHORIZED : HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.ADMIN.DELETE_ADMIN, method = RequestMethod.DELETE)
+    @DeleteMapping(Routes.ADMIN.DELETE_ADMIN)
     public ResponseEntity<Boolean> deleteAdmin(@PathVariable Long id) {
         boolean deleted = adminController.removeAdmin(id);
         return new ResponseEntity<>(deleted, deleted ? HttpStatus.OK : HttpStatus.NOT_FOUND);

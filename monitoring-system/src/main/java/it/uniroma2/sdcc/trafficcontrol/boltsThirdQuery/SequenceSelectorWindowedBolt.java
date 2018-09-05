@@ -1,8 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence;
-import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequencesManager;
+import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequence;
+import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequencesManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -18,18 +18,18 @@ public class SequenceSelectorWindowedBolt extends AbstractWindowedBolt {
 
     private final SemaphoresSequencesManager semaphoresSequencesManager;
 
-    public SequenceSelectorWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public SequenceSelectorWindowedBolt(long windowSizeInSeconds, long emitFrequencyInSeconds) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
         semaphoresSequencesManager = new SemaphoresSequencesManager();
     }
 
-    public SequenceSelectorWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds,
+    public SequenceSelectorWindowedBolt(long windowSizeInSeconds, long emitFrequencyInSeconds,
                                         List<SemaphoresSequence> semaphoresSequences, Double roadDelta) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
         semaphoresSequencesManager = new SemaphoresSequencesManager(semaphoresSequences, roadDelta);
     }
 
-    public SequenceSelectorWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds,
+    public SequenceSelectorWindowedBolt(long windowSizeInSeconds, long emitFrequencyInSeconds,
                                         String JSONFileStructure, Double roadDelta) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
         semaphoresSequencesManager = SemaphoresSequencesManager.getInstanceFrom(JSONFileStructure, roadDelta);

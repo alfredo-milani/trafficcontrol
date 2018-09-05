@@ -1,7 +1,6 @@
 package it.uniroma2.sdcc.influxDBWriter.kafkaReaders;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.java.Log;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 
@@ -11,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.RankingJsonFields.*;
 
-@Log
 public class RankingReader extends AbstractKafkaWriter {
 
     private final String tableName;

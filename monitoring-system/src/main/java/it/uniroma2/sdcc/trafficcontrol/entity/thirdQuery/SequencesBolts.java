@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.entity;
+package it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery;
 
 import lombok.Getter;
 import lombok.Setter;

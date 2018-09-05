@@ -1,8 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequence;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
+import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequence;
 import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -17,12 +17,12 @@ public class CongestionComputationWindowedBolt extends AbstractWindowedBolt {
 
     private final SemaphoresSequence semaphoresSequence;
 
-    public CongestionComputationWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public CongestionComputationWindowedBolt(long windowSizeInSeconds, long emitFrequencyInSeconds) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
         semaphoresSequence = new SemaphoresSequence();
     }
 
-    public CongestionComputationWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds,
+    public CongestionComputationWindowedBolt(long windowSizeInSeconds, long emitFrequencyInSeconds,
                                              SemaphoresSequence semaphoresSequence) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
         this.semaphoresSequence = semaphoresSequence;

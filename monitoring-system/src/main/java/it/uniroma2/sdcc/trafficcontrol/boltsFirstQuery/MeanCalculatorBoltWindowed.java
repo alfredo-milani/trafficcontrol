@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
+import it.uniroma2.sdcc.trafficcontrol.entity.firstQuery.MeanSpeedIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
@@ -23,11 +23,11 @@ public class MeanCalculatorBoltWindowed extends AbstractWindowedBolt {
 
     private final Map<Long, MeanSpeedIntersection> meanSpeedIntersectionQueue;
 
-    public MeanCalculatorBoltWindowed(int windowSizeInSeconds) {
+    public MeanCalculatorBoltWindowed(long windowSizeInSeconds) {
         this(windowSizeInSeconds, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
     }
 
-    public MeanCalculatorBoltWindowed(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public MeanCalculatorBoltWindowed(long windowSizeInSeconds, long emitFrequencyInSeconds) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
         this.meanSpeedIntersectionQueue = new HashMap<>();
     }

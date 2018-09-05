@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationIntersection;
+import it.uniroma2.sdcc.trafficcontrol.entity.greenTiming.GreenTemporizationIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import org.apache.storm.task.OutputCollector;

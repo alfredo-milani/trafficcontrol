@@ -4,27 +4,49 @@ import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.CongestedSequencePublishe
 import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.CongestionComputationWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.SequenceSelectorWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.SequencesDispatcherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.SemaphoresSequencesManager;
-import it.uniroma2.sdcc.trafficcontrol.entity.SequencesBolts;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequencesManager;
+import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SequencesBolts;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.BoltDeclarer;
 import org.apache.storm.topology.TopologyBuilder;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.CONGESTED_SEQUENCE;
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.MOBILE_SENSOR_VALIDATED;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.ROAD_DELTA;
-import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.SEMAPHORES_SEQUENCES_FILE;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.ROAD_DELTA;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.SEMAPHORES_SEQUENCES_FILE;
 
 public class ThirdTopology extends Topology {
 
     private static final String CLASS_NAME = ThirdTopology.class.getSimpleName();
+    // File di configurazione onfigurazione
+    private final static Config config;
+    static {
+        config = Config.getInstance();
+        try {
+            // Caricamento proprietà
+            config.loadIfHasNotAlreadyBeenLoaded();
+        } catch (IOException e) {
+            System.err.println(String.format(
+                    "%s: error while reading configuration file",
+                    ThirdTopology.class.getSimpleName()
+            ));
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
-        SequencesBolts sequencesBolts = new SequencesBolts(SEMAPHORES_SEQUENCES_FILE, ROAD_DELTA);
         TopologyBuilder builder = new TopologyBuilder();
 
+        SequencesBolts sequencesBolts = new SequencesBolts(
+                (String) config.get(SEMAPHORES_SEQUENCES_FILE),
+                (double) config.get(ROAD_DELTA)
+        );
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(MOBILE_SENSOR_VALIDATED, CLASS_NAME),4);
 
         // Dispatcher che smista le varie tuple proveniente dai sensori mobili verso i abstractsBolts
@@ -39,8 +61,8 @@ public class ThirdTopology extends Topology {
                 sb -> builder.setBolt(
                         sb.getBoltName(),
                         new CongestionComputationWindowedBolt(
-                                5 * 60,
-                                5,
+                                TimeUnit.MINUTES.toSeconds(5),
+                                TimeUnit.SECONDS.toSeconds(5),
                                 sb.getSemaphoresSequence()
                         )
                 )
@@ -50,10 +72,10 @@ public class ThirdTopology extends Topology {
         BoltDeclarer sequenceBoltDeclarer = builder.setBolt(
                 SEQUENCE_SELECTOR_BOLT,
                 new SequenceSelectorWindowedBolt(
-                        5 * 60,
-                        5,
+                        TimeUnit.MINUTES.toSeconds(5),
+                        TimeUnit.SECONDS.toSeconds(5),
                         SemaphoresSequencesManager.getsemaphoresSequenceFromBoltsList(sequencesBolts),
-                        ROAD_DELTA
+                        (double) config.get(ROAD_DELTA)
                 )
         );
         sequencesBolts.getSequenceBoltList().forEach(

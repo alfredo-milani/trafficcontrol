@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.entity;
+package it.uniroma2.sdcc.trafficcontrol.entity.secondQuery;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;

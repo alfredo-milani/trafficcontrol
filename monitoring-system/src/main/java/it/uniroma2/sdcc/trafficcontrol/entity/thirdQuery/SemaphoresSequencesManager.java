@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.trafficcontrol.entity;
+package it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
@@ -12,8 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.SEMAPHORES_SEQUENCES_FILE;
 
 @Getter
 @Setter
@@ -40,7 +38,7 @@ public class SemaphoresSequencesManager implements Serializable {
     public static SemaphoresSequencesManager getInstanceFrom(String JSONStructurePath, Double roadDelta) {
         try {
             // Read json file data to String
-            byte[] jsonData = Files.readAllBytes(Paths.get(SEMAPHORES_SEQUENCES_FILE));
+            byte[] jsonData = Files.readAllBytes(Paths.get(JSONStructurePath));
             // Convert json string to object
             SemaphoresSequencesManager semaphoresSequencesManager =
                     new ObjectMapper().readValue(jsonData, SemaphoresSequencesManager.class);

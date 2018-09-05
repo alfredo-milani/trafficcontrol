@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.spouts;
 
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -10,25 +11,39 @@ import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.APP_NAME;
-import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.KAFKA_IP_PORT;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.APPLICATION_NAME;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.KAFKA_IP_PORT;
 
 public class KafkaSpout extends BaseRichSpout {
-
-    private final static String DEFAULT_GROUP_ID = APP_NAME;
 
     private SpoutOutputCollector collector;
     private KafkaConsumer<String, String> consumer;
     private final String sourceTopic;
     private final String groupId;
+    // File di configurazione onfigurazione
+    private final static Config config;
+    static {
+        config = Config.getInstance();
+        try {
+            // Caricamento proprietà
+            config.loadIfHasNotAlreadyBeenLoaded();
+        } catch (IOException e) {
+            System.err.println(String.format(
+                    "%s: error while reading configuration file",
+                    KafkaSpout.class.getSimpleName()
+            ));
+            e.printStackTrace();
+        }
+    }
 
     public KafkaSpout(String sourceTopic) {
-        this(sourceTopic, DEFAULT_GROUP_ID);
+        this(sourceTopic, (String) config.get(APPLICATION_NAME));
     }
 
     public KafkaSpout(String sourceTopic, String groupId) {
@@ -41,7 +56,7 @@ public class KafkaSpout extends BaseRichSpout {
         this.collector = collector;
 
         Properties props = new Properties();
-        props.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
+        props.put(BOOTSTRAP_SERVERS, config.get(KAFKA_IP_PORT));
         props.put(GROUP_ID, groupId);
         props.put(AUTO_COMMIT, TRUE_VALUE);
         props.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);

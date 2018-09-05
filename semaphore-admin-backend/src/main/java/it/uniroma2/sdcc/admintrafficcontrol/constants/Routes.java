@@ -3,8 +3,9 @@ package it.uniroma2.sdcc.admintrafficcontrol.constants;
 public interface Routes {
 
     interface SEMAPHORE {
+
         // Base route
-        String SEMAPHORE_BASE_ROUTE = Entities.SEMAPHORE;
+        String BASE_ROUTE = Entities.SEMAPHORE;
 
         // Routes
         String CREATE = "create/{intersectionId}/{semaphoreId}";
@@ -13,11 +14,13 @@ public interface Routes {
         String DELETE_SEMAPHORE= "delete/{id}";
         String UPDATE_SEMAPHORE = "update/{id}";
         String EXIST_SEMAPHORE = "exist/{id}";
+
     }
 
     interface ADMIN {
+
         // Base route
-        String ADMIN_BASE_ROUTE = Entities.ADMIN;
+        String BASE_ROUTE = Entities.ADMIN;
 
         // Routes
         String SIGN_IN = "sign_in";
@@ -25,11 +28,13 @@ public interface Routes {
         String GET_ADMIN = "{id}";
         String DELETE_ADMIN = "delete/{id}";
         String UPDATE_ADMIN = "update/{id}";
+
     }
 
     interface MOBILE_SENSOR {
+
         // Base route
-        String MOBILE_SENSOR_BASE_ROUTE = Entities.MOBILE_SENSOR;
+        String BASE_ROUTE = Entities.MOBILE_SENSOR;
 
         // Routes
         String CREATE = "create/{id}";

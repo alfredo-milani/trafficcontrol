@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.sensorssimulator;
 
-import it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
@@ -10,8 +10,8 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.EXIT_FAILURE;
-import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.KAFKA_IP_PORT;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.EXIT_FAILURE;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.KAFKA_IP_PORT;
 
 
 public class StartProducer {
@@ -20,7 +20,21 @@ public class StartProducer {
     private static int waitingTimeMillis = 2 * 1000;
     private static ProducerType producerType = ProducerType.AUTO;
     private static SensorType sensorType;
-    private final static ApplicationsProperties properties = ApplicationsProperties.getInstance();
+    // File di configurazione onfigurazione
+    private final static Config config;
+    static {
+        config = Config.getInstance();
+        try {
+            // Caricamento proprietà
+            config.loadIfHasNotAlreadyBeenLoaded();
+        } catch (IOException e) {
+            System.err.println(String.format(
+                    "%s: error while reading configuration file",
+                    StartProducer.class.getSimpleName()
+            ));
+            e.printStackTrace();
+        }
+    }
 
     private enum ProducerType {
         UNKNOWN,
@@ -36,7 +50,6 @@ public class StartProducer {
 
     @SuppressWarnings("Duplicates")
     public static void main(String[] args) throws Exception {
-        properties.loadProperties();
         parseArgs(args);
 
         switch (producerType) {
@@ -119,7 +132,7 @@ public class StartProducer {
          *  {@link KAFKA_IP_PORT} proprietà collegata ad un altro modulo
          *  attraverso la classe {@link ApplicationsProperties}
          */
-        producerProperties.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
+        producerProperties.put(BOOTSTRAP_SERVERS, config.get(KAFKA_IP_PORT));
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         producerProperties.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 
@@ -189,7 +202,7 @@ public class StartProducer {
                     options
             );
 
-            System.exit(EXIT_FAILURE);
+            System.exit((int) config.get(EXIT_FAILURE));
             return;
         }
 

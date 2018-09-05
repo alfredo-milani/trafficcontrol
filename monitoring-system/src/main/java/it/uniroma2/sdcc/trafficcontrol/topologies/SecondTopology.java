@@ -8,6 +8,8 @@ import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
+import java.util.concurrent.TimeUnit;
+
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
@@ -27,19 +29,19 @@ public class SecondTopology extends Topology {
 
 
         // Bolt che calcola la mediana di ogni intersezione
-        builder.setBolt(MEDIAN_CALCULATOR_BOLT, new MedianCalculatorBoltWindowed(60,2),4)
+        builder.setBolt(MEDIAN_CALCULATOR_BOLT, new MedianCalculatorBoltWindowed(TimeUnit.MINUTES.toSeconds(1), TimeUnit.SECONDS.toSeconds(2)),4)
                 .fieldsGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM, new Fields(INTERSECTION_ID));
 
         // Bolt che calcola la mediana globale e riceve le mediane delle intersezioni per la finestra temporale di 15 minuti
-        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_15_MIN, new GlobalMedianCalculatorBoltWindowed(15 * 60,5))
+        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_15_MIN, new GlobalMedianCalculatorBoltWindowed(TimeUnit.MINUTES.toSeconds(15), TimeUnit.SECONDS.toSeconds(5)))
                 .globalGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM)
                 .globalGrouping(MEDIAN_CALCULATOR_BOLT, MEDIAN_INTERSECTION_STREAM);
         // Bolt che calcola la mediana globale e riceve le mediane delle intersezioni per la finestra temporale di 1 ora
-        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_1_H, new GlobalMedianCalculatorBoltWindowed(60 * 60,5))
+        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_1_H, new GlobalMedianCalculatorBoltWindowed(TimeUnit.HOURS.toSeconds(1), TimeUnit.SECONDS.toSeconds(5)))
                 .globalGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM)
                 .globalGrouping(MEDIAN_CALCULATOR_BOLT, MEDIAN_INTERSECTION_STREAM);
         // Bolt che calcola la mediana globale e riceve le mediane delle intersezioni per la finestra temporale di 24 ore
-        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_24_H, new GlobalMedianCalculatorBoltWindowed(24 * 60 * 60,5))
+        builder.setBolt(GLOBAL_MEDIAN_CALCULATOR_BOLT_24_H, new GlobalMedianCalculatorBoltWindowed(TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS.toSeconds(5)))
                 .globalGrouping(MEDIAN_VEHICLES_DISPATCHER_BOLT, SEMAPHORE_SENSOR_STREAM)
                 .globalGrouping(MEDIAN_CALCULATOR_BOLT, MEDIAN_INTERSECTION_STREAM);
 

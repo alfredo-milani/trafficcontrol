@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersection;
+import it.uniroma2.sdcc.trafficcontrol.entity.secondQuery.MedianIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichSemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
@@ -24,11 +24,11 @@ public class MedianCalculatorBoltWindowed extends AbstractWindowedBolt {
 
     private final Map<Long, MedianIntersection> medianIntersectionQueue;
 
-    public MedianCalculatorBoltWindowed(int windowSizeInSeconds) {
+    public MedianCalculatorBoltWindowed(long windowSizeInSeconds) {
         this(windowSizeInSeconds, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
     }
 
-    public MedianCalculatorBoltWindowed(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public MedianCalculatorBoltWindowed(long windowSizeInSeconds, long emitFrequencyInSeconds) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
         this.medianIntersectionQueue = new HashMap<>();
     }

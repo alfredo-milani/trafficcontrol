@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
-import static it.uniroma2.sdcc.trafficcontrol.utils.ApplicationsProperties.KAFKA_IP_PORT;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.KAFKA_IP_PORT;
 
 @Log
 public abstract class AbstractKafkaWriter implements Runnable {
@@ -50,14 +50,27 @@ public abstract class AbstractKafkaWriter implements Runnable {
     private final static ObjectMapper mapper = new ObjectMapper();
     private final static JsonFactory factory = mapper.getFactory();
 
-    public AbstractKafkaWriter(String dbName, String topicName) throws IOException {
+    // File di configurazione onfigurazione
+    private final static Config config;
+    static {
+        config = Config.getInstance();
+        try {
+            // Caricamento proprietà
+            config.loadIfHasNotAlreadyBeenLoaded();
+        } catch (IOException e) {
+            System.err.println(String.format(
+                    "%s: error while reading configuration file",
+                    AbstractKafkaWriter.class.getSimpleName()
+            ));
+            e.printStackTrace();
+        }
+    }
+
+    public AbstractKafkaWriter(String dbName, String topicName) {
         this(dbName, topicName, DEFAULT_POOL_TIMEOUT);
     }
 
-    public AbstractKafkaWriter(String dbName, String topicName, Long poolTimeout) throws IOException {
-        // Load properties
-        ApplicationsProperties.getInstance().loadProperties();
-
+    public AbstractKafkaWriter(String dbName, String topicName, Long poolTimeout) {
         // Creating Database
         this.dbName = dbName;
         influxDB.createDatabase(dbName);
@@ -71,7 +84,7 @@ public abstract class AbstractKafkaWriter implements Runnable {
 
     private Properties getComsumerProperties() {
         Properties properties = new Properties();
-        properties.put(BOOTSTRAP_SERVERS, KAFKA_IP_PORT);
+        properties.put(BOOTSTRAP_SERVERS, config.get(KAFKA_IP_PORT));
         properties.put(GROUP_ID, KAFKA_GROUP_ID);
         properties.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);
         properties.put(VALUE_DESERIALIZER, DESERIALIZER_VALUE);

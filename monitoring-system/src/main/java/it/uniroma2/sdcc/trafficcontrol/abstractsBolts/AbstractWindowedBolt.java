@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
-    protected static final int DEFAULT_EMIT_FREQUENCY_IN_SECONDS = 2;
-    protected static final int DEFAULT_WINDOW_SIZE_IN_SECONDS = 10;
+    protected static final long DEFAULT_EMIT_FREQUENCY_IN_SECONDS = 2;
+    protected static final long DEFAULT_WINDOW_SIZE_IN_SECONDS = 10;
     protected static final long TIME_UNIT_MILLIS = 1000L;
     private static final AtomicLong LAST_TIME_MS = new AtomicLong();
 
@@ -29,11 +29,11 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         this(DEFAULT_WINDOW_SIZE_IN_SECONDS, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
     }
 
-    public AbstractWindowedBolt(int windowSizeInSeconds) {
+    public AbstractWindowedBolt(long windowSizeInSeconds) {
         this(windowSizeInSeconds, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
     }
 
-    public AbstractWindowedBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public AbstractWindowedBolt(long windowSizeInSeconds, long emitFrequencyInSeconds) {
         if (windowSizeInSeconds < 1) {
             throw new IllegalArgumentException(
                     String.format("windowSizeInSeconds must be >= 1 (you requested %d)", windowSizeInSeconds)

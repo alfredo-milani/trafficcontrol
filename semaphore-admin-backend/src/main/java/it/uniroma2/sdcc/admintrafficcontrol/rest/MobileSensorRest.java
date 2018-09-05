@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = Routes.MOBILE_SENSOR.MOBILE_SENSOR_BASE_ROUTE)
+@RequestMapping(path = Routes.MOBILE_SENSOR.BASE_ROUTE)
 @CrossOrigin
 public class MobileSensorRest {
 
@@ -24,7 +24,7 @@ public class MobileSensorRest {
         this.mobileSensorController = mobileSensorController;
     }
 
-    @RequestMapping(path = Routes.MOBILE_SENSOR.CREATE, method = RequestMethod.POST)
+    @PostMapping(Routes.MOBILE_SENSOR.CREATE)
     public ResponseEntity<MobileSensor> getMobileSensor(@RequestBody MobileSensor mobileSensor, @PathVariable Long id) {
         MobileSensor newMobileSensor=null;
         if(!mobileSensorController.existMobileSensor(id)){
@@ -33,33 +33,32 @@ public class MobileSensorRest {
         return new ResponseEntity<>(newMobileSensor, newMobileSensor== null ? HttpStatus.FOUND : HttpStatus.CREATED);
     }
 
-    @RequestMapping(path = Routes.MOBILE_SENSOR.GET_MOBILE_SENSORS, method = RequestMethod.GET)
+    @GetMapping(Routes.MOBILE_SENSOR.GET_MOBILE_SENSORS)
     public ResponseEntity<List<MobileSensor>> getMobileSensors() {
         List<MobileSensor> mobileSensors = mobileSensorController.findAllMobileSensor();
         return new ResponseEntity<>(mobileSensors, HttpStatus.OK);
     }
 
-
-    @RequestMapping(path = Routes.MOBILE_SENSOR.EXIST_MOBILE_SENSOR, method = RequestMethod.GET)
+    @GetMapping(Routes.MOBILE_SENSOR.EXIST_MOBILE_SENSOR)
     public ResponseEntity<Boolean> existMobileSensor(@PathVariable Long id) {
         Boolean b = mobileSensorController.existMobileSensor(id);
         return new ResponseEntity<>(b, !b ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.MOBILE_SENSOR.GET_MOBILE_SENSOR, method = RequestMethod.GET)
+    @GetMapping(Routes.MOBILE_SENSOR.GET_MOBILE_SENSOR)
     public ResponseEntity<MobileSensor> getMobileSensor(@PathVariable Long id) {
         MobileSensor mobileSensor = mobileSensorController.getMobileSensor(id);
         return new ResponseEntity<>(mobileSensor, mobileSensor == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.MOBILE_SENSOR.DELETE_MOBILE_SENSOR, method = RequestMethod.DELETE)
+    @DeleteMapping(Routes.MOBILE_SENSOR.DELETE_MOBILE_SENSOR)
     public ResponseEntity<Semaphore> deleteSemaphore(@PathVariable Long id) {
         if(!mobileSensorController.deleteMobileSensor(id))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(path = Routes.MOBILE_SENSOR.UPDATE_MOBILE_SENSOR, method = RequestMethod.PUT)
+    @PutMapping(Routes.MOBILE_SENSOR.UPDATE_MOBILE_SENSOR)
     public ResponseEntity<MobileSensor> updateMobileSensor(@PathVariable Long id, @RequestBody MobileSensor mobileSensor) {
         MobileSensor mobileSensorUpdated;
         try {

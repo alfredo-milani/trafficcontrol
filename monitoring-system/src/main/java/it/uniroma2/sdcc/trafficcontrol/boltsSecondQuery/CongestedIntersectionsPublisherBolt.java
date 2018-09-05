@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.MedianIntersectionManager;
+import it.uniroma2.sdcc.trafficcontrol.entity.secondQuery.MedianIntersectionManager;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 

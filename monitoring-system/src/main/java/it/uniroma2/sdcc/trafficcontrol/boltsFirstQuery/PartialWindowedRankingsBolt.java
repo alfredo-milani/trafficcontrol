@@ -1,8 +1,8 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.MeanSpeedIntersection;
-import it.uniroma2.sdcc.trafficcontrol.entity.ranking.MeanSpeedIntersectionRankable;
+import it.uniroma2.sdcc.trafficcontrol.entity.firstQuery.MeanSpeedIntersection;
+import it.uniroma2.sdcc.trafficcontrol.entity.firstQuery.MeanSpeedIntersectionRankable;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
 import org.apache.storm.task.OutputCollector;
@@ -32,11 +32,11 @@ public class PartialWindowedRankingsBolt extends AbstractWindowedBolt {
         );
     }
 
-    public PartialWindowedRankingsBolt(int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public PartialWindowedRankingsBolt(long windowSizeInSeconds, long emitFrequencyInSeconds) {
         this(TOP_N_DEFAULT, windowSizeInSeconds, emitFrequencyInSeconds);
     }
 
-    public PartialWindowedRankingsBolt(int topN, int windowSizeInSeconds, int emitFrequencyInSeconds) {
+    public PartialWindowedRankingsBolt(int topN, long windowSizeInSeconds, long emitFrequencyInSeconds) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
 
         if (topN < 1) {

@@ -12,9 +12,9 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.SEMAPHORE_SE
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.INTERSECTION_ID;
 import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 
-public class GreenSettingTopology extends Topology {
+public class GreenTimingTopology extends Topology {
 
-    private final static String CLASS_NAME = GreenSettingTopology.class.getSimpleName();
+    private final static String CLASS_NAME = GreenTimingTopology.class.getSimpleName();
 
     @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {

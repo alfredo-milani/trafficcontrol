@@ -3,7 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.GreenTemporizationIntersection;
+import it.uniroma2.sdcc.trafficcontrol.entity.greenTiming.GreenTemporizationIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
