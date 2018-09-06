@@ -80,7 +80,6 @@ public class Config extends HashMap<String, Object> {
     public static final String SEMAPHORES_SEQUENCES_FILE = "sequences-semaphores-file";
 
     // Possibili valori
-    public static final String TOPOLOGIES_ALL = "all";
     public static final String TOPOLOGY_VALIDATION = ValidationTopology.class.getSimpleName();
     public static final String TOPOLOGY_SEMAPHORE_STATUS = SemaphoreStatusTopology.class.getSimpleName();
     public static final String TOPOLOGY_FIRST = FirstTopology.class.getSimpleName();
@@ -88,9 +87,16 @@ public class Config extends HashMap<String, Object> {
     public static final String TOPOLOGY_THIRD = ThirdTopology.class.getSimpleName();
     public static final String TOPOLOGY_GREEN_TIMING = GreenTimingTopology.class.getSimpleName();
     // Topologie da avviare
-    public static final String TOPOLOGIES_TO_START = "topologies-to-start";
+    public static final String TOPOLOGIES = "topologies";
     // Valore di default
-    public static final String DEFAULT_TOPOLOGIES_TO_START = TOPOLOGIES_ALL;
+    public static final List<String> DEFAULT_TOPOLOGIES = Lists.newArrayList(
+            TOPOLOGY_VALIDATION,
+            TOPOLOGY_SEMAPHORE_STATUS,
+            TOPOLOGY_FIRST,
+            TOPOLOGY_SECOND,
+            TOPOLOGY_THIRD,
+            TOPOLOGY_GREEN_TIMING
+    );
 
     // Endpoints per i sensori semaforici e mobili
     // NOTA: gli endpoints devono avere il seguente formato: [protocollo]://[ipAddress]:[port]/[path]/[%d]
@@ -100,6 +106,8 @@ public class Config extends HashMap<String, Object> {
 
 
 
+    // Singleton con inizializzazione statica è thread-safe solo in caso ci sia una sola JVM
+    // e quindi un solo Class Loader
     private static class SingletonContainer {
         private final static Config instance = new Config();
     }
@@ -119,17 +127,16 @@ public class Config extends HashMap<String, Object> {
 
         put(NUMBER_WORKERS, DEFAULT_NUMBER_WORKERS);
 
-        put(TOPOLOGIES_TO_START, Lists.newArrayList(DEFAULT_TOPOLOGIES_TO_START));
+        put(TOPOLOGIES, DEFAULT_TOPOLOGIES);
     }
 
     public static Config getInstance() {
         return SingletonContainer.instance;
     }
 
-    public static Config getInstanceAndLoad() throws IOException {
-        if (!SingletonContainer.instance.getPropertiesLoadedFromFile()) {
-            SingletonContainer.instance.load();
-        }
+    public static Config getInstanceAndLoad()
+            throws IOException {
+        SingletonContainer.instance.loadIfHasNotAlreadyBeenLoaded();
         return SingletonContainer.instance;
     }
 
@@ -149,56 +156,53 @@ public class Config extends HashMap<String, Object> {
                 .getResourceAsStream(getPropertiesFilename());
 
         if (input == null) {
-            throw new IOException("Sorry, unable to find " + get(PROPERTIES_FILENAME));
+            throw new IOException("Sorry, unable to find " + getPropertiesFilename());
         }
 
         Properties properties = new Properties();
         properties.load(input);
 
-        Object tmp;
+        String tmp;
         if ((tmp = properties.getProperty(MODE)) != null) {
-            put(MODE, tmp.toString());
+            put(MODE, tmp);
         }
         if ((tmp = properties.getProperty(KAFKA_IP)) != null) {
             put(KAFKA_IP, tmp);
         }
         if ((tmp = properties.getProperty(KAFKA_PORT)) != null) {
-            put(KAFKA_PORT, Integer.valueOf(tmp.toString()));
+            put(KAFKA_PORT, Integer.valueOf(tmp));
         }
         if (!String.format("%s:%d", get(KAFKA_IP), (int) get(KAFKA_PORT)).equals(get(KAFKA_IP_PORT))) {
             put(KAFKA_IP_PORT, get(KAFKA_IP) + ":" + get(KAFKA_PORT));
         }
         if ((tmp = properties.getProperty(NUMBER_WORKERS)) != null) {
-            put(NUMBER_WORKERS, Integer.valueOf(tmp.toString()));
+            put(NUMBER_WORKERS, Integer.valueOf(tmp));
         }
         if ((tmp = properties.getProperty(ROAD_DELTA)) != null) {
-            put(ROAD_DELTA, Double.valueOf(tmp.toString()));
+            put(ROAD_DELTA, Double.valueOf(tmp));
         }
         if ((tmp = properties.getProperty(SEMAPHORES_SEQUENCES_FILE)) != null) {
-            put(SEMAPHORES_SEQUENCES_FILE, tmp.toString());
+            put(SEMAPHORES_SEQUENCES_FILE, tmp);
         }
-        if ((tmp = properties.getProperty(TOPOLOGIES_TO_START)) != null) {
-            put(TOPOLOGIES_TO_START, StringUtils.fromStringToList(tmp.toString()));
+        if ((tmp = properties.getProperty(TOPOLOGIES)) != null) {
+            put(TOPOLOGIES, StringUtils.fromStringToList(tmp));
         }
         if ((tmp = properties.getProperty(SEMAPHORES_SENSORS_ENDPOINT)) != null) {
-            put(SEMAPHORES_SENSORS_ENDPOINT, tmp.toString());
+            put(SEMAPHORES_SENSORS_ENDPOINT, tmp);
         }
         if ((tmp = properties.getProperty(MOBILE_SENSORS_ENDPOINT)) != null) {
-            put(MOBILE_SENSORS_ENDPOINT, tmp.toString());
+            put(MOBILE_SENSORS_ENDPOINT, tmp);
         }
 
         put(PROPERTIES_LOADED_FROM_FILE, !DEFAULT_PROPERTIES_LOADED_FROM_FILE);
         if ((tmp = properties.getProperty(DEBUG_LEVEL)) != null) {
-            put(DEBUG_LEVEL, Short.valueOf(tmp.toString()));
+            put(DEBUG_LEVEL, Short.valueOf(tmp));
         }
     }
 
-    public boolean hasBeenLoaded() {
-        return (boolean) get(PROPERTIES_LOADED_FROM_FILE);
-    }
-
-    public void loadIfHasNotAlreadyBeenLoaded() throws IOException {
-        if (!(boolean) get(PROPERTIES_LOADED_FROM_FILE)) {
+    public void loadIfHasNotAlreadyBeenLoaded()
+            throws IOException {
+        if (!hasBeenLoaded()) {
             load();
         }
     }
@@ -219,7 +223,7 @@ public class Config extends HashMap<String, Object> {
         return (int) get(EXIT_FAILURE);
     }
 
-    public boolean getPropertiesLoadedFromFile() {
+    public boolean hasBeenLoaded() {
         return (boolean) get(PROPERTIES_LOADED_FROM_FILE);
     }
 
@@ -260,28 +264,19 @@ public class Config extends HashMap<String, Object> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Topology> getTopologiesToStart() {
+    public List<Topology> getTopologies() {
         List<Topology> topologies = new ArrayList<>();
 
-        List<String> topologiesToStart = (List<String>) get(TOPOLOGIES_TO_START);
-        if (topologiesToStart.size() == 1 && topologiesToStart.contains(TOPOLOGIES_ALL)) {
-            topologies.add(new ValidationTopology());
-            topologies.add(new SemaphoreStatusTopology());
-            topologies.add(new FirstTopology());
-            topologies.add(new SecondTopology());
-            topologies.add(new ThirdTopology());
-            topologies.add(new GreenTimingTopology());
-        } else {
-            topologiesToStart.forEach(s -> {
-                if (s.equals(TOPOLOGY_VALIDATION))              topologies.add(new ValidationTopology());
-                else if (s.equals(TOPOLOGY_SEMAPHORE_STATUS))   topologies.add(new SemaphoreStatusTopology());
-                else if (s.equals(TOPOLOGY_FIRST))              topologies.add(new FirstTopology());
-                else if (s.equals(TOPOLOGY_SECOND))             topologies.add(new SecondTopology());
-                else if (s.equals(TOPOLOGY_THIRD))              topologies.add(new ThirdTopology());
-                else if (s.equals(TOPOLOGY_GREEN_TIMING))       topologies.add(new GreenTimingTopology());
-                else System.err.println(String.format("Topologia sconosciuta: \"%s\"", s));
-            });
-        }
+        List<String> topologiesToStart = (List<String>) get(TOPOLOGIES);
+        topologiesToStart.forEach(s -> {
+            if (s.equals(TOPOLOGY_VALIDATION))              topologies.add(new ValidationTopology());
+            else if (s.equals(TOPOLOGY_SEMAPHORE_STATUS))   topologies.add(new SemaphoreStatusTopology());
+            else if (s.equals(TOPOLOGY_FIRST))              topologies.add(new FirstTopology());
+            else if (s.equals(TOPOLOGY_SECOND))             topologies.add(new SecondTopology());
+            else if (s.equals(TOPOLOGY_THIRD))              topologies.add(new ThirdTopology());
+            else if (s.equals(TOPOLOGY_GREEN_TIMING))       topologies.add(new GreenTimingTopology());
+            else System.err.println(String.format("Topologia sconosciuta: \"%s\"", s));
+        });
 
         return topologies;
     }
