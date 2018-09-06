@@ -3,6 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol.entity.timeWindow;
 import lombok.Getter;
 import org.apache.storm.tuple.Tuple;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,32 +44,32 @@ public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Seriali
     }
 
     @Override
-    public void addNewEvent(long timestamp, Tuple tuple) {
+    public void addNewEvent(long timestamp, @NotNull Tuple tuple) {
         newEventsMap.put(timestamp, tuple);
     }
 
     @Override
-    public void addCurrentEvent(long timestamp, Tuple tuple) {
+    public void addCurrentEvent(long timestamp, @NotNull Tuple tuple) {
         currentEventsMap.put(timestamp, tuple);
     }
 
     @Override
-    public void addExpiredEvent(long timestamp, Tuple tuple) {
+    public void addExpiredEvent(long timestamp, @NotNull Tuple tuple) {
         expiredEventsMap.put(timestamp, tuple);
     }
 
     @Override
-    public final ArrayList<Tuple> getNewEvents() {
+    public final @NotNull ArrayList<Tuple> getNewEvents() {
         return new ArrayList<>(newEventsMap.values());
     }
 
     @Override
-    public final ArrayList<Tuple> getCurrentEvents() {
+    public final @NotNull ArrayList<Tuple> getCurrentEvents() {
         return new ArrayList<>(currentEventsMap.values());
     }
 
     @Override
-    public final ArrayList<Tuple> getExpiredEvents() {
+    public final @NotNull ArrayList<Tuple> getExpiredEvents() {
         return new ArrayList<>(expiredEventsMap.values());
     }
 
@@ -126,6 +127,7 @@ public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Seriali
     }
 
     // Copia difensiva
+    @Override
     public EventsMangerTimeWindow copy() {
         EventsMangerTimeWindow emtw = new EventsMangerTimeWindow(windowSize);
         emtw.lowerBoundWindow = this.lowerBoundWindow;

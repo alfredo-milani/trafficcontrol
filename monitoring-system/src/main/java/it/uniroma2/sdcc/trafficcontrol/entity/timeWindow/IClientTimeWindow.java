@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.timeWindow;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 
 public interface IClientTimeWindow<T> {
@@ -10,10 +11,10 @@ public interface IClientTimeWindow<T> {
 
     long getUpperBoundWindow();
 
-    ArrayList<T> getNewEvents();
+    @NotNull ArrayList<T> getNewEvents();
 
-    ArrayList<T> getCurrentEvents();
+    @NotNull ArrayList<T> getCurrentEvents();
 
-    ArrayList<T> getExpiredEvents();
+    @NotNull ArrayList<T> getExpiredEvents();
 
 }
