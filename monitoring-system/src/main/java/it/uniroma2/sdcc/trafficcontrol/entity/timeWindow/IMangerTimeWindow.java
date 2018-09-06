@@ -22,6 +22,7 @@ public interface IMangerTimeWindow<T> extends IClientTimeWindow<T> {
 
     void moveEventsFromCurrentToExpired();
 
+    @Override
     @NotNull IMangerTimeWindow<T> copy();
 
 }

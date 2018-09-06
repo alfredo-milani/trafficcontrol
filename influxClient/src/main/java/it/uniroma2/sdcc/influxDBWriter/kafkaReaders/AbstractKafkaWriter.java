@@ -18,6 +18,7 @@ import org.influxdb.dto.BatchPoints;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
@@ -42,8 +43,8 @@ public abstract class AbstractKafkaWriter implements Runnable {
     private final KafkaConsumer<String, String> consumer;
     @Getter
     protected final String topicName;
-    private final static Long DEFAULT_POOL_TIMEOUT = 1000L;
-    private final Long POOL_TIMEOUT;
+    private final static Long DEFAULT_POOL_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(1);
+    private final Long POOL_TIMEOUT_MILLIS;
 
     // JSON utility
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -66,7 +67,7 @@ public abstract class AbstractKafkaWriter implements Runnable {
     }
 
     public AbstractKafkaWriter(String dbName, String topicName) {
-        this(dbName, topicName, DEFAULT_POOL_TIMEOUT);
+        this(dbName, topicName, DEFAULT_POOL_TIMEOUT_MILLIS);
     }
 
     public AbstractKafkaWriter(String dbName, String topicName, Long poolTimeout) {
@@ -78,7 +79,7 @@ public abstract class AbstractKafkaWriter implements Runnable {
         consumer = new KafkaConsumer<>(getComsumerProperties());
         this.topicName = topicName;
         consumer.subscribe(Collections.singletonList(topicName));
-        POOL_TIMEOUT = poolTimeout;
+        POOL_TIMEOUT_MILLIS = poolTimeout;
     }
 
     private Properties getComsumerProperties() {
@@ -94,13 +95,13 @@ public abstract class AbstractKafkaWriter implements Runnable {
     @SuppressWarnings("InfiniteLoopStatement")
     public void run() {
         // Legge dal topic kafka dall'inizio
-        // consumer.poll(POOL_TIMEOUT);
+        // consumer.poll(POOL_TIMEOUT_MILLIS);
         // consumer.seekToBeginning(Collections.EMPTY_LIST);
 
         try {
             // Consume data from Kafka
             while (true) {
-                ConsumerRecords<String, String> records = consumer.poll(POOL_TIMEOUT);
+                ConsumerRecords<String, String> records = consumer.poll(POOL_TIMEOUT_MILLIS);
                 if (!records.isEmpty()) {
                     computeRecords(records);
                 }

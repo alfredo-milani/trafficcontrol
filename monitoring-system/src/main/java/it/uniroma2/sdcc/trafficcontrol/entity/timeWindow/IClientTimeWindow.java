@@ -17,4 +17,6 @@ public interface IClientTimeWindow<T> {
 
     @NotNull ArrayList<T> getExpiredEvents();
 
+    @NotNull IClientTimeWindow<T> copy();
+
 }

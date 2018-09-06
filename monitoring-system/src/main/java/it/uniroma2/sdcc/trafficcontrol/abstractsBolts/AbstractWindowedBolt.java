@@ -12,13 +12,13 @@ import org.apache.storm.utils.TupleUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractWindowedBolt extends BaseRichBolt {
 
     protected static final long DEFAULT_EMIT_FREQUENCY_IN_SECONDS = 2;
     protected static final long DEFAULT_WINDOW_SIZE_IN_SECONDS = 10;
-    protected static final long TIME_UNIT_MILLIS = 1000L;
     private static final AtomicLong LAST_TIME_MS = new AtomicLong();
 
     private OutputCollector collector;
@@ -51,8 +51,8 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             ));
         }
 
-        this.emitFrequencyInMillis = emitFrequencyInSeconds * TIME_UNIT_MILLIS;
-        this.eventsTimeWindow = new EventsMangerTimeWindow(windowSizeInSeconds * TIME_UNIT_MILLIS);
+        this.emitFrequencyInMillis = TimeUnit.SECONDS.toMillis(emitFrequencyInSeconds);
+        this.eventsTimeWindow = new EventsMangerTimeWindow(TimeUnit.SECONDS.toMillis(windowSizeInSeconds));
     }
 
     @Override
@@ -75,7 +75,7 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
             } else {
                 eventsTimeWindow.addNewEvent(getTimestampToUse(tuple), tuple);
 
-                onValidTupleReceived(tuple);
+                onTupleReceived(tuple);
             }
         } catch (BadTuple e) {
             System.out.println(e.getMessage());
@@ -86,7 +86,8 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         }
     }
 
-    private Long getTimestampToUse(Tuple tuple) throws BadTuple {
+    private Long getTimestampToUse(Tuple tuple)
+            throws BadTuple {
         Long lastTime, timestampToUse = System.currentTimeMillis();
         // Per calcolare un timestamp unico condiviso tra più threads
         do {
@@ -122,17 +123,21 @@ public abstract class AbstractWindowedBolt extends BaseRichBolt {
         return null;
     }
 
-    protected abstract void onTick(OutputCollector collector, IClientTimeWindow<Tuple> eventsWindow);
+    protected abstract void onTick(OutputCollector collector, IClientTimeWindow<Tuple> eventsWindow)
+            throws Exception;
 
-    protected void onValidTupleReceived(Tuple tuple) {
+    protected void onTupleReceived(Tuple tuple) {
 
     }
 
     @Override
     public final Map<String, Object> getComponentConfiguration() {
-        Map<String, Object> conf = new HashMap<>();
-        conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, emitFrequencyInMillis / TIME_UNIT_MILLIS);
-        return conf;
+        return new HashMap<String, Object>() {{
+            put(
+                    Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS,
+                    TimeUnit.MILLISECONDS.toSeconds(emitFrequencyInMillis)
+            );
+        }};
     }
 
 }

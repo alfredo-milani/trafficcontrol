@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Serializable {
 
-    @Getter private final long windowSize; // Window size in milliseconds
+    @Getter private final long windowSize;
     @Getter private long lowerBoundWindow;
     @Getter private long upperBoundWindow;
     private final Map<Long, Tuple> newEventsMap;
@@ -37,8 +37,8 @@ public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Seriali
 
         long deltaHeadTail = upperBoundWindow - lowerBoundWindow;
         if (deltaHeadTail > windowSize) {
-            // La finestra dal tempo 0 è > windowSize
-            // Avanzamento tail finestra temporale
+            // La finestra è diventata maggiore di windowSize
+            // quindi aggiorniamo lowerBoundWindow della finestra temporale
             lowerBoundWindow += deltaHeadTail - windowSize;
         }
     }
@@ -128,7 +128,7 @@ public class EventsMangerTimeWindow implements IMangerTimeWindow<Tuple>, Seriali
 
     // Copia difensiva
     @Override
-    public EventsMangerTimeWindow copy() {
+    public @NotNull EventsMangerTimeWindow copy() {
         EventsMangerTimeWindow emtw = new EventsMangerTimeWindow(windowSize);
         emtw.lowerBoundWindow = this.lowerBoundWindow;
         emtw.upperBoundWindow = this.upperBoundWindow;
