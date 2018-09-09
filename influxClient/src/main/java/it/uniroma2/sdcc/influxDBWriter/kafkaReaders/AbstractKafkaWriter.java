@@ -35,7 +35,9 @@ public abstract class AbstractKafkaWriter implements Runnable {
     protected final static String INFLUX_DB_URL = "http://localhost:8086";
     protected final static String INFLUX_DB_USERNAME = "root";
     protected final static String INFLUX_DB_PASSWORD = "root";
-    private final static InfluxDB influxDB = InfluxDBFactory.connect(INFLUX_DB_URL, INFLUX_DB_USERNAME, INFLUX_DB_PASSWORD);
+    private final static InfluxDB influxDB = InfluxDBFactory
+            .connect(INFLUX_DB_URL, INFLUX_DB_USERNAME, INFLUX_DB_PASSWORD)
+            .enableGzip();
     private final String dbName;
 
     // Kafka group.id
@@ -74,8 +76,6 @@ public abstract class AbstractKafkaWriter implements Runnable {
         // Creating Database
         this.dbName = dbName;
         createDbIfNotExist(dbName);
-        // Abilitazione compressione durante la trasmissione
-        influxDB.enableGzip();
 
         // Sottoscrizione al topic kafka
         consumer = new KafkaConsumer<>(getComsumerProperties());
