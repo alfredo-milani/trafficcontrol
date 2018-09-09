@@ -73,13 +73,25 @@ public abstract class AbstractKafkaWriter implements Runnable {
     public AbstractKafkaWriter(String dbName, String topicName, Long poolTimeout) {
         // Creating Database
         this.dbName = dbName;
-        influxDB.createDatabase(dbName);
+        createDbIfNotExist(dbName);
+        // Abilitazione compressione durante la trasmissione
+        influxDB.enableGzip();
 
         // Sottoscrizione al topic kafka
         consumer = new KafkaConsumer<>(getComsumerProperties());
         this.topicName = topicName;
         consumer.subscribe(Collections.singletonList(topicName));
         POOL_TIMEOUT_MILLIS = poolTimeout;
+    }
+
+    private void createDbIfNotExist(String dbName) {
+        if (!influxDB.describeDatabases().contains(dbName)) {
+            synchronized (AbstractKafkaWriter.class) {
+                if (!influxDB.describeDatabases().contains(dbName)) {
+                    influxDB.createDatabase(dbName);
+                }
+            }
+        }
     }
 
     private Properties getComsumerProperties() {
