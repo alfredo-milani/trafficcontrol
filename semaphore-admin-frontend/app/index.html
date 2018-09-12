@@ -65,8 +65,7 @@
   <script src="js/trafficLight.js"></script>
   <script src="js/modifyUser.js"></script>
   <script src="js/permissions.js"></script>
-  <script src="js/dialog1.tmpl.js"></script>
-  <script src="js/planning.js"></script>
+  <script src="js/detailsTrafficLight.js"></script>
 
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
@@ -91,7 +90,7 @@
 
     <ul class="nav navbar-nav navbar-right" >
 
-      <div class="dropdown">
+      <div class="dropdown" ng-if="Auth.currentUser!=null">
         <md-button ><img src="img/tl.png" height="30px" width="30px"/></md-button>
         <div class="dropdown-content">
           <a href="#!/createTrafficLight">New</a>
@@ -99,7 +98,7 @@
         </div>
       </div>
 
-      <div class="dropdown">
+      <div class="dropdown" ng-if="Auth.currentUser!=null">
         <md-button ><i ng-click="" class="material-icons" style="padding-top: 10%">person</i></md-button>
         <div class="dropdown-content">
           <a href="#">Profile</a>

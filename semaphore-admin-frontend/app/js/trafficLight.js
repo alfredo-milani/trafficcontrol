@@ -17,7 +17,7 @@ app.controller('ctrlTrafficLights',['$scope','myService','$sessionStorage','$loc
 
             $mdDialog.show({
                 controller: "DialogController",
-                templateUrl: 'html/dialog1.tmpl.html',
+                templateUrl: 'html/modalDetailsTrafficLight.html',
                 parent: angular.element(document.body),
                 clickOutsideToClose: true
 
