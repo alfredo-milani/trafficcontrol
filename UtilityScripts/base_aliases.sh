@@ -1,5 +1,11 @@
+# NOTA: se gli scripts si avviano da IntelliJ, è necessario
+# inserire come working directory la directory /abs/path/.../UtilityScripts
+
 # per far espandere gli alias in shell non interattive
 shopt -s expand_aliases
+
+# monitoring-system root module path
+root_path='/Volumes/Data/Projects/Java/--STORM/trafficcontrol/monitoring-system'
 
 # storm
 alias st='/usr/local/apache-storm-1.2.1/bin/storm'
@@ -22,3 +28,16 @@ alias kkc='/usr/local/kafka_2.12-1.0.1/bin/kafka-console-consumer.sh --bootstrap
 # influxdb
 alias xdbc='/usr/local/influxdb-1.6.1-1/usr/bin/influx'
 alias xdbd='/usr/local/influxdb-1.6.1-1/usr/bin/influxd'
+
+
+
+# path da rimuovere
+base_tmp_path='/Volumes/ramdisk/tmp_log/tmp'
+ehcache='ehcache_cache_auth'
+kafka_logs='kafka-logs'
+zookeeper='zookeeper'
+influxdb_data='/Users/alfredo/.influxdb'
+influxdb_history='/Users/alfredo/.influx_history'
+proj_logs='/Volumes/Data/Projects/Java/--STORM/trafficcontrol/logs'
+apache_logs='/usr/local/apache-storm-1.2.1/logs/'
+apache_local='/usr/local/apache-storm-1.2.1/storm-local/'

@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractDispatcherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
 import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequence;
 import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SequencesBolts;
@@ -22,8 +23,8 @@ public class SequencesDispatcherBolt extends AbstractDispatcherBolt {
         this.sequencesBolts = sequencesBolts;
     }
 
-    public SequencesDispatcherBolt(String JSONStructure, Double roadDelta) {
-        sequencesBolts = new SequencesBolts(JSONStructure, roadDelta);
+    public SequencesDispatcherBolt(Config config) {
+        sequencesBolts = new SequencesBolts(config);
     }
 
     @Override

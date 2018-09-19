@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractWindowedBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
 import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequence;
 import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequencesManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.timeWindow.IClientTimeWindow;
@@ -29,10 +30,9 @@ public class SequenceSelectorWindowedBolt extends AbstractWindowedBolt {
         semaphoresSequencesManager = new SemaphoresSequencesManager(semaphoresSequences, roadDelta);
     }
 
-    public SequenceSelectorWindowedBolt(long windowSizeInSeconds, long emitFrequencyInSeconds,
-                                        String JSONFileStructure, Double roadDelta) {
+    public SequenceSelectorWindowedBolt(long windowSizeInSeconds, long emitFrequencyInSeconds, Config config) {
         super(windowSizeInSeconds, emitFrequencyInSeconds);
-        semaphoresSequencesManager = SemaphoresSequencesManager.getInstanceFrom(JSONFileStructure, roadDelta);
+        semaphoresSequencesManager = SemaphoresSequencesManager.getInstanceFrom(config);
     }
 
     @Override

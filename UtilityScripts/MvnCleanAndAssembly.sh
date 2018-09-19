@@ -1,5 +1,5 @@
 #!/usr/local/bin/bash
-. "/Volumes/Data/Projects/Java/--STORM/trafficcontrol/UtilityScripts/base_aliases.sh"
+. "./base_aliases.sh"
 
-cd "/Volumes/Data/Projects/Java/--STORM/trafficcontrol/monitoring-system"
+cd "$root_path"
 mvn -Dmaven.test.skip=true clean && mvn -Dmaven.test.skip=true assembly:assembly

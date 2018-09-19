@@ -1,15 +1,17 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
+import lombok.Cleanup;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,19 +37,26 @@ public class SemaphoresSequencesManager implements Serializable {
         addSensorTo(semaphoresSequence, richMobileSensor);
     }
 
-    public static SemaphoresSequencesManager getInstanceFrom(String JSONStructurePath, Double roadDelta) {
+    public static SemaphoresSequencesManager getInstanceFrom(Config config) {
         try {
             // Read json file data to String
-            byte[] jsonData = Files.readAllBytes(Paths.get(JSONStructurePath));
+            @Cleanup InputStream semaphoresSequencesInputStream = config.getSemaphoresSequencesInputStream();
+            @Cleanup BufferedInputStream semaphoresSequencesBufferedInputStream = new BufferedInputStream(semaphoresSequencesInputStream);
             // Convert json string to object
-            SemaphoresSequencesManager semaphoresSequencesManager =
-                    new ObjectMapper().readValue(jsonData, SemaphoresSequencesManager.class);
-            if (roadDelta != null) {
-                semaphoresSequencesManager.setRoadDelta(roadDelta);
+            SemaphoresSequencesManager semaphoresSequencesManager = new ObjectMapper().readValue(
+                    semaphoresSequencesBufferedInputStream,
+                    SemaphoresSequencesManager.class
+            );
+
+            if (config.getRoadDelta() != null) {
+                semaphoresSequencesManager.setRoadDelta(config.getRoadDelta());
             }
             return semaphoresSequencesManager;
         } catch (IOException e) {
-            System.err.println(String.format("Impossibile creare un'istanza dal path: %s", JSONStructurePath));
+            System.err.println(String.format(
+                    "Impossibile creare un'istanza dal path: %s",
+                    config.getSemaphoresSequencesFilename()
+            ));
             e.printStackTrace();
             return null;
         }

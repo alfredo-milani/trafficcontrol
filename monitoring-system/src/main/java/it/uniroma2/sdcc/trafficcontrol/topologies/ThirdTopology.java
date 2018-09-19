@@ -41,10 +41,7 @@ public class ThirdTopology extends Topology {
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
-        SequencesBolts sequencesBolts = new SequencesBolts(
-                config.getSemaphoresSequencesFile(),
-                config.getRoadDelta()
-        );
+        SequencesBolts sequencesBolts = new SequencesBolts(config);
         builder.setSpout(KAFKA_SPOUT, new KafkaSpout(MOBILE_SENSOR_VALIDATED, CLASS_NAME),4);
 
         // Dispatcher che smista le varie tuple proveniente dai sensori mobili verso i abstractsBolts

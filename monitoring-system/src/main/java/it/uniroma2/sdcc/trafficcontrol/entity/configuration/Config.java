@@ -3,10 +3,10 @@ package it.uniroma2.sdcc.trafficcontrol.entity.configuration;
 import it.uniroma2.sdcc.trafficcontrol.topologies.*;
 import it.uniroma2.sdcc.trafficcontrol.utils.StringUtils;
 import lombok.Cleanup;
+import lombok.NonNull;
 import org.apache.storm.shade.com.google.common.collect.Lists;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,16 +68,16 @@ public class Config extends HashMap<String, Object> {
     // Valore di default
     public static final String DEFAULT_KAFKA_IP_PORT = DEFAULT_KAFKA_IP + ":" + DEFAULT_KAFKA_PORT;
 
-    // Default workers' number
-    public static final String NUMBER_WORKERS = "number-workers";
-    public static final int DEFAULT_NUMBER_WORKERS = 2;
-
     // Parametri per terza query
     // ROAD_DELTA rappresenta l'errore massimo nell'applicazione che associa
     // una vettuera ad una sequenza di semafori
     public static final String ROAD_DELTA = "road-delta";
+    // Valore di default
+    public static final double DEFAULT_ROAD_DELTA = 0.00003;
     // File (JSON) contenente la descrizione della sequenza di semafori
     public static final String SEMAPHORES_SEQUENCES_FILE = "sequences-semaphores-file";
+    // Valore di default
+    public static final String DEFAULT_SEMAPHORES_SEQUENCES_FILE = "SemaphoresSequencesStructure.json";
 
     // Possibili valori
     public static final String TOPOLOGY_VALIDATION = ValidationTopology.class.getSimpleName();
@@ -98,6 +98,10 @@ public class Config extends HashMap<String, Object> {
             TOPOLOGY_GREEN_TIMING
     );
 
+    // Default workers' number
+    public static final String WORKERS_NUMBER = "workers-number";
+    public static final int DEFAULT_WORKERS_NUMBER = 2;
+
     // Endpoints per i sensori semaforici e mobili
     // NOTA: gli endpoints devono avere il seguente formato: [protocollo]://[ipAddress]:[port]/[path]/[%d]
     // dove "%d" deve essere sostituito con l'id del sensore che si sta cercando
@@ -109,10 +113,11 @@ public class Config extends HashMap<String, Object> {
     // Singleton con inizializzazione statica è thread-safe solo in caso ci sia una sola JVM
     // e quindi un solo Class Loader
     private static class SingletonContainer {
-        private final static Config instance = new Config();
+        private final static Config INSTANCE = new Config();
     }
 
     protected Config() {
+        // Valori di default per l'applicazione
         put(APPLICATION_NAME, DEFAULT_APPLICATION_NAME);
         put(EXIT_SUCCESS, DEFAULT_EXIT_SUCCESS);
         put(EXIT_FAILURE, DEFAULT_EXIT_FAILURE);
@@ -120,47 +125,51 @@ public class Config extends HashMap<String, Object> {
         put(PROPERTIES_LOADED_FROM_FILE, DEFAULT_PROPERTIES_LOADED_FROM_FILE);
         put(DEBUG_LEVEL, DEFAULT_DEBUG_LEVEL);
 
+        // Valori di default per kafka
         put(MODE, DEFAULT_MODE);
         put(KAFKA_IP, DEFAULT_KAFKA_IP);
         put(KAFKA_PORT, DEFAULT_KAFKA_PORT);
         put(KAFKA_IP_PORT, DEFAULT_KAFKA_IP_PORT);
 
-        put(NUMBER_WORKERS, DEFAULT_NUMBER_WORKERS);
+        // Valori di default per la terza topologia
+        put(ROAD_DELTA, DEFAULT_ROAD_DELTA);
+        put(SEMAPHORES_SEQUENCES_FILE, DEFAULT_SEMAPHORES_SEQUENCES_FILE);
 
+        // VAlori di default per le topologie
         put(TOPOLOGIES, DEFAULT_TOPOLOGIES);
+        put(WORKERS_NUMBER, DEFAULT_WORKERS_NUMBER);
     }
 
     public static Config getInstance() {
-        return SingletonContainer.instance;
+        return SingletonContainer.INSTANCE;
     }
 
     public static Config getInstanceAndLoad()
             throws IOException {
-        SingletonContainer.instance.loadIfHasNotAlreadyBeenLoaded();
-        return SingletonContainer.instance;
+        SingletonContainer.INSTANCE.loadIfHasNotAlreadyBeenLoaded();
+        return SingletonContainer.INSTANCE;
     }
 
     public void load()
             throws IOException {
-        load(getPropertiesFilename());
+        load(Config.class
+                .getClassLoader()
+                .getResourceAsStream(getConfigurationFilename())
+        );
     }
 
-    public void load(String configurationFile)
+    public void load(@NonNull String configurationFilename)
+            throws IOException{
+        setConfigurationFilename(configurationFilename);
+        load(new FileInputStream(configurationFilename));
+    }
+
+    public void load(@NonNull InputStream confInputStream)
             throws IOException {
-        if (configurationFile != null) {
-            setConfigurationFile(configurationFile);
-        }
-
-        @Cleanup InputStream input = Config.class
-                .getClassLoader()
-                .getResourceAsStream(getPropertiesFilename());
-
-        if (input == null) {
-            throw new IOException("Sorry, unable to find " + getPropertiesFilename());
-        }
-
+        @Cleanup InputStream configInputStream = confInputStream;
+        @Cleanup BufferedInputStream configBufferedInputStream = new BufferedInputStream(configInputStream);
         Properties properties = new Properties();
-        properties.load(input);
+        properties.load(configBufferedInputStream);
 
         String tmp;
         if ((tmp = properties.getProperty(MODE)) != null) {
@@ -175,9 +184,6 @@ public class Config extends HashMap<String, Object> {
         if (!String.format("%s:%d", get(KAFKA_IP), (int) get(KAFKA_PORT)).equals(get(KAFKA_IP_PORT))) {
             put(KAFKA_IP_PORT, get(KAFKA_IP) + ":" + get(KAFKA_PORT));
         }
-        if ((tmp = properties.getProperty(NUMBER_WORKERS)) != null) {
-            put(NUMBER_WORKERS, Integer.valueOf(tmp));
-        }
         if ((tmp = properties.getProperty(ROAD_DELTA)) != null) {
             put(ROAD_DELTA, Double.valueOf(tmp));
         }
@@ -186,6 +192,9 @@ public class Config extends HashMap<String, Object> {
         }
         if ((tmp = properties.getProperty(TOPOLOGIES)) != null) {
             put(TOPOLOGIES, StringUtils.fromStringToList(tmp));
+        }
+        if ((tmp = properties.getProperty(WORKERS_NUMBER)) != null) {
+            put(WORKERS_NUMBER, Integer.valueOf(tmp));
         }
         if ((tmp = properties.getProperty(SEMAPHORES_SENSORS_ENDPOINT)) != null) {
             put(SEMAPHORES_SENSORS_ENDPOINT, tmp);
@@ -207,7 +216,7 @@ public class Config extends HashMap<String, Object> {
         }
     }
 
-    public void setConfigurationFile(String configurationFile) {
+    public void setConfigurationFilename(String configurationFile) {
         put(PROPERTIES_FILENAME, configurationFile);
     }
 
@@ -231,7 +240,7 @@ public class Config extends HashMap<String, Object> {
         return (short) get(DEBUG_LEVEL);
     }
 
-    public String getPropertiesFilename() {
+    public String getConfigurationFilename() {
         return (String) get(PROPERTIES_FILENAME);
     }
 
@@ -252,14 +261,38 @@ public class Config extends HashMap<String, Object> {
     }
 
     public int getNumberWorkers() {
-        return (int) get(NUMBER_WORKERS);
+        return (int) get(WORKERS_NUMBER);
     }
 
     public Double getRoadDelta() {
         return (Double) get(ROAD_DELTA);
     }
 
-    public String getSemaphoresSequencesFile() {
+    /**
+     * Utilizza il file di configurazione per ottenere il path del file contenete la sequenza
+     * dei semafori.
+     * Se non viene specificato alcun valore nel file di configurazione allora verrà
+     * utilizzato il file nella directory resources chiamato {@link Config#DEFAULT_SEMAPHORES_SEQUENCES_FILE}
+     *
+     * NOTA: è lasciato al chiamante il compito di chiudere l'InputStream
+     *
+     * @return Input stream bufferizzato del file di configurazinoe della sequenza dei semafori
+     */
+    public InputStream getSemaphoresSequencesInputStream()
+            throws FileNotFoundException {
+        String fileToStream = (String) get(SEMAPHORES_SEQUENCES_FILE);
+        if (fileToStream.equals(DEFAULT_SEMAPHORES_SEQUENCES_FILE)) {
+            // Nessun valore specificato
+            // Verrà utilizzato il valore dei default nella directory resources
+            return Config.class.getClassLoader().getResourceAsStream(fileToStream);
+        } else {
+            // Valore custom specificato per il file di configurazione
+            // della struttura della sequenza dei semafori
+            return new FileInputStream(fileToStream);
+        }
+    }
+
+    public String getSemaphoresSequencesFilename() {
         return (String) get(SEMAPHORES_SEQUENCES_FILE);
     }
 
