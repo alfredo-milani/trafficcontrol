@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.sensorssimulator;
+package it.uniroma2.sdcc.sensorSimulatorTest;
 
 import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
 import org.apache.commons.cli.*;
@@ -14,7 +14,7 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.*;
 
 public class StartProducer {
 
-    private static int threads = 2;
+    private static int threads = 1;
     private static int waitingTimeMillis = 2 * 1000;
     private static ProducerType producerType = ProducerType.AUTO;
     private static SensorType sensorType;
@@ -36,12 +36,6 @@ public class StartProducer {
     @SuppressWarnings("Duplicates")
     public static void main(String[] args)
             throws Exception {
-        // Controllo se è stato passato un file di configurazione per
-        // l'applicazione da linea di comando
-        // if (args.length != 0) config.load(args[0]);
-        // else config.load();
-        config.loadIfHasNotAlreadyBeenLoaded();
-
         // Parsing argomenti ricevuto da riga di comando
         parseArgs(args);
 
@@ -179,6 +173,17 @@ public class StartProducer {
         sensorTypeOption.setRequired(true);
         options.addOption(sensorTypeOption);
 
+        String configFile = "c";
+        String configFileLong = "config";
+        Option configFileOption = new Option(
+                configFile,
+                String.format("%s=", configFileLong),
+                true,
+                "Path file di configurazione (default: modulo monitoring-system/resources)"
+        );
+        configFileOption.setRequired(false);
+        options.addOption(configFileOption);
+
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd;
@@ -210,6 +215,10 @@ public class StartProducer {
         if (StartProducer.sensorType.equals(SensorType.UNKNOWN)) {
             throw new Exception("Devi specificare il tipo di sensore");
         }
+        // Controllo se è stato passato un file di configurazione per
+        // l'applicazione da linea di comando
+        if (cmd.getOptionValue(configFile) != null) config.load(cmd.getOptionValue(configFile));
+        else config.load();
     }
 
 }

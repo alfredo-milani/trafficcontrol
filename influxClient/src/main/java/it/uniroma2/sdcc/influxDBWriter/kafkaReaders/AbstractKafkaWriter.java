@@ -64,13 +64,12 @@ public abstract class AbstractKafkaWriter implements Runnable {
         this.dbName = dbName;
         createDbIfNotExist(dbName);
 
+        this.config = config;
         // Sottoscrizione al topic kafka
         consumer = new KafkaConsumer<>(getComsumerProperties());
         this.topicName = topicName;
         consumer.subscribe(Collections.singletonList(topicName));
         POOL_TIMEOUT_MILLIS = poolTimeout;
-
-        this.config = config;
     }
 
     private void createDbIfNotExist(String dbName) {

@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.sensorssimulator;
+package it.uniroma2.sdcc.sensorSimulatorTest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,7 +53,7 @@ public class MobileSensorProducer implements Runnable {
     }
 
     public String produce() {
-        mobileId = ThreadLocalRandom.current().nextLong(1, 50);
+        mobileId = ThreadLocalRandom.current().nextLong(1, 2000);
         mobileTimestampUTC = System.currentTimeMillis();
         /*mobileLatitude = ThreadLocalRandom.current().nextDouble(0, 90 + 1);
         mobileLonditude = ThreadLocalRandom.current().nextDouble(0, 180 + 1);*/

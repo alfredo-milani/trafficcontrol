@@ -1,4 +1,4 @@
-package it.uniroma2.sdcc.sensorssimulator;
+package it.uniroma2.sdcc.sensorSimulatorTest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
