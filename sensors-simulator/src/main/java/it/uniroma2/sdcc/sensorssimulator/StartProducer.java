@@ -19,20 +19,7 @@ public class StartProducer {
     private static ProducerType producerType = ProducerType.AUTO;
     private static SensorType sensorType;
     // File di configurazione
-    private final static Config config;
-    static {
-        config = Config.getInstance();
-        try {
-            // Caricamento proprietà
-            config.loadIfHasNotAlreadyBeenLoaded();
-        } catch (IOException e) {
-            System.err.println(String.format(
-                    "%s: error while reading configuration file",
-                    StartProducer.class.getSimpleName()
-            ));
-            e.printStackTrace();
-        }
-    }
+    private final static Config config = Config.getInstance();
 
     private enum ProducerType {
         UNKNOWN,
@@ -47,7 +34,15 @@ public class StartProducer {
     }
 
     @SuppressWarnings("Duplicates")
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+            throws Exception {
+        // Controllo se è stato passato un file di configurazione per
+        // l'applicazione da linea di comando
+        // if (args.length != 0) config.load(args[0]);
+        // else config.load();
+        config.loadIfHasNotAlreadyBeenLoaded();
+
+        // Parsing argomenti ricevuto da riga di comando
         parseArgs(args);
 
         switch (producerType) {

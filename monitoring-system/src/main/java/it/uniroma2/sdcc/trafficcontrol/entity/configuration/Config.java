@@ -216,7 +216,7 @@ public class Config extends HashMap<String, Object> {
         }
     }
 
-    public void setConfigurationFilename(String configurationFile) {
+    public void setConfigurationFilename(@NonNull String configurationFile) {
         put(PROPERTIES_FILENAME, configurationFile);
     }
 

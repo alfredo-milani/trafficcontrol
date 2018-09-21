@@ -53,26 +53,13 @@ public abstract class AbstractKafkaWriter implements Runnable {
     private final static JsonFactory factory = mapper.getFactory();
 
     // File di configurazione
-    private final static Config config;
-    static {
-        config = Config.getInstance();
-        try {
-            // Caricamento proprietà
-            config.loadIfHasNotAlreadyBeenLoaded();
-        } catch (IOException e) {
-            System.err.println(String.format(
-                    "%s: error while reading configuration file",
-                    AbstractKafkaWriter.class.getSimpleName()
-            ));
-            e.printStackTrace();
-        }
+    private final Config config;
+
+    public AbstractKafkaWriter(String dbName, String topicName, Config config) {
+        this(dbName, topicName, config, DEFAULT_POOL_TIMEOUT_MILLIS);
     }
 
-    public AbstractKafkaWriter(String dbName, String topicName) {
-        this(dbName, topicName, DEFAULT_POOL_TIMEOUT_MILLIS);
-    }
-
-    public AbstractKafkaWriter(String dbName, String topicName, Long poolTimeout) {
+    public AbstractKafkaWriter(String dbName, String topicName, Config config, Long poolTimeout) {
         // Creating Database
         this.dbName = dbName;
         createDbIfNotExist(dbName);
@@ -82,6 +69,8 @@ public abstract class AbstractKafkaWriter implements Runnable {
         this.topicName = topicName;
         consumer.subscribe(Collections.singletonList(topicName));
         POOL_TIMEOUT_MILLIS = poolTimeout;
+
+        this.config = config;
     }
 
     private void createDbIfNotExist(String dbName) {

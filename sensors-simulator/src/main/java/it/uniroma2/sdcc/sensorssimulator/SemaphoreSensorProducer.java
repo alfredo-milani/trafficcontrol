@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.*;
 
-
 public class SemaphoreSensorProducer implements Runnable {
 
     @JsonProperty(INTERSECTION_ID)
@@ -55,7 +54,7 @@ public class SemaphoreSensorProducer implements Runnable {
     @Override
     public void run() {
         while (true) {
-            produce();
+            System.out.println(String.format("\t> Tupla inviata\t\t| %s |", produce()));
 
             try {
                 Thread.sleep(waitTime);
@@ -90,31 +89,6 @@ public class SemaphoreSensorProducer implements Runnable {
             e.printStackTrace();
             return "Errore durante l'invio della tupla del semaforo";
         }
-    }
-
-    public SemaphoreSensorProducer(KafkaProducer<String, String> producer, String topicName,
-                                   int waitTime,
-                                   Long intersectionId, Long semaphoreId,
-                                   Double semaphoreLatitude, Double semaphoreLonditude,
-                                   Long semaphoreTimestampUTC, Short greenLightDuration,
-                                   Byte greenLightStatus, Byte yellowLightStatus,
-                                   Byte redLightStatus, Short vehiclesPerSecond,
-                                   Short averageVehiclesSpeed) {
-        this.producer = producer;
-        this.topicName = topicName;
-        this.waitTime = waitTime;
-
-        this.intersectionId = intersectionId;
-        this.semaphoreId = semaphoreId;
-        this.semaphoreLatitude = semaphoreLatitude;
-        this.semaphoreLonditude = semaphoreLonditude;
-        this.semaphoreTimestampUTC = semaphoreTimestampUTC;
-        this.greenLightDuration = greenLightDuration;
-        this.greenLightStatus = greenLightStatus;
-        this.yellowLightStatus = yellowLightStatus;
-        this.redLightStatus = redLightStatus;
-        this.vehiclesPerSecond = vehiclesPerSecond;
-        this.averageVehiclesSpeed = averageVehiclesSpeed;
     }
 
 }

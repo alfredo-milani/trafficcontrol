@@ -42,7 +42,7 @@ public class MobileSensorProducer implements Runnable {
     @Override
     public void run() {
         while (true) {
-            produce();
+            System.out.println(String.format("\t> Tupla inviata\t\t| %s |", produce()));
 
             try {
                 Thread.sleep(waitTime);
@@ -69,21 +69,6 @@ public class MobileSensorProducer implements Runnable {
             e.printStackTrace();
             return "Errore durante l'invio della tupla mobile";
         }
-    }
-
-    public MobileSensorProducer(KafkaProducer<String, String> producer, String topicName,
-                                   int waitTime, Long intersectionId,
-                                   Double semaphoreLatitude, Double semaphoreLonditude,
-                                   Long semaphoreTimestampUTC, Short averageVehiclesSpeed) {
-        this.producer = producer;
-        this.topicName = topicName;
-        this.waitTime = waitTime;
-
-        this.mobileId = intersectionId;
-        this.mobileTimestampUTC = semaphoreTimestampUTC;
-        this.mobileLatitude = semaphoreLatitude;
-        this.mobileLonditude = semaphoreLonditude;
-        this.mobileSpeed = averageVehiclesSpeed;
     }
 
 }
