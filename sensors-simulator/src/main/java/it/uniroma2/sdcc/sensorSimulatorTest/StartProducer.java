@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.sensorSimulatorTest;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
@@ -19,7 +19,7 @@ public class StartProducer {
     private static ProducerType producerType = ProducerType.AUTO;
     private static SensorType sensorType;
     // File di configurazione
-    private final static Config config = Config.getInstance();
+    private final static AppConfig APP_CONFIG = AppConfig.getInstance();
 
     private enum ProducerType {
         UNKNOWN,
@@ -119,7 +119,7 @@ public class StartProducer {
          *  {@link KAFKA_IP_PORT} proprietà collegata ad un altro modulo
          *  attraverso la classe {@link ApplicationsProperties}
          */
-        producerProperties.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
+        producerProperties.put(BOOTSTRAP_SERVERS, APP_CONFIG.getKafkaIpPort());
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         producerProperties.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 
@@ -174,7 +174,7 @@ public class StartProducer {
         options.addOption(sensorTypeOption);
 
         String configFile = "c";
-        String configFileLong = "config";
+        String configFileLong = "APP_CONFIG";
         Option configFileOption = new Option(
                 configFile,
                 String.format("%s=", configFileLong),
@@ -200,7 +200,7 @@ public class StartProducer {
                     options
             );
 
-            System.exit(config.getExitFailure());
+            System.exit(APP_CONFIG.getExitFailure());
             return;
         }
 
@@ -217,8 +217,8 @@ public class StartProducer {
         }
         // Controllo se è stato passato un file di configurazione per
         // l'applicazione da linea di comando
-        if (cmd.getOptionValue(configFile) != null) config.load(cmd.getOptionValue(configFile));
-        else config.load();
+        if (cmd.getOptionValue(configFile) != null) APP_CONFIG.load(cmd.getOptionValue(configFile));
+        else APP_CONFIG.load();
     }
 
 }

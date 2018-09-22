@@ -1,5 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.topology.TopologyBuilder;
@@ -11,11 +12,14 @@ import java.util.UUID;
 public abstract class Topology {
 
     private final TopologyBuilder builder;
-    private final Config config;
+    private final Config stormConfig;
+    private final AppConfig appConfig;
     private final String topologyName;
 
-    public Topology() {
-        this.config = defineConfig();
+    public Topology(AppConfig appConfig) {
+        this.appConfig = appConfig;
+
+        this.stormConfig = defineConfig();
         this.builder = defineTopology();
         this.topologyName = defineTopologyName();
     }
@@ -34,7 +38,7 @@ public abstract class Topology {
 
     // Interfaccia pubblica
     public final Config createConfig() {
-        return config;
+        return stormConfig;
     }
 
     public final StormTopology createTopology() {
@@ -43,6 +47,10 @@ public abstract class Topology {
 
     public final String createTopologyName() {
         return topologyName.replaceAll("\\p{Z}", "");
+    }
+
+    public final AppConfig getAppConfig() {
+        return appConfig;
     }
     // End - Interfaccia pubblica
 

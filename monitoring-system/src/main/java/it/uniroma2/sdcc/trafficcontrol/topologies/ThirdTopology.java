@@ -4,14 +4,13 @@ import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.CongestedSequencePublishe
 import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.CongestionComputationWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.SequenceSelectorWindowedBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery.SequencesDispatcherBolt;
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequencesManager;
 import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SequencesBolts;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.BoltDeclarer;
 import org.apache.storm.topology.TopologyBuilder;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static it.uniroma2.sdcc.trafficcontrol.constants.KafkaParams.CONGESTED_SEQUENCE;
@@ -21,28 +20,17 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.*;
 public class ThirdTopology extends Topology {
 
     private static final String CLASS_NAME = ThirdTopology.class.getSimpleName();
-    // File di configurazione
-    private final static Config config;
-    static {
-        config = Config.getInstance();
-        try {
-            // Caricamento proprietà
-            config.loadIfHasNotAlreadyBeenLoaded();
-        } catch (IOException e) {
-            System.err.println(String.format(
-                    "%s: error while reading configuration file",
-                    ThirdTopology.class.getSimpleName()
-            ));
-            e.printStackTrace();
-        }
+
+    public ThirdTopology(AppConfig appConfig) {
+        super(appConfig);
     }
 
     @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
-        SequencesBolts sequencesBolts = new SequencesBolts(config);
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(MOBILE_SENSOR_VALIDATED, CLASS_NAME),4);
+        SequencesBolts sequencesBolts = new SequencesBolts(getAppConfig());
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(getAppConfig(), MOBILE_SENSOR_VALIDATED, CLASS_NAME),4);
 
         // Dispatcher che smista le varie tuple proveniente dai sensori mobili verso i abstractsBolts
         // relativi per il loro processamento (attraverso vari streams)
@@ -70,7 +58,7 @@ public class ThirdTopology extends Topology {
                         TimeUnit.MINUTES.toSeconds(5),
                         TimeUnit.SECONDS.toSeconds(5),
                         SemaphoresSequencesManager.getsemaphoresSequenceFromBoltsList(sequencesBolts),
-                        config.getRoadDelta()
+                        getAppConfig().getRoadDelta()
                 )
         );
         sequencesBolts.getSequenceBoltList().forEach(

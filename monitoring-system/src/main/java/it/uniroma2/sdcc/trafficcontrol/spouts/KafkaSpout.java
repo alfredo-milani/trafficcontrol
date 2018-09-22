@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.spouts;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -11,7 +11,6 @@ import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
@@ -25,28 +24,16 @@ public class KafkaSpout extends BaseRichSpout {
     private final String sourceTopic;
     private final String groupId;
     // File di configurazione
-    private final static Config config;
-    static {
-        config = Config.getInstance();
-        try {
-            // Caricamento proprietà
-            config.loadIfHasNotAlreadyBeenLoaded();
-        } catch (IOException e) {
-            System.err.println(String.format(
-                    "%s: error while reading configuration file",
-                    KafkaSpout.class.getSimpleName()
-            ));
-            e.printStackTrace();
-        }
+    private final AppConfig appConfig;
+
+    public KafkaSpout(AppConfig appConfig, String sourceTopic) {
+        this(appConfig, sourceTopic, appConfig.getApplicationName());
     }
 
-    public KafkaSpout(String sourceTopic) {
-        this(sourceTopic, config.getApplicationName());
-    }
-
-    public KafkaSpout(String sourceTopic, String groupId) {
+    public KafkaSpout(AppConfig appConfig, String sourceTopic, String groupId) {
         this.sourceTopic = sourceTopic;
         this.groupId = groupId;
+        this.appConfig = appConfig;
     }
 
     @Override
@@ -54,7 +41,7 @@ public class KafkaSpout extends BaseRichSpout {
         this.collector = collector;
 
         Properties props = new Properties();
-        props.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
+        props.put(BOOTSTRAP_SERVERS, appConfig.getKafkaIpPort());
         props.put(GROUP_ID, groupId);
         props.put(AUTO_COMMIT, TRUE_VALUE);
         props.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);
