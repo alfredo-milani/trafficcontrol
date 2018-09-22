@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
 import lombok.Cleanup;
 import lombok.Getter;
@@ -37,10 +37,10 @@ public class SemaphoresSequencesManager implements Serializable {
         addSensorTo(semaphoresSequence, richMobileSensor);
     }
 
-    public static SemaphoresSequencesManager getInstanceFrom(Config config) {
+    public static SemaphoresSequencesManager getInstanceFrom(AppConfig appConfig) {
         try {
             // Read json file data to String
-            @Cleanup InputStream semaphoresSequencesInputStream = config.getSemaphoresSequencesInputStream();
+            @Cleanup InputStream semaphoresSequencesInputStream = appConfig.getSemaphoresSequencesInputStream();
             @Cleanup BufferedInputStream semaphoresSequencesBufferedInputStream = new BufferedInputStream(semaphoresSequencesInputStream);
             // Convert json string to object
             SemaphoresSequencesManager semaphoresSequencesManager = new ObjectMapper().readValue(
@@ -48,14 +48,14 @@ public class SemaphoresSequencesManager implements Serializable {
                     SemaphoresSequencesManager.class
             );
 
-            if (config.getRoadDelta() != null) {
-                semaphoresSequencesManager.setRoadDelta(config.getRoadDelta());
+            if (appConfig.getRoadDelta() != null) {
+                semaphoresSequencesManager.setRoadDelta(appConfig.getRoadDelta());
             }
             return semaphoresSequencesManager;
         } catch (IOException e) {
             System.err.println(String.format(
                     "Impossibile creare un'istanza dal path: %s",
-                    config.getSemaphoresSequencesFilename()
+                    appConfig.getSemaphoresSequencesFilename()
             ));
             e.printStackTrace();
             return null;

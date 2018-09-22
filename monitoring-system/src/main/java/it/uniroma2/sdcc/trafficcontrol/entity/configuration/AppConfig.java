@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-public class Config extends HashMap<String, Object> {
+public class AppConfig extends HashMap<String, Object> {
 
     // Nome applicazione
     public static final String APPLICATION_NAME = "application-name";
@@ -113,10 +113,10 @@ public class Config extends HashMap<String, Object> {
     // Singleton con inizializzazione statica è thread-safe solo in caso ci sia una sola JVM
     // e quindi un solo Class Loader
     private static class SingletonContainer {
-        private final static Config INSTANCE = new Config();
+        private final static AppConfig INSTANCE = new AppConfig();
     }
 
-    protected Config() {
+    protected AppConfig() {
         // Valori di default per l'applicazione
         put(APPLICATION_NAME, DEFAULT_APPLICATION_NAME);
         put(EXIT_SUCCESS, DEFAULT_EXIT_SUCCESS);
@@ -140,11 +140,11 @@ public class Config extends HashMap<String, Object> {
         put(WORKERS_NUMBER, DEFAULT_WORKERS_NUMBER);
     }
 
-    public static Config getInstance() {
+    public static AppConfig getInstance() {
         return SingletonContainer.INSTANCE;
     }
 
-    public static Config getInstanceAndLoad()
+    public static AppConfig getInstanceAndLoad()
             throws IOException {
         SingletonContainer.INSTANCE.loadIfHasNotAlreadyBeenLoaded();
         return SingletonContainer.INSTANCE;
@@ -152,7 +152,7 @@ public class Config extends HashMap<String, Object> {
 
     public void load()
             throws IOException {
-        load(Config.class
+        load(AppConfig.class
                 .getClassLoader()
                 .getResourceAsStream(getConfigurationFilename())
         );
@@ -272,7 +272,7 @@ public class Config extends HashMap<String, Object> {
      * Utilizza il file di configurazione per ottenere il path del file contenete la sequenza
      * dei semafori.
      * Se non viene specificato alcun valore nel file di configurazione allora verrà
-     * utilizzato il file nella directory resources chiamato {@link Config#DEFAULT_SEMAPHORES_SEQUENCES_FILE}
+     * utilizzato il file nella directory resources chiamato {@link AppConfig#DEFAULT_SEMAPHORES_SEQUENCES_FILE}
      *
      * NOTA: è lasciato al chiamante il compito di chiudere l'InputStream
      *
@@ -284,7 +284,7 @@ public class Config extends HashMap<String, Object> {
         if (fileToStream.equals(DEFAULT_SEMAPHORES_SEQUENCES_FILE)) {
             // Nessun valore specificato
             // Verrà utilizzato il valore dei default nella directory resources
-            return Config.class.getClassLoader().getResourceAsStream(fileToStream);
+            return AppConfig.class.getClassLoader().getResourceAsStream(fileToStream);
         } else {
             // Valore custom specificato per il file di configurazione
             // della struttura della sequenza dei semafori
@@ -302,12 +302,12 @@ public class Config extends HashMap<String, Object> {
 
         List<String> topologiesToStart = (List<String>) get(TOPOLOGIES);
         topologiesToStart.forEach(s -> {
-            if (s.equals(TOPOLOGY_VALIDATION))              topologies.add(new ValidationTopology());
-            else if (s.equals(TOPOLOGY_SEMAPHORE_STATUS))   topologies.add(new SemaphoreStatusTopology());
-            else if (s.equals(TOPOLOGY_FIRST))              topologies.add(new FirstTopology());
-            else if (s.equals(TOPOLOGY_SECOND))             topologies.add(new SecondTopology());
-            else if (s.equals(TOPOLOGY_THIRD))              topologies.add(new ThirdTopology());
-            else if (s.equals(TOPOLOGY_GREEN_TIMING))       topologies.add(new GreenTimingTopology());
+            if (s.equals(TOPOLOGY_VALIDATION))              topologies.add(new ValidationTopology(this));
+            else if (s.equals(TOPOLOGY_SEMAPHORE_STATUS))   topologies.add(new SemaphoreStatusTopology(this));
+            else if (s.equals(TOPOLOGY_FIRST))              topologies.add(new FirstTopology(this));
+            else if (s.equals(TOPOLOGY_SECOND))             topologies.add(new SecondTopology(this));
+            else if (s.equals(TOPOLOGY_THIRD))              topologies.add(new ThirdTopology(this));
+            else if (s.equals(TOPOLOGY_GREEN_TIMING))       topologies.add(new GreenTimingTopology(this));
             else System.err.println(String.format("Topologia sconosciuta: \"%s\"", s));
         });
 

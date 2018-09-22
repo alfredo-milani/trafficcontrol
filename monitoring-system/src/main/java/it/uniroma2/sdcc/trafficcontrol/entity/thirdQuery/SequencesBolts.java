@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,12 +38,12 @@ public class SequencesBolts implements Serializable {
         semaphoresSequencesManager = new SemaphoresSequencesManager();
     }
 
-    public SequencesBolts(Config config) {
-        semaphoresSequencesManager = SemaphoresSequencesManager.getInstanceFrom(config);
+    public SequencesBolts(AppConfig appConfig) {
+        semaphoresSequencesManager = SemaphoresSequencesManager.getInstanceFrom(appConfig);
         if (semaphoresSequencesManager == null) {
             throw new IllegalArgumentException(String.format(
                     "Impossibile creare l'istanza dal file: %s",
-                    config.getSemaphoresSequencesFilename()
+                    appConfig.getSemaphoresSequencesFilename()
             ));
         }
 

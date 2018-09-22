@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery.*;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
@@ -16,11 +17,15 @@ public class FirstTopology extends Topology {
 
     private final static String CLASS_NAME = FirstTopology.class.getSimpleName();
 
+    public FirstTopology(AppConfig appConfig) {
+        super(appConfig);
+    }
+
     @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(getAppConfig(), SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
 
         builder.setBolt(MEAN_SPEED_DISPATCHER_BOLT, new MeanSpeedDispatcherBolt(), 4)
                 .shuffleGrouping(KAFKA_SPOUT);

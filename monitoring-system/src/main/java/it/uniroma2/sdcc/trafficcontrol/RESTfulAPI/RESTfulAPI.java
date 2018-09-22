@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.RESTfulAPI;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.exceptions.BadHostname;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -9,11 +9,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.io.Serializable;
 
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.DEBUG_LEVEL_MOCK_END_POINTS;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig.DEBUG_LEVEL_MOCK_END_POINTS;
 import static org.apache.http.protocol.HTTP.*;
 
-public class RESTfulAPI {
+public class RESTfulAPI implements Serializable {
 
     public final static int STATUS_CODE_200 = 200;
     public final static int STATUS_CODE_300 = 300;
@@ -24,29 +25,17 @@ public class RESTfulAPI {
             ? JAVA_VERSION
             : JAVA_AGENT + " " + JAVA_VERSION;
 
-    private final static Config config;
-    private final static boolean mockEndpoint;
-    static {
-        config = Config.getInstance();
-        try {
-            // Caricamento proprietà
-            config.loadIfHasNotAlreadyBeenLoaded();
-        } catch (IOException e) {
-            System.err.println(String.format(
-                    "%s: error while reading configuration file",
-                    RESTfulAPI.class.getSimpleName()
-            ));
-            e.printStackTrace();
-        }
-        mockEndpoint = config.getDebugLevel() == DEBUG_LEVEL_MOCK_END_POINTS;
-    }
-
+    private AppConfig appConfig;
+    private final boolean mockEndpoint;
     private final static HttpClient client = HttpClientBuilder.create().build();
 
-
+    public RESTfulAPI(AppConfig appConfig) {
+        this.appConfig = appConfig;
+        mockEndpoint = appConfig.getDebugLevel() == DEBUG_LEVEL_MOCK_END_POINTS;
+    }
 
     @SuppressWarnings("Duplicates")
-    public static boolean sensorExistsWithIdFromEndpoint(@NotNull Long id, @NotNull String url) {
+    public boolean sensorExistsWithIdFromEndpoint(@NotNull Long id, @NotNull String url) {
         if (mockEndpoint) return true;
 
         HttpGet request = new HttpGet(String.format(url, id));
@@ -78,7 +67,7 @@ public class RESTfulAPI {
     }
 
     @SuppressWarnings("Duplicates")
-    public static boolean hostIsUp(String hostname) {
+    public boolean hostIsUp(String hostname) {
         if (mockEndpoint) return true;
 
         HttpGet request = new HttpGet(hostname);
@@ -102,7 +91,7 @@ public class RESTfulAPI {
         }
     }
 
-    public static String getHostname(String URI) {
+    public String getHostname(String URI) {
         String[] strings = URI.split("/");
         if (strings.length < 3) {
             throw new BadHostname("URI non valida: " + URI);

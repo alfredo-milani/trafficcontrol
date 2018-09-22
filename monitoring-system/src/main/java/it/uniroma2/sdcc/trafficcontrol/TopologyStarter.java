@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
@@ -9,30 +9,30 @@ import org.apache.storm.generated.InvalidTopologyException;
 
 import java.io.IOException;
 
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.MODE_CLUSTER;
-import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config.MODE_LOCAL;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig.MODE_CLUSTER;
+import static it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig.MODE_LOCAL;
 
 public class TopologyStarter {
 
     // File di configurazione
-    private final static Config config = Config.getInstance();
+    private final static AppConfig appConfig = AppConfig.getInstance();
 
     public static void main(String[] args)
             throws IOException {
-        // Controllo se è stato passato un file di configurazione per
+        // Controllo se è stato passato un file di configurazione perSi deve specificare un endpoint valido
         // l'applicazione da linea di comando
-        if (args.length != 0) config.load(args[0]);
-        else config.load();
+        if (args.length != 0) appConfig.load(args[0]);
+        else appConfig.load();
 
         // Stampa configurazione attuale
-        System.out.println(config.toString());
+        System.out.println(appConfig.toString());
 
-        switch (config.getMode()) {
+        switch (appConfig.getMode()) {
             // Esecuzione storm in modalità locale
             case MODE_LOCAL:
                 final LocalCluster cluster = new LocalCluster();
 
-                config.getTopologies().forEach(t -> cluster.submitTopology(
+                appConfig.getTopologies().forEach(t -> cluster.submitTopology(
                         t.createTopologyName(),
                         t.createConfig(),
                         t.createTopology()
@@ -41,7 +41,7 @@ public class TopologyStarter {
 
             // Esecuzione storm in modalità cluster
             case MODE_CLUSTER:
-                config.getTopologies().forEach(t -> {
+                appConfig.getTopologies().forEach(t -> {
                     try {
                         StormSubmitter.submitTopology(
                                 t.createTopologyName(),
@@ -57,7 +57,7 @@ public class TopologyStarter {
             // Errore imprevisto
             default:
                 System.err.println("Errore sconosciuto");
-                System.exit(config.getExitFailure());
+                System.exit(appConfig.getExitFailure());
         }
     }
 

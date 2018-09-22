@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -53,18 +53,18 @@ public abstract class AbstractKafkaWriter implements Runnable {
     private final static JsonFactory factory = mapper.getFactory();
 
     // File di configurazione
-    private final Config config;
+    private final AppConfig appConfig;
 
-    public AbstractKafkaWriter(String dbName, String topicName, Config config) {
-        this(dbName, topicName, config, DEFAULT_POOL_TIMEOUT_MILLIS);
+    public AbstractKafkaWriter(String dbName, String topicName, AppConfig appConfig) {
+        this(dbName, topicName, appConfig, DEFAULT_POOL_TIMEOUT_MILLIS);
     }
 
-    public AbstractKafkaWriter(String dbName, String topicName, Config config, Long poolTimeout) {
+    public AbstractKafkaWriter(String dbName, String topicName, AppConfig appConfig, Long poolTimeout) {
         // Creating Database
         this.dbName = dbName;
         createDbIfNotExist(dbName);
 
-        this.config = config;
+        this.appConfig = appConfig;
         // Sottoscrizione al topic kafka
         consumer = new KafkaConsumer<>(getComsumerProperties());
         this.topicName = topicName;
@@ -84,7 +84,7 @@ public abstract class AbstractKafkaWriter implements Runnable {
 
     private Properties getComsumerProperties() {
         Properties properties = new Properties();
-        properties.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
+        properties.put(BOOTSTRAP_SERVERS, appConfig.getKafkaIpPort());
         properties.put(GROUP_ID, KAFKA_GROUP_ID);
         properties.put(KEY_DESERIALIZER, DESERIALIZER_VALUE);
         properties.put(VALUE_DESERIALIZER, DESERIALIZER_VALUE);

@@ -1,7 +1,7 @@
 package it.uniroma2.sdcc.sensorSimulatorAsSpecifications;
 
 
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequencesManager;
 import org.apache.commons.cli.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -17,7 +17,7 @@ public class StartSimulation {
     private static SensorType sensorType;
     private static long sensorsNum = 50;
     // File di configurazione
-    private final static Config config = Config.getInstance();
+    private final static AppConfig APP_CONFIG = AppConfig.getInstance();
 
     private enum SensorType {
         UNKNOWN,
@@ -52,13 +52,13 @@ public class StartSimulation {
                         GENERIC_TUPLE_TO_VALIDATE,
                         waitingTimeMillis,
                         sensorsNum,
-                        SemaphoresSequencesManager.getInstanceFrom(config)
+                        SemaphoresSequencesManager.getInstanceFrom(APP_CONFIG)
                 )).start();
                 break;
 
             case UNKNOWN:
                 System.err.println("Comando sconosciuto");
-                System.exit(config.getExitFailure());
+                System.exit(APP_CONFIG.getExitFailure());
         }
     }
 
@@ -66,7 +66,7 @@ public class StartSimulation {
     private static Properties initProducerProperties() {
         Properties producerProperties = new Properties();
 
-        producerProperties.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
+        producerProperties.put(BOOTSTRAP_SERVERS, APP_CONFIG.getKafkaIpPort());
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         producerProperties.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 
@@ -101,7 +101,7 @@ public class StartSimulation {
         options.addOption(sensorTypeOption);
 
         String configFile = "c";
-        String configFileLong = "config";
+        String configFileLong = "APP_CONFIG";
         Option configFileOption = new Option(
                 configFile,
                 String.format("%s=", configFileLong),
@@ -138,7 +138,7 @@ public class StartSimulation {
                     options
             );
 
-            System.exit(config.getExitFailure());
+            System.exit(APP_CONFIG.getExitFailure());
             return;
         }
 
@@ -153,9 +153,9 @@ public class StartSimulation {
         }
         // Controllo se è stato passato un file di configurazione per
         // l'applicazione da linea di comando
-        if (cmd.getOptionValue(configFile) != null) config.load(cmd.getOptionValue(configFile));
-        else config.load();
-        System.out.println(config.toString());
+        if (cmd.getOptionValue(configFile) != null) APP_CONFIG.load(cmd.getOptionValue(configFile));
+        else APP_CONFIG.load();
+        System.out.println(APP_CONFIG.toString());
     }
 
 }

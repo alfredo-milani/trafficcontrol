@@ -1,6 +1,6 @@
 package it.uniroma2.sdcc.trafficcontrol.abstractsBolts;
 
-import it.uniroma2.sdcc.trafficcontrol.entity.configuration.Config;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.storm.task.OutputCollector;
@@ -22,12 +22,12 @@ public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
     private KafkaProducer<String, V> producer;
     private final String topic;
     // File di configurazione
-    private final static Config config;
+    private final static AppConfig APP_CONFIG;
     static {
-        config = Config.getInstance();
+        APP_CONFIG = AppConfig.getInstance();
         try {
             // Caricamento proprietà
-            config.loadIfHasNotAlreadyBeenLoaded();
+            APP_CONFIG.loadIfHasNotAlreadyBeenLoaded();
         } catch (IOException e) {
             System.err.println(String.format(
                     "%s: error while reading configuration file",
@@ -44,7 +44,7 @@ public abstract class AbstractKafkaPublisherBolt<V> extends BaseRichBolt {
     @Override
     public final void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         Properties props = new Properties();
-        props.put(BOOTSTRAP_SERVERS, config.getKafkaIpPort());
+        props.put(BOOTSTRAP_SERVERS, APP_CONFIG.getKafkaIpPort());
         props.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         props.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 

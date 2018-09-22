@@ -2,6 +2,7 @@ package it.uniroma2.sdcc.trafficcontrol.topologies;
 
 import it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus.SemaphoreStatusBolt;
 import it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus.SemaphoreStatusPublisher;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.spouts.KafkaSpout;
 import org.apache.storm.topology.TopologyBuilder;
 
@@ -13,11 +14,15 @@ public class SemaphoreStatusTopology extends Topology {
 
     private final static String CLASS_NAME = SemaphoreStatusTopology.class.getSimpleName();
 
+    public SemaphoreStatusTopology(AppConfig appConfig) {
+        super(appConfig);
+    }
+
     @Override
     protected TopologyBuilder defineTopology() throws IllegalArgumentException {
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
+        builder.setSpout(KAFKA_SPOUT, new KafkaSpout(getAppConfig(), SEMAPHORE_SENSOR_VALIDATED, CLASS_NAME), 4);
 
         builder.setBolt(SEMAPHORE_STATUS_BOLT, new SemaphoreStatusBolt(), 4)
                 .shuffleGrouping(KAFKA_SPOUT);
