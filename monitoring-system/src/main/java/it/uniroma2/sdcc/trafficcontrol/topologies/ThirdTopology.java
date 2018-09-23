@@ -67,7 +67,7 @@ public class ThirdTopology extends Topology {
 
 
         // Publisher bolt per la pubblicazione della sequenza più congestionata
-        builder.setBolt(CONGESTED_SEQUENCE_PUBLISHER_BOLT, new CongestedSequencePublisherBolt(CONGESTED_SEQUENCE),2)
+        builder.setBolt(CONGESTED_SEQUENCE_PUBLISHER_BOLT, new CongestedSequencePublisherBolt(getAppConfig(), CONGESTED_SEQUENCE),2)
                 .shuffleGrouping(SEQUENCE_SELECTOR_BOLT);
 
         return builder;

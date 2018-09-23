@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsSemaphoreStatus;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.StatusSemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
@@ -12,8 +13,8 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.SemaphoreSensorTuple.SEM
 
 public class SemaphoreStatusPublisher extends AbstractKafkaPublisherBolt<String> {
 
-    public SemaphoreStatusPublisher(String topic) {
-        super(topic);
+    public SemaphoreStatusPublisher(AppConfig appConfig, String topic) {
+        super(appConfig, topic);
     }
 
     @Override

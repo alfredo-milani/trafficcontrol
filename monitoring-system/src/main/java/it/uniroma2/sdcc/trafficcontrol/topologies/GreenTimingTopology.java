@@ -33,7 +33,7 @@ public class GreenTimingTopology extends Topology {
         builder.setBolt(FILTER_GREEN_BOLT, new DirectionWaiterBolt(), 2)
                 .fieldsGrouping(GREEN_TIMING_DISPATCHER_BOLT, new Fields(INTERSECTION_ID));
 
-        builder.setBolt(GREEN_SETTER, new GreenSetterPublisher(GREEN_TEMPORIZATION), 2)
+        builder.setBolt(GREEN_SETTER, new GreenSetterPublisher(getAppConfig(), GREEN_TEMPORIZATION), 2)
                 .shuffleGrouping(FILTER_GREEN_BOLT);
 
         return builder;

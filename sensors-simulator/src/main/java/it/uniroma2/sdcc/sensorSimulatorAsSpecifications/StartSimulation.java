@@ -17,7 +17,7 @@ public class StartSimulation {
     private static SensorType sensorType;
     private static long sensorsNum = 50;
     // File di configurazione
-    private final static AppConfig APP_CONFIG = AppConfig.getInstance();
+    private final static AppConfig appConfig = AppConfig.getInstance();
 
     private enum SensorType {
         UNKNOWN,
@@ -52,13 +52,13 @@ public class StartSimulation {
                         GENERIC_TUPLE_TO_VALIDATE,
                         waitingTimeMillis,
                         sensorsNum,
-                        SemaphoresSequencesManager.getInstanceFrom(APP_CONFIG)
+                        SemaphoresSequencesManager.getInstanceFrom(appConfig)
                 )).start();
                 break;
 
             case UNKNOWN:
                 System.err.println("Comando sconosciuto");
-                System.exit(APP_CONFIG.getExitFailure());
+                System.exit(appConfig.getExitFailure());
         }
     }
 
@@ -66,7 +66,7 @@ public class StartSimulation {
     private static Properties initProducerProperties() {
         Properties producerProperties = new Properties();
 
-        producerProperties.put(BOOTSTRAP_SERVERS, APP_CONFIG.getKafkaIpPort());
+        producerProperties.put(BOOTSTRAP_SERVERS, appConfig.getKafkaIpPort());
         producerProperties.put(KEY_SERIALIZER, SERIALIZER_VALUE);
         producerProperties.put(VALUE_SERIALIZER, SERIALIZER_VALUE);
 
@@ -101,7 +101,7 @@ public class StartSimulation {
         options.addOption(sensorTypeOption);
 
         String configFile = "c";
-        String configFileLong = "APP_CONFIG";
+        String configFileLong = "appConfig";
         Option configFileOption = new Option(
                 configFile,
                 String.format("%s=", configFileLong),
@@ -138,7 +138,7 @@ public class StartSimulation {
                     options
             );
 
-            System.exit(APP_CONFIG.getExitFailure());
+            System.exit(appConfig.getExitFailure());
             return;
         }
 
@@ -153,9 +153,9 @@ public class StartSimulation {
         }
         // Controllo se è stato passato un file di configurazione per
         // l'applicazione da linea di comando
-        if (cmd.getOptionValue(configFile) != null) APP_CONFIG.load(cmd.getOptionValue(configFile));
-        else APP_CONFIG.load();
-        System.out.println(APP_CONFIG.toString());
+        if (cmd.getOptionValue(configFile) != null) appConfig.load(cmd.getOptionValue(configFile));
+        else appConfig.load();
+        System.out.println(appConfig.toString());
     }
 
 }

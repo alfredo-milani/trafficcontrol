@@ -3,6 +3,7 @@ package it.uniroma2.sdcc.trafficcontrol.boltsGreenSetting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.greenTiming.GreenTemporizationIntersection;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.SemaphoreSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -28,8 +29,8 @@ public class GreenSetterPublisher extends AbstractKafkaPublisherBolt<String> {
 
     private final static ObjectMapper mapper = new ObjectMapper();
 
-    public GreenSetterPublisher(String topic) {
-        super(topic);
+    public GreenSetterPublisher(AppConfig appConfig, String topic) {
+        super(appConfig, topic);
     }
 
     @SuppressWarnings("Duplicates")

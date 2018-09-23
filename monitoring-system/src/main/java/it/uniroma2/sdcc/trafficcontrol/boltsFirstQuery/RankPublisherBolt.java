@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsFirstQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.ranking.Rankings;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
@@ -13,8 +14,8 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.GLOBAL_RANKI
 
 public class RankPublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
-    public RankPublisherBolt(String topic) {
-        super(topic);
+    public RankPublisherBolt(AppConfig appConfig, String topic) {
+        super(appConfig, topic);
     }
 
     @Override

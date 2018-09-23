@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsValidation;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.sensors.RichMobileSensor;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
@@ -12,8 +13,8 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.MobileSensorTuple.MOBILE
 
 public class MobileValidationPublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
-    public MobileValidationPublisherBolt(String topic) {
-        super(topic);
+    public MobileValidationPublisherBolt(AppConfig appConfig, String topic) {
+        super(appConfig, topic);
     }
 
     @Override

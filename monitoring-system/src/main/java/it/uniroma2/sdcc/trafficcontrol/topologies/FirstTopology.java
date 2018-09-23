@@ -53,13 +53,13 @@ public class FirstTopology extends Topology {
 
 
         // Publisher bolt per la finestra temporale da 15 minuti
-        builder.setBolt(RANK_PUBLISHER_BOLT_15_MIN, new RankPublisherBolt(RANKING_15_MIN))
+        builder.setBolt(RANK_PUBLISHER_BOLT_15_MIN, new RankPublisherBolt(getAppConfig(), RANKING_15_MIN))
                 .shuffleGrouping(GLOBAL_WINDOWED_RANK_BOLT_15_MIN);
         // Publisher bolt per la finestra temporale da 1 ora
-        builder.setBolt(RANK_PUBLISHER_BOLT_1_H, new RankPublisherBolt(RANKING_1_H))
+        builder.setBolt(RANK_PUBLISHER_BOLT_1_H, new RankPublisherBolt(getAppConfig(), RANKING_1_H))
                 .shuffleGrouping(GLOBAL_WINDOWED_RANK_BOLT_1_H);
         // Publisher bolt per la finestra temporale da 24 ore
-        builder.setBolt(RANK_PUBLISHER_BOLT_24_H, new RankPublisherBolt(RANKING_24_H))
+        builder.setBolt(RANK_PUBLISHER_BOLT_24_H, new RankPublisherBolt(getAppConfig(), RANKING_24_H))
                 .shuffleGrouping(GLOBAL_WINDOWED_RANK_BOLT_24_H);
 
         return builder;

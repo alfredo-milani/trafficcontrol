@@ -51,11 +51,11 @@ public class SecondTopology extends Topology {
                 .globalGrouping(MEDIAN_CALCULATOR_BOLT, MEDIAN_INTERSECTION_STREAM);
 
 
-        builder.setBolt(CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_15_MIN, new CongestedIntersectionsPublisherBolt(CONGESTED_INTERSECTIONS_15_MIN))
+        builder.setBolt(CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_15_MIN, new CongestedIntersectionsPublisherBolt(getAppConfig(), CONGESTED_INTERSECTIONS_15_MIN))
                 .shuffleGrouping(GLOBAL_MEDIAN_CALCULATOR_BOLT_15_MIN);
-        builder.setBolt(CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_1_H, new CongestedIntersectionsPublisherBolt(CONGESTED_INTERSECTIONS_1_H))
+        builder.setBolt(CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_1_H, new CongestedIntersectionsPublisherBolt(getAppConfig(), CONGESTED_INTERSECTIONS_1_H))
                 .shuffleGrouping(GLOBAL_MEDIAN_CALCULATOR_BOLT_1_H);
-        builder.setBolt(CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_24_H, new CongestedIntersectionsPublisherBolt(CONGESTED_INTERSECTIONS_24_H))
+        builder.setBolt(CONGESTED_INTERSECTIONS_PUBLISHER_BOLT_24_H, new CongestedIntersectionsPublisherBolt(getAppConfig(), CONGESTED_INTERSECTIONS_24_H))
                 .shuffleGrouping(GLOBAL_MEDIAN_CALCULATOR_BOLT_24_H);
 
         return builder;

@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsSecondQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.secondQuery.MedianIntersectionManager;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
@@ -13,8 +14,8 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.CONGESTED_IN
 
 public class CongestedIntersectionsPublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
-    public CongestedIntersectionsPublisherBolt(String topic) {
-        super(topic);
+    public CongestedIntersectionsPublisherBolt(AppConfig appConfig, String topic) {
+        super(appConfig, topic);
     }
 
     @Override

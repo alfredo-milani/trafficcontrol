@@ -27,7 +27,7 @@ public class SemaphoreStatusTopology extends Topology {
         builder.setBolt(SEMAPHORE_STATUS_BOLT, new SemaphoreStatusBolt(), 4)
                 .shuffleGrouping(KAFKA_SPOUT);
 
-        builder.setBolt(SEMAPHORE_STATUS_PUBLISHER_BOLT, new SemaphoreStatusPublisher(SEMAPHORE_LIGHT_STATUS), 2)
+        builder.setBolt(SEMAPHORE_STATUS_PUBLISHER_BOLT, new SemaphoreStatusPublisher(getAppConfig(), SEMAPHORE_LIGHT_STATUS), 2)
                 .shuffleGrouping(SEMAPHORE_STATUS_BOLT);
 
         return builder;

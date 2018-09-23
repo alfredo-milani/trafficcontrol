@@ -43,10 +43,10 @@ public class ValidationTopology extends Topology {
                 .shuffleGrouping(MOBILE_SENSOR_AUTH_CACHE_BOLT, CACHE_MISS_STREAM);
 
 
-        builder.setBolt(SEMAPHORE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(SEMAPHORE_SENSOR_VALIDATED), 4)
+        builder.setBolt(SEMAPHORE_VALIDATION_PUBLISHER_BOLT, new SemaphoreValidationPublisherBolt(getAppConfig(), SEMAPHORE_SENSOR_VALIDATED), 4)
                 .shuffleGrouping(SEMAPHORE_SENSOR_AUTH_CACHE_BOLT, CACHE_HIT_STREAM)
                 .shuffleGrouping(SEMAPHORE_AUTH_DB_BOLT);
-        builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new MobileValidationPublisherBolt(MOBILE_SENSOR_VALIDATED), 4)
+        builder.setBolt(MOBILE_VALIDATION_PUBLISHER_BOLT, new MobileValidationPublisherBolt(getAppConfig(), MOBILE_SENSOR_VALIDATED), 4)
                 .shuffleGrouping(MOBILE_SENSOR_AUTH_CACHE_BOLT, CACHE_HIT_STREAM)
                 .shuffleGrouping(MOBILE_AUTH_DB_BOLT);
 

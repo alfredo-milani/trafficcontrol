@@ -1,6 +1,7 @@
 package it.uniroma2.sdcc.trafficcontrol.boltsThirdQuery;
 
 import it.uniroma2.sdcc.trafficcontrol.abstractsBolts.AbstractKafkaPublisherBolt;
+import it.uniroma2.sdcc.trafficcontrol.entity.configuration.AppConfig;
 import it.uniroma2.sdcc.trafficcontrol.entity.thirdQuery.SemaphoresSequence;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
@@ -13,8 +14,8 @@ import static it.uniroma2.sdcc.trafficcontrol.constants.StormParams.SEMAPHORE_SE
 
 public class CongestedSequencePublisherBolt extends AbstractKafkaPublisherBolt<String> {
 
-    public CongestedSequencePublisherBolt(String topic) {
-        super(topic);
+    public CongestedSequencePublisherBolt(AppConfig appConfig, String topic) {
+        super(appConfig, topic);
     }
 
     @Override
