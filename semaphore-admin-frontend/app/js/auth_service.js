@@ -78,6 +78,7 @@ angular.module('AuthServices', ['ngResource', 'ngStorage'])
         auth.logout = function() {
             delete $sessionStorage.user;
             delete $rootScope.user;
+
         };
 
 

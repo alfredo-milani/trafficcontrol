@@ -1,4 +1,4 @@
-app.controller('ctrlCust', function($scope,$http,$location,$rootScope,myService, Auth,$uibModal,$mdDialog) {
+app.controller('ctrlCust', function($scope,$http,$location,$sessionStorage,$route,$window,myService, Auth) {
 
     $scope.makeVisible=false;
 

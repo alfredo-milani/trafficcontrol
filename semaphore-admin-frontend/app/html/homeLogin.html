@@ -1,4 +1,41 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light" >
+    <div class="container-fluid" >
 
+        <div class="navbar-header">
+            <a class="navbar-brand" ng-hide="user"  href="#!/"> TCS</a>
+            <a class="navbar-brand" href="#!/homeCustomer"  ng-show="user">
+                <i class="material-icons" style="padding-top: 10%">home</i>
+            </a>
+
+        </div>
+
+
+
+        <ul class="nav navbar-nav navbar-right" >
+
+            <div class="dropdown" ng-show="user">
+                <md-button ><img src="img/tl.png" height="30px" width="30px"/></md-button>
+                <div class="dropdown-content">
+                    <a href="#!/createTrafficLight">New</a>
+                    <a href="#!/showAllTrafficLights">Show All</a>
+                </div>
+            </div>
+
+            <div class="dropdown" ng-show="user" >
+                <md-button ><i ng-click="" class="material-icons" style="padding-top: 10%">person</i></md-button>
+                <div class="dropdown-content" ng-model="utente">
+                    <a href="">Profile</a>
+                    <a href="">Modify Account</a>
+                    <a ng-controller="ctrlCust" value="logout" ng-click="logout()">Sign out</a>
+                </div>
+            </div>
+
+
+
+
+        </ul>
+    </div>
+</nav>
 <div ng-controller="ctrlLogin" style="padding-left:20%;padding-top: 3%">
 <div class="jumbotron" style="background-color:white ;opacity: 0.90;width: 75%;height: 15%; padding-left: 20%">
 

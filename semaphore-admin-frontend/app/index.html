@@ -75,44 +75,6 @@
 
 <body ng-app="myApp" style="width: 100%;height: 100%;background-size: cover" background="img/sfondo.jpeg" >
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light" >
-  <div class="container-fluid">
-
-      <div class="navbar-header">
-        <a class="navbar-brand"  ng-if="Auth.currentUser==null" href="#!/"> TCS</a>
-        <a class="navbar-brand" href="#!/homeCustomer"  ng-if="Auth.currentUser!=null">
-          <i class="material-icons" style="padding-top: 10%">home</i>
-        </a>
-
-      </div>
-
-
-
-    <ul class="nav navbar-nav navbar-right" >
-
-      <div class="dropdown" ng-if="Auth.currentUser!=null">
-        <md-button ><img src="img/tl.png" height="30px" width="30px"/></md-button>
-        <div class="dropdown-content">
-          <a href="#!/createTrafficLight">New</a>
-          <a href="#!/showAllTrafficLights">Show All</a>
-        </div>
-      </div>
-
-      <div class="dropdown" ng-if="Auth.currentUser!=null">
-        <md-button ><i ng-click="" class="material-icons" style="padding-top: 10%">person</i></md-button>
-        <div class="dropdown-content">
-          <a href="#">Profile</a>
-          <a href="#">Modify Account</a>
-          <a ng-controller="ctrlCust" ng-click="logout()">Sign out</a>
-        </div>
-      </div>
-
-
-
-
-    </ul>
-  </div>
-</nav>
  <!-- <ul class="menu" -->
 
 
